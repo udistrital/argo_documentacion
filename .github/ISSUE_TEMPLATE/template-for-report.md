@@ -1,5 +1,5 @@
 ---
-name: Template for Informe
+name: Template for report
 about: Template for SoS Team issue
 title: ''
 labels: ''
