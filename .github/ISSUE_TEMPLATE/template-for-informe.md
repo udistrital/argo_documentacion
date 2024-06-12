@@ -1,6 +1,6 @@
 ---
 name: Template for Informe
-about: Template para proyección de informes periódicos
+about: Template for SoS Team issue
 title: ''
 labels: ''
 assignees: ''
