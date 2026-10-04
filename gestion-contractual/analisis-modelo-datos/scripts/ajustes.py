@@ -1,8 +1,8 @@
 """Plan de ajustes, supuestos, preguntas y leyenda de la matriz (issue #356).
 
-Criterio acordado con el LT en sesión: ARGO v1 está en producción y tiene muchas integraciones, así que el plan no
-propone rediseños. Solo se admite alinear el CRUD con la BD de pruebas, corregir lineamientos que no rompan
-integraciones y agregar campos faltantes al modelo actual cuando se confirmen.
+Criterio acordado con el LT en la sesión de socialización (1 de octubre de 2026): ARGO v1 está en producción y
+tiene muchas integraciones, así que el plan no propone rediseños. Solo se admite alinear el CRUD con la BD de pruebas,
+corregir lineamientos que no rompan integraciones y agregar campos faltantes al modelo actual cuando se confirmen.
 """
 
 CRITERIO = ("ARGO v1 es el sistema que está hoy en producción y tiene muchas integraciones; proponer un modelo diferente "
@@ -39,8 +39,8 @@ AJUSTES = [
          descripcion="Exponer registro_presupuestal (entidad, módulo, /registros-presupuestales). La tabla ya existe en la BD de pruebas. No se renombra cdp_id. Soporta CU-16.",
          endpoints="Nuevo recurso /registros-presupuestales", impacto="Nuevo recurso", rompe="No", decision="No"),
     dict(id="A6", fase=2, estado=RECOMENDADO, tablas=["contrato_general"],
-         descripcion="Agregar la columna fecha_suscripcion en contrato_general (respuesta 10, opción a). Falta confirmar el momento del registro (al firmar, una vez terminado el flujo de aprobación). Soporta CU-19.",
-         impacto="Campo nuevo en el DTO (aditivo)", rompe="No", decision="Momento del registro, por confirmar en sesión"),
+         descripcion="Agregar la columna fecha_suscripcion en contrato_general (respuesta 10, opción a). El momento del registro (al firmar, una vez terminado el flujo de aprobación) es una decisión abierta (D5). Soporta CU-19.",
+         impacto="Campo nuevo en el DTO (aditivo)", rompe="No", decision="Momento del registro: decisión abierta D5"),
     dict(id="A9", fase=2, estado=RECOMENDADO, tablas=["documento_contrato"],
          descripcion="Sin cambio de esquema: documento_contrato se mantiene como única tabla, sin estados (respuesta 12). La etapa (pre, contractual, pos) y el carácter (público/privado) se expresan con tipo_documento_id. Verificar que el parámetro cubra esas combinaciones y reflejarlo en el diccionario.",
          endpoints="Sin cambio", impacto="Documental / parámetros", rompe="No", decision="No"),
@@ -52,8 +52,8 @@ AJUSTES = [
          descripcion="Proceso contractual y estudio previo: no se separan en entidades nuevas. Si se confirma (pregunta 8), agregar al modelo actual los campos faltantes: número de estudio, necesidad, obligaciones, y valor y plazo estimados como valores separados de los contratados (pregunta 14). Soporta CU-10 y CU-11.",
          impacto="Campos nuevos en el DTO (aditivos)", rompe="No", decision="Sí (preguntas 8 y 14)"),
     dict(id="A10", fase=3, estado=FUERA, tablas=["(ninguna)"],
-         descripcion="Novedades y terminación: fuera de alcance (respuesta 3). Las novedades del nuevo Argo se analizan desde requerimientos. Terminación se trata como novedad, como en ARGO v1 (supuesto por validar). Liquidación queda pendiente para la sesión.",
-         endpoints="Ninguno", impacto="Ninguno", rompe="No", decision="Liquidación, en sesión"),
+         descripcion="Novedades y terminación: fuera de alcance (respuesta 3). Las novedades del nuevo Argo se analizan desde requerimientos. Terminación se trata como novedad, como en ARGO v1 (supuesto, decisión abierta D12). Liquidación es una decisión abierta (D11).",
+         endpoints="Ninguno", impacto="Ninguno", rompe="No", decision="Liquidación: decisión abierta D11"),
     dict(id="A11", fase=3, estado=POR_CONFIRMAR, tablas=["contrato_general"],
          descripcion="Contratación derivada: si se confirma, agregar en contrato_general un campo que referencie el proyecto de extensión (IDEXUD). Soporta CU-15.",
          impacto="Campo nuevo en el DTO (aditivo)", rompe="No", decision="Sí"),
@@ -64,7 +64,7 @@ AJUSTES = [
          descripcion="Completar el diccionario: según la respuesta 15, profundizar las entidades sin atributos con el modelo general y validarlas contra las entidades de Argo v2; incluir las entidades que ya existen en el CRUD (supervisor, ordenador, amparo, estado, lugar de ejecución, especificación técnica, convenio, arrendamiento) y retirar estado_documento.",
          endpoints="Ninguno", impacto="Documental", rompe="No", decision="Sí (Analista de Requerimientos)"),
     dict(id="A14", fase=3, estado=POR_CONFIRMAR, tablas=["contrato_general"],
-         descripcion="Agregar UNIQUE (numero_contrato, vigencia) en contrato_general: el LT indicó que numero_contrato es un identificador único por vigencia (respuesta 9). Por confirmar en sesión con LT y Analista.",
+         descripcion="Agregar UNIQUE (numero_contrato, vigencia) en contrato_general: el LT indicó que numero_contrato es un identificador único por vigencia (respuesta 9). Por confirmar con LT y Analista (decisión abierta D4).",
          endpoints="Sin cambio", impacto="Restricción en BD; verificar antes que no haya duplicados", rompe="No",
          decision="Sí (pregunta 9)"),
 ]
@@ -74,13 +74,14 @@ SUPUESTOS = [
     "El diagrama de la BD de pruebas solo permite comparar nombres de tablas y columnas, la PK y la categoría del tipo. Longitudes, precisión, nulabilidad, valores por defecto, UNIQUE, índices y cardinalidad no se verifican contra la BD.",
     "El diccionario no define tipos de dato, longitudes ni obligatoriedad. Los tipos del CRUD se contrastan contra el lineamiento OATI; la obligatoriedad no se puede comparar.",
     "El mapeo a Ágora se basa solo en las tres imágenes de la respuesta 2. Lo que no aparece se marca como no visible y los nombres de tabla cortados en el diagrama se dejan con '…'.",
-    "Terminación se trata como novedad (fuera de alcance), como en ARGO v1 (terminacion_anticipada). Por validar en sesión.",
+    "Terminación se trata como novedad (fuera de alcance), como en ARGO v1 (terminacion_anticipada). No se trató en la sesión de socialización (decisión abierta D12).",
     "Las relaciones del contrato con contratista, solicitante, lugar de ejecución y ordenador se tratan como 1:1 de forma provisional (respuesta 11, stand by).",
     "Los casos de uso sin efecto en el modelo del CRUD (CU-01, CU-12, CU-20, CU-21, CU-22) no se mapean a campos.",
 ]
 
 # (pregunta, dirigida a, respuesta, estado). Numeración idéntica a la del comentario publicado en la issue #356.
-# La respuesta resume el comentario del LT en la issue; lo que se definió en sesión se marca como tal.
+# La respuesta resume el comentario del LT en la issue; lo que se definió en la sesión de socialización (1 de octubre de 2026)
+# se marca como "Sesión". Lo que no se trató en la sesión queda como "Abierta".
 PREGUNTAS = [
     ("Origen del esquema: ¿la base de datos de desarrollo/pruebas se creó con el DDL o con synchronize de TypeORM? Define qué lado se corrige en A1. ¿Es posible acceso de solo lectura?",
      "Líder Técnico",
@@ -104,27 +105,27 @@ PREGUNTAS = [
      "Resuelta"),
     ("Consumidores del CRUD: ¿qué MIDs o clientes lo consumen hoy? ¿Alguno está en producción?",
      "Líder Técnico",
-     "Validación en sesión. Actualmente solo lo consume el MID.",
-     "Parcial: validar en sesión"),
+     "Actualmente solo lo consume el MID. No se trató en la sesión.",
+     "Abierta"),
     ("Organización de los ajustes: ¿una issue por ajuste, una por fase o un esquema mixto?",
      "Líder Técnico",
-     "Integrar los cambios con base en la estabilización. Es posible una migración de framework después de la presentación al usuario, así que los ajustes se resuelven sobre el modelo, tanto para la migración como si se mantiene el actual. No se definió el formato de las issues.",
-     "Parcial"),
+     "Integrar los cambios con base en la estabilización. Es posible una migración de framework después de la presentación al usuario, así que los ajustes se resuelven sobre el modelo, tanto para la migración como si se mantiene el actual. El formato de las issues no se trató en la sesión.",
+     "Abierta"),
     ("Proceso contractual: ¿el contrato existe desde la etapa precontractual o el proceso y el estudio previo son entidades propias?",
      "Analista de RQ",
-     "Issue: validar en sesión. Sesión: stand by.",
+     "Comentario: se remitió a la sesión de socialización. Sesión: stand by.",
      "Stand by"),
     ("numero_contrato: ¿es el número oficial vigente o solo el legado de ARGO v1? ¿Debe ser único por vigencia?",
      "Analista de RQ",
-     "Es un identificador único por vigencia; validar en sesión con LT y analista.",
-     "Validar en sesión"),
+     "Es un identificador único por vigencia, por confirmar con LT y Analista. No se trató en la sesión.",
+     "Abierta"),
     ("Fecha de suscripción: ¿campo del contrato o evento 'suscrito' en el historial de estados?",
      "Analista de RQ",
-     "Sesión: opción a), campo del contrato. Nota: \"2 estados, el que ve el usuario\". Issue: confirmar si ocurre al momento de la firma, una vez finalizado el flujo de aprobación.",
-     "Resuelta (momento del registro por confirmar)"),
+     "Sesión: opción a), campo del contrato. Nota: \"2 estados el que ve el usuario\". Comentario: confirmar si ocurre al momento de la firma, una vez finalizado el flujo de aprobación.",
+     "Resuelta (momento del registro abierto)"),
     ("Cardinalidad: ¿un contrato puede tener más de un contratista, solicitante, lugar de ejecución u ordenador del gasto?",
      "Analista de RQ",
-     "Issue: validar contra el modelo de la BD de pruebas y confirmar con analista y LT. Sesión: todas 1:1, en stand by.",
+     "Comentario: validar contra el modelo de la BD de pruebas y confirmar con analista y LT. Sesión: todas 1:1, en stand by.",
      "Stand by"),
     ("Documentos: ¿una sola tabla con etapa y carácter por parámetro? ¿Se asocian a otras entidades? ¿Tienen estados?",
      "Analista de RQ",
@@ -132,11 +133,11 @@ PREGUNTAS = [
      "Parcial"),
     ("Póliza: ¿se necesita historial de aprobaciones y devoluciones con motivo, o basta con el estado actual?",
      "Analista de RQ",
-     "Issue: confirmar el flujo con el analista (@cjgonzalezp). Sesión: stand by.",
+     "Comentario: confirmar el flujo con el analista (@cjgonzalezp). Sesión: stand by.",
      "Stand by"),
     ("Estudio previo: ¿valor_estimado y plazo_estimado se conservan aparte de los contratados?",
      "Analista de RQ",
-     "Issue: validación en sesión, duda no entendida. Sesión: stand by, pero son valores separados de los contratados.",
+     "Comentario: duda no entendida, se remitió a la sesión de socialización. Sesión: stand by, pero son valores separados de los contratados.",
      "Stand by"),
     ("Entidades sin atributos: ¿habrá una versión del diccionario con atributos, tipos y obligatoriedad? ¿Qué significa OTH?",
      "Analista de RQ",
@@ -144,23 +145,45 @@ PREGUNTAS = [
      "Parcial"),
     ("CU-07 (precotizaciones) y CU-19 (flujo de firmas) no tienen entidad en el diccionario: ¿se modelan?",
      "Analista de RQ",
-     "El proceso de firma se hace mediante la integración con otro servicio; validar en sesión (\"tener presente la tabla documento_...\", así en el comentario). No se respondió sobre CU-07.",
-     "Validar en sesión"),
+     "El proceso de firma se hace mediante la integración con otro servicio (\"tener presente la tabla documento_...\", así en el comentario). No se respondió sobre CU-07 y no se trató en la sesión.",
+     "Abierta"),
 ]
 
-TEMAS_SESION = [
-    "Pregunta 6: consumidores del CRUD además del MID.",
-    "Pregunta 8: proceso contractual (stand by).",
-    "Pregunta 9: numero_contrato único por vigencia (A14).",
-    "Pregunta 10: momento del registro de fecha_suscripcion (A6) y alcance de la nota \"2 estados, el que ve el usuario\".",
-    "Pregunta 11: cardinalidad 1:1 de contratista, solicitante, lugar de ejecución y ordenador (A12).",
-    "Pregunta 13: estado de la póliza (A7).",
-    "Pregunta 14: valor y plazo estimados del estudio previo (A8).",
-    "Pregunta 16: flujo de firmas e integración con otro servicio (tabla documento_...).",
-    "Liquidación: ¿es una novedad o se modela en el módulo contractual?",
-    "Terminación tratada como novedad (supuesto).",
-    "Pregunta 7: formato de las issues para registrar los ajustes.",
-    "Tablas poliza y amparo_poliza: no aparecen en el diagrama de pruebas; confirmar si la migración de la issue #351 (PR #38) ya se aplicó en ese ambiente.",
+SESION = dict(
+    fecha="Jueves 1 de octubre de 2026",
+    asistentes="Heiner Edwar Granados (Líder Técnico, @edwargl7), Analista de Requerimientos (@cjgonzalezp), Andrés Torres",
+)
+
+# (id, tema, responsable, qué se necesita para cerrarla, estado). Se propone cerrarlas en issues de seguimiento,
+# sin bloquear la aprobación del análisis.
+DECISIONES_ABIERTAS = [
+    ("D1", "Consumidores del CRUD además del MID (pregunta 6)", "LT",
+     "Listar los MIDs y clientes que consumen el CRUD, y si alguno está en producción, para coordinar A1.", "Abierta"),
+    ("D2", "Formato de las issues de los ajustes (pregunta 7)", "LT",
+     "Elegir una issue por ajuste, una por fase o un esquema mixto.", "Abierta"),
+    ("D3", "Proceso contractual (pregunta 8)", "Analista",
+     "Definir si el modelo actual necesita el campo de proceso y los campos faltantes del estudio previo (A8).", "Stand by"),
+    ("D4", "Unicidad de numero_contrato por vigencia (pregunta 9)", "LT",
+     "Confirmar la regla con el Analista y verificar que no haya duplicados antes de crear el UNIQUE (A14).", "Abierta"),
+    ("D5", "Momento del registro de fecha_suscripcion (pregunta 10)", "Analista",
+     "Definir si se registra al firmar, una vez terminado el flujo de aprobación (A6).", "Abierta"),
+    ("D6", "Alcance de la nota \"2 estados el que ve el usuario\" (pregunta 10)", "LT",
+     "Confirmar que estado_parametro_id es el estado visible para el usuario y estado_interno_parametro_id el interno.", "Abierta"),
+    ("D7", "Cardinalidad 1:1 del contrato (pregunta 11)", "Analista",
+     "Confirmar que un contrato tiene un solo contratista, solicitante, lugar de ejecución y ordenador, para agregar el UNIQUE (A12).", "Stand by"),
+    ("D8", "Estado de la póliza (pregunta 13)", "Analista",
+     "Definir el flujo de aprobación y devolución para agregar el campo de estado (A7).", "Stand by"),
+    ("D9", "Valor y plazo estimados del estudio previo (pregunta 14)", "Analista",
+     "Confirmar que se agregan como campos separados de los contratados (A8).", "Stand by"),
+    ("D10", "Flujo de firmas y precotizaciones (pregunta 16)", "LT",
+     "Identificar el servicio de firma y la tabla documento_... que se debe tener presente; definir si CU-07 se modela.", "Abierta"),
+    ("D11", "Liquidación", "Analista",
+     "Definir si es una novedad (fuera de alcance) o se modela en el módulo contractual.", "Abierta"),
+    ("D12", "Terminación como novedad", "Analista",
+     "Confirmar el supuesto de que es una novedad, como en ARGO v1 (terminacion_anticipada).", "Abierta"),
+    ("D13", "Significado de OTH (pregunta 15)", "Analista", "Definirlo al completar el diccionario (A13).", "Abierta"),
+    ("D14", "Tablas poliza y amparo_poliza en pruebas", "LT",
+     "Confirmar si la migración de la issue #351 (PR #38) ya se aplicó en ese ambiente.", "Abierta"),
 ]
 
 LEYENDA = [

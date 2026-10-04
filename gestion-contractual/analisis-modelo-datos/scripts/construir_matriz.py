@@ -430,20 +430,23 @@ def main():
 
     # ---------------- Supuestos y preguntas ----------------
     wq = wb.create_sheet("Supuestos y preguntas")
-    titulo(wq, "Supuestos del análisis, preguntas con las respuestas del LT y temas para la sesión",
-           "Respuestas del comentario del LT en la issue #356 y de la sesión con el LT.")
+    titulo(wq, "Supuestos del análisis, preguntas con las respuestas del LT y decisiones abiertas",
+           "Respuestas del comentario del LT en la issue #356 y de la sesión de socialización (1 de octubre de 2026). "
+           "Se propone cerrar las decisiones abiertas en issues de seguimiento, sin bloquear la aprobación del análisis.")
     cabecera(wq, 4, ["#", "Tipo", "Descripción", "Dirigida a", "Respuesta", "Estado"], [5, 14, 70, 16, 70, 22])
-    from ajustes import PREGUNTAS, SUPUESTOS, TEMAS_SESION
-    # Supuestos S1..Sn; preguntas 1..n con la misma numeración del comentario de la issue #356; temas T1..Tn
+    from ajustes import DECISIONES_ABIERTAS, PREGUNTAS, SUPUESTOS
+    # Supuestos S1..Sn; preguntas 1..n con la misma numeración del comentario de la issue #356; decisiones D1..Dn
     filas_q = [[f"S{i}", "Supuesto", s, "", "", ""] for i, s in enumerate(SUPUESTOS, start=1)]
     filas_q += [[i, "Pregunta", p, a, r, e] for i, (p, a, r, e) in enumerate(PREGUNTAS, start=1)]
-    filas_q += [[f"T{i}", "Tema de sesión", t, "", "", "Pendiente"] for i, t in enumerate(TEMAS_SESION, start=1)]
+    filas_q += [[d, "Decisión abierta", f"{tema}. Para cerrarla: {nec}", resp, "", est]
+                for d, tema, resp, nec, est in DECISIONES_ABIERTAS]
     cuerpo(wq, 5, filas_q)
 
     # ---------------- Resumen ----------------
     wr = wb.create_sheet("Resumen", 0)
     titulo(wr, "Issue #356 — Análisis comparativo del modelo de datos",
            "gestion_contractual_crud (develop) frente al Diccionario de Datos Contratación UD v2.0 (08-06-2026)")
+    from ajustes import DECISIONES_ABIERTAS, SESION
     info = [
         ("Repositorio analizado", f"udistrital/gestion_contractual_crud · rama develop · commit {inv.get('commit', '')}"),
         ("Diccionario", "Diccionario_Datos_Contratacion_UD V2.0 08-06-2026.xlsx"),
@@ -451,7 +454,8 @@ def main():
         ("Modelo ARGO v1 (producción)", "Diagrama adjunto a la issue + modelo-database/README.md"),
         ("BD de pruebas", "Diagrama del LT en la issue #356 (respuesta 1) · fuentes/bd_pruebas.json"),
         ("Ágora", "Tablas del proveedor compartidas por el LT (respuesta 2) · fuentes/agora.json"),
-        ("Respuestas", "Comentario del LT en la issue #356 y sesión con el LT"),
+        ("Respuestas", "Comentario del LT en la issue #356 y sesión de socialización"),
+        ("Sesión de socialización", f"{SESION['fecha']} · {SESION['asistentes']}"),
         ("Fecha de corte", inv.get("fecha", "")),
     ]
     for i, (k, v) in enumerate(info, start=4):
@@ -470,7 +474,9 @@ def main():
         ("Diferencias DDL vs entidad", f"=COUNTA('DDL vs entidad'!A5:A{4 + len(filas_d)})"),
         ("Desviaciones de lineamientos", f"=COUNTA(Lineamientos!A5:A{4 + len(filas_l)})"),
         ("Tablas en el diagrama de la BD de pruebas", len(bd)),
-        ("Diferencias BD de pruebas vs DDL o entidad", f"=COUNTIF('BD de pruebas'!I5:I{fin_b},\"Difiere\")"),
+        ("Columnas que difieren entre la BD de pruebas y el código", f"=COUNTIF('BD de pruebas'!I5:I{fin_b},\"Difiere\")"),
+        ("Tablas de la BD de pruebas sin entidad", f"=COUNTIF('BD de pruebas'!I5:I{fin_b},\"Sin entidad\")"),
+        ("Decisiones abiertas", len(DECISIONES_ABIERTAS)),
         ("Campos del diccionario mapeados a Ágora", len(filas_a)),
         ("Campos sin columna visible en Ágora", f"=COUNTIF('Mapeo Ágora'!G5:G{fin_a},\"No visible\")"),
     ]

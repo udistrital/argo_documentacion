@@ -8,7 +8,7 @@ Cada fila: (hoja, campo, tabla_crud, columna_crud, tipo_brecha, severidad, recom
 - Las recomendaciones siguen el criterio acordado con el LT: no se proponen rediseños (entidades nuevas que
   reemplacen o partan las existentes, ni cambios de estructura). Solo alinear con la BD de pruebas, corregir
   lineamientos que no rompan integraciones y agregar campos al modelo actual cuando se confirmen.
-- Las respuestas del LT se citan por número de pregunta (comentario de la issue #356 y sesión).
+- Las respuestas del LT se citan por número de pregunta (comentario de la issue #356 y sesión de socialización del 1 de octubre de 2026).
 """
 
 EQUIVALENTE = "Equivalente"
@@ -200,7 +200,7 @@ fila("Certificacion", "id_certificacion", "", "", SIN_DEF, "Baja",
 H = "Contrato"
 fila(H, "id_contrato", "contrato_general", "id", EQUIVALENTE, "Ninguna", "Sin cambios.", "CU-11", "contrato (numero_contrato + vigencia)")
 fila(H, "numero_contrato", "contrato_general", "numero_contrato", ESTRUCTURA, "Media",
-     "El LT indicó que es un identificador único por vigencia (respuesta 9). En la tabla contrato_general de ARGO v1 que aparece en los diagramas de Ágora, la PK es (numero_contrato, vigencia). Agregar UNIQUE (numero_contrato, vigencia) en contrato_general (A14), por confirmar en sesión con LT y Analista.",
+     "El LT indicó que es un identificador único por vigencia (respuesta 9). En la tabla contrato_general de ARGO v1 que aparece en los diagramas de Ágora, la PK es (numero_contrato, vigencia). Agregar UNIQUE (numero_contrato, vigencia) en contrato_general (A14), por confirmar con LT y Analista (decisión abierta D4).",
      "CU-11, CU-19", "contrato.numero_contrato", "Sí")
 fila(H, "vigencia", "contrato_general", "vigencia", TIPO, "Baja",
      "vigencia es varchar(4) en contrato_general e integer en disponibilidad_presupuestal, registro_presupuestal y convenio; la BD de pruebas muestra la misma diferencia (texto frente a numérico). No se recomienda unificar el tipo por ahora: cambiaría el tipo en la API. Queda para una eventual migración (respuesta 7).",
@@ -224,7 +224,7 @@ fila(H, "plazo", "contrato_general", "plazo_ejecucion", NOMBRE, "Baja",
      "El CRUD separa cantidad (plazo_ejecucion) y unidad (unidad_ejecucion_id). Reflejar la unidad en el diccionario.",
      "CU-11", "contrato.plazo_ejecucion + unidad_ejecucion")
 fila(H, "fecha_suscripcion", "", "", FALTANTE, "Alta",
-     "Decidido en sesión (respuesta 10, opción a): agregar la columna fecha_suscripcion en contrato_general (A6). fecha_suscripcion_estudio es la del estudio previo. Falta confirmar en sesión el momento del registro (al firmar, una vez terminado el flujo de aprobación).",
+     "Decidido en la sesión de socialización (respuesta 10, opción a): agregar la columna fecha_suscripcion en contrato_general (A6). fecha_suscripcion_estudio es la del estudio previo. El momento del registro (al firmar, una vez terminado el flujo de aprobación) es una decisión abierta (D5).",
      "CU-19", "contrato_suscrito.fecha_suscripcion", "Sí")
 fila(H, "fecha_inicio", "contrato_general", "fecha_inicial", NOMBRE, "Media",
      "Nombre distinto y dato duplicado con acta_inicio.fecha_inicio. Definir cuál es la fuente de verdad.",
@@ -233,7 +233,7 @@ fila(H, "fecha_terminacion", "contrato_general", "fecha_final", NOMBRE, "Media",
      "Nombre distinto y dato duplicado con acta_inicio.fecha_fin. Las novedades (prórroga), fuera del alcance de este análisis, pueden cambiar la fecha final.",
      "CU-02, CU-18", "acta_inicio.fecha_fin", "Sí")
 fila(H, "estado_contrato", "estado_contrato", "estado_parametro_id", ESTRUCTURA, "Baja",
-     "El CRUD modela el estado como historial (tabla estado_contrato con actual = true), con dos columnas de estado: estado_parametro_id y estado_interno_parametro_id. Nota del LT en sesión (respuesta 10): \"2 estados, el que ve el usuario\". Reflejar el historial en el diccionario.",
+     "El CRUD modela el estado como historial (tabla estado_contrato con actual = true), con dos columnas de estado: estado_parametro_id y estado_interno_parametro_id. Nota de la sesión de socialización (respuesta 10): \"2 estados el que ve el usuario\"; su alcance es una decisión abierta (D6). Reflejar el historial en el diccionario.",
      "CU-19, CU-20", "contrato_estado / estado_contrato")
 
 # --- Proyectos y dependencia ----------------------------------------------------------------------
@@ -282,7 +282,7 @@ fila("Necesidad", "id_necesidad", "", "", SIN_DEF, "Media",
 fila("Secop", "id_secop", "", "", SIN_DEF, "Media",
      REC_STUB + " No hay en el CRUD ningún identificador de publicación en SECOP. Si se confirma, agregar el campo al modelo actual.", "", "", "Sí")
 fila("OTH", "id_oth", "", "", SIN_DEF, "Baja",
-     REC_STUB + " No se sabe qué significa la sigla (respuesta 15, sesión). Sin atributos para comparar.", "", "")
+     REC_STUB + " No se sabe qué significa la sigla (respuesta 15, sesión de socialización); decisión abierta D13. Sin atributos para comparar.", "", "")
 
 # --- Estudio previo -------------------------------------------------------------------------------
 H = "EstudioPrevio"
@@ -362,7 +362,7 @@ fila("Acta de inicio", "id_acta_inicio", "acta_inicio", "id", EQUIVALENTE, "Ning
      "El CRUD ya modela el acta (fechas, descripción, usuario). Completar el diccionario con esos atributos.",
      "", "acta_inicio")
 fila("Liquidacion", "id_liquidacion", "", "", SIN_DEF, "Media",
-     REC_STUB + " Pendiente: el LT no indicó si la liquidación es una novedad. Tema para la sesión. En v1 existía contrato_liquidado (fecha, número de acta, observaciones, documento).",
+     REC_STUB + " El LT no indicó si la liquidación es una novedad y no se trató en la sesión de socialización (decisión abierta D11). En v1 existía contrato_liquidado (fecha, número de acta, observaciones, documento).",
      "", "contrato_liquidado", "Sí")
 
 H = "Novedad"
@@ -373,7 +373,7 @@ for campo in ["id_novedad", "id_contrato", "tipo_novedad", "numero_novedad", "fe
     fila(H, campo, "", "", FUERA, "Ninguna", REC_NOV if campo == "id_novedad" else "Ver id_novedad.",
          "CU-18", "novedad_contractual")
 fila("Terminacion", "id_terminacion", "", "", FUERA, "Ninguna",
-     "Fuera de alcance junto con las novedades: en ARGO v1 era una novedad (terminacion_anticipada). Supuesto por validar en sesión.",
+     "Fuera de alcance junto con las novedades: en ARGO v1 era una novedad (terminacion_anticipada). Supuesto no tratado en la sesión de socialización (decisión abierta D12).",
      "CU-18", "terminacion_anticipada", "Sí")
 
 
