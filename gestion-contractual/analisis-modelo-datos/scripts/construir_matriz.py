@@ -2,12 +2,15 @@
 
 Uso:
     python3 construir_matriz.py <diccionario.xlsx> <inventario.json> <salida.xlsx>
+
+Lee además las transcripciones de ../fuentes/ (BD de pruebas y tablas de Ágora).
 """
 
 import json
 import re
 import sys
 from collections import OrderedDict
+from pathlib import Path
 
 import openpyxl
 from openpyxl.formatting.rule import FormulaRule
@@ -15,7 +18,9 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
 
-from mapeo import CRUD_SIN_DICCIONARIO, M, SEVERIDADES, TIPOS_BRECHA
+from mapeo import CRUD_SIN_DICCIONARIO, M, MAPEO_AGORA, OBSERVACIONES_AGORA, SEVERIDADES, TIPOS_BRECHA
+
+FUENTES = Path(__file__).resolve().parent.parent / "fuentes"
 
 FUENTE = "Arial"
 AZUL = "1F3864"
@@ -80,12 +85,34 @@ def normalizar(tipo):
     return {"int": "integer", "int4": "integer", "bool": "boolean"}.get(t, t)
 
 
+def categoria(tipo):
+    """Categoría del tipo, que es lo único que muestra el diagrama de la BD de pruebas."""
+    t = normalizar(tipo) or ""
+    if t == "uuid":
+        return "uuid"
+    if t.startswith(("integer", "serial", "numeric", "bigint", "smallint")):
+        return "numerico"
+    if t.startswith(("varchar", "text", "char")):
+        return "texto"
+    if t.startswith(("timestamp", "date", "time")):
+        return "fecha"
+    if t.startswith("bool"):
+        return "booleano"
+    return t
+
+
 def main():
     ruta_dic, ruta_inv, salida = sys.argv[1:4]
     dic = leer_diccionario(ruta_dic)
     inv = json.load(open(ruta_inv, encoding="utf-8"))
     ddl = inv["ddl"]["tablas"]
     ents = {e["tabla"]: e for e in inv["entidades"]}
+    bd_json = json.load(open(FUENTES / "bd_pruebas.json", encoding="utf-8"))
+    bd = {t: OrderedDict((c[0], {"categoria": c[1], "pk": len(c) > 2 and c[2]}) for c in d["columnas"])
+          for t, d in bd_json["tablas"].items()}
+    bd_no_aparecen = bd_json["no_aparecen"]
+    agora_json = json.load(open(FUENTES / "agora.json", encoding="utf-8"))
+    agora = {t: {c[0]: c[1] for c in d["columnas"]} for t, d in agora_json["tablas"].items()}
 
     def col_ddl(t, c):
         return next((x for x in ddl.get(t, {}).get("columnas", []) if x["columna"] == c), None)
@@ -101,6 +128,10 @@ def main():
     duplicados = {k for k in claves_map if claves_map.count(k) > 1}
     assert not faltan and not sobran and not duplicados, (faltan, sobran, duplicados)
     assert len(claves_dic) == len(M)
+    # El mapeo a Ágora solo puede citar tablas y columnas transcritas en fuentes/agora.json
+    for (h, c), (tabla, cols, _, _) in MAPEO_AGORA.items():
+        assert (h, c) in claves_map, (h, c)
+        assert not tabla or all(col in agora.get(tabla, {}) for col in cols), (h, c, tabla, cols)
 
     wb = openpyxl.Workbook()
 
@@ -111,8 +142,9 @@ def main():
            "Una fila por campo del diccionario. Tipos y nulabilidad tomados del DDL (sql/creacion-tablas.sql) y de las entidades TypeORM.")
     cols = ["Entidad (diccionario)", "Campo (diccionario)", "Descripción (diccionario)", "Tabla CRUD", "Columna CRUD",
             "Tipo DDL", "Nulo DDL", "Tipo entidad", "Nulo entidad", "DDL = entidad", "Origen ARGO v1",
-            "Tipo de brecha", "Severidad", "Recomendación", "Casos de uso", "Requiere validación de negocio"]
-    anchos = [22, 26, 30, 26, 26, 15, 9, 15, 9, 10, 26, 22, 11, 70, 14, 12]
+            "Tipo de brecha", "Severidad", "Recomendación", "Casos de uso", "Requiere validación de negocio",
+            "En BD de pruebas"]
+    anchos = [22, 26, 30, 26, 26, 15, 9, 15, 9, 10, 26, 22, 11, 70, 14, 12, 14]
     cabecera(wm, 4, cols, anchos)
     descripciones = {(h, c): d for h, campos in dic.items() for c, d in campos}
     filas = []
@@ -122,11 +154,16 @@ def main():
         igual = ""
         if d or e:
             igual = "Sí" if d and e and normalizar(d["tipo"]) == normalizar(e["tipo"]) and d["nullable"] == e["nullable"] else "No"
+        en_bd = ""
+        if m["tabla"] in bd_no_aparecen["tablas"]:
+            en_bd = "Tabla no aparece en el diagrama"
+        elif m["tabla"] in bd and m["columna"]:
+            en_bd = "Sí" if m["columna"] in bd[m["tabla"]] else "No"
         filas.append([
             m["hoja"], m["campo"], descripciones[(m["hoja"], m["campo"])], m["tabla"], m["columna"],
             d["tipo"] if d else ("—" if m["columna"] else ""), ("Sí" if d["nullable"] else "No") if d else "",
             e["tipo"] if e else ("—" if m["columna"] else ""), ("Sí" if e["nullable"] else "No") if e else "",
-            igual, m["v1"], m["brecha"], m["severidad"], m["recomendacion"], m["cu"], m["validar"]])
+            igual, m["v1"], m["brecha"], m["severidad"], m["recomendacion"], m["cu"], m["validar"], en_bd])
     cuerpo(wm, 5, filas)
     fin_matriz = 4 + len(filas)
     colorear_severidad(wm, "M", 5, fin_matriz)
@@ -165,7 +202,7 @@ def main():
     # ---------------- DDL vs entidad ----------------
     wd = wb.create_sheet("DDL vs entidad")
     titulo(wd, "Desalineación entre el DDL y las entidades TypeORM",
-           "Con synchronize: DEVELOPER_MODE, en desarrollo las entidades crean o alteran las tablas; el DDL es el script oficial.")
+           "Comparación del código (DDL frente a entidades). La hoja BD de pruebas contrasta ambos con el diagrama de la base del ambiente de pruebas.")
     cabecera(wd, 4, ["Tabla", "Columna", "En DDL", "En entidad", "Tipo DDL", "Tipo entidad", "Nulo DDL", "Nulo entidad",
                      "Diferencia", "Severidad"], [26, 30, 9, 10, 15, 15, 9, 10, 60, 11])
     filas_d = []
@@ -210,6 +247,79 @@ def main():
                                     "Relación 1:1 (@OneToOne) en la entidad; 1:N en el DDL (sin UNIQUE).", "Media"])
     cuerpo(wd, 5, filas_d)
     colorear_severidad(wd, "J", 5, 4 + len(filas_d))
+
+    # ---------------- BD de pruebas ----------------
+    wb_ = wb.create_sheet("BD de pruebas")
+    titulo(wb_, "BD del ambiente de pruebas frente al DDL y a las entidades TypeORM",
+           "Fuente: diagrama compartido por el LT (respuesta 1), transcrito en fuentes/bd_pruebas.json. El diagrama solo permite "
+           "comparar nombres de tablas y columnas, la PK y la categoría del tipo; no permite verificar longitudes, precisión, "
+           "nulabilidad, valores por defecto, UNIQUE, índices ni cardinalidad.")
+    cabecera(wb_, 4, ["Tabla", "Columna", "En BD pruebas", "En DDL", "En entidad", "Categoría BD", "Tipo DDL",
+                      "Tipo entidad", "Resultado", "Observación"], [26, 30, 10, 9, 10, 12, 15, 15, 16, 70])
+    filas_b = []
+    for t in sorted(set(bd) | set(ddl) | set(ents)):
+        if t in bd_no_aparecen["tablas"]:
+            filas_b.append([t, "(tabla)", "No", "Sí" if t in ddl else "No", "Sí" if t in ents else "No", "", "", "",
+                            "No aparece en el diagrama", bd_no_aparecen["nota"]])
+            continue
+        if t not in bd:
+            filas_b.append([t, "(tabla)", "No", "Sí" if t in ddl else "No", "Sí" if t in ents else "No", "", "", "",
+                            "Difiere", "Tabla del código que no aparece en el diagrama."])
+            continue
+        if t not in ents:
+            filas_b.append([t, "(tabla)", "Sí", "Sí" if t in ddl else "No", "No", "", "", "", "Sin entidad",
+                            "Existe en la BD de pruebas y en el DDL, sin entidad, módulo ni endpoints."])
+        nombres = list(OrderedDict.fromkeys(list(bd[t]) + [c["columna"] for c in ddl.get(t, {}).get("columnas", [])]
+                                            + [c["columna"] for c in ents.get(t, {}).get("columnas", [])]))
+        for n in nombres:
+            b, d, e = bd[t].get(n), col_ddl(t, n), col_ent(t, n)
+            obs = []
+            if not b:
+                obs.append("Columna del código que no aparece en la BD de pruebas")
+            if t in ddl and not d:
+                obs.append("Columna que no está en el DDL")
+            if t in ents and not e:
+                obs.append("Columna que no está en la entidad")
+            if b and d and categoria(d["tipo"]) != b["categoria"]:
+                obs.append(f"Categoría distinta entre BD ({b['categoria']}) y DDL ({d['tipo']})")
+            if b and e and categoria(e["tipo"]) != b["categoria"]:
+                if b["pk"] and e["tipo"] == "uuid":
+                    obs.append("PK numérica en la BD (como en el DDL); uuid en la entidad")
+                else:
+                    obs.append(f"Categoría distinta entre BD ({b['categoria']}) y entidad ({e['tipo']})")
+            filas_b.append([t, n, "Sí" if b else "No", "Sí" if d else "No",
+                            ("Sí" if e else "No") if t in ents else "—", b["categoria"] if b else "",
+                            d["tipo"] if d else "", e["tipo"] if e else "", "Difiere" if obs else "Coincide",
+                            "; ".join(obs)])
+    cuerpo(wb_, 5, filas_b)
+    fin_b = 4 + len(filas_b)
+    for res, color in {"Difiere": "F8CBAD", "Coincide": "E2EFDA", "Sin entidad": "FFE699",
+                       "No aparece en el diagrama": "DDEBF7"}.items():
+        wb_.conditional_formatting.add(f"I5:I{fin_b}", FormulaRule(formula=[f'$I5="{res}"'],
+                                                                  fill=PatternFill("solid", fgColor=color)))
+
+    # ---------------- Mapeo Ágora ----------------
+    wa = wb.create_sheet("Mapeo Ágora")
+    titulo(wa, "Campos del proveedor y sus especializaciones en Ágora",
+           "Fuente: tablas de Ágora compartidas por el LT (respuesta 2), transcritas en fuentes/agora.json. Solo se muestra la "
+           "categoría del tipo. Los nombres de tabla cortados en el diagrama se dejan con '…'.")
+    cabecera(wa, 4, ["Entidad (diccionario)", "Campo (diccionario)", "Descripción (diccionario)", "Tabla Ágora",
+                     "Columna(s) Ágora", "Categoría", "Cobertura", "Observación"], [22, 26, 30, 30, 34, 14, 12, 70])
+    filas_a = []
+    for (h, c) in [k for k in claves_dic if k in MAPEO_AGORA]:
+        tabla, cols, cob, obs = MAPEO_AGORA[(h, c)]
+        cats = ", ".join(sorted({agora[tabla][x] for x in cols})) if tabla else ""
+        filas_a.append([h, c, descripciones[(h, c)], tabla, ", ".join(cols), cats, cob, obs])
+    cuerpo(wa, 5, filas_a)
+    fin_a = 4 + len(filas_a)
+    for cob, color in {"Sí": "E2EFDA", "Aproximada": "FFE699", "No visible": "F8CBAD"}.items():
+        wa.conditional_formatting.add(f"G5:G{fin_a}", FormulaRule(formula=[f'$G5="{cob}"'],
+                                                                 fill=PatternFill("solid", fgColor=color)))
+    r = fin_a + 2
+    wa.cell(row=r, column=1, value="Observaciones").font = Font(name=FUENTE, bold=True, size=12, color=AZUL)
+    for i, o in enumerate(OBSERVACIONES_AGORA, start=r + 1):
+        celda = wa.cell(row=i, column=1, value=f"• {o}")
+        celda.font = Font(name=FUENTE, size=10)
 
     # ---------------- Lineamientos ----------------
     wl = wb.create_sheet("Lineamientos")
@@ -267,8 +377,8 @@ def main():
     wp = wb.create_sheet("Impacto endpoints")
     titulo(wp, "Impacto de los ajustes recomendados sobre la API del CRUD",
            "Ver el informe (sección Plan de ajustes) para el detalle de cada ajuste.")
-    cabecera(wp, 4, ["Ajuste", "Descripción", "Tablas", "Endpoints afectados", "Tipo de impacto", "¿Rompe consumidores?",
-                     "Requiere decisión de negocio"], [8, 60, 30, 50, 30, 12, 12])
+    cabecera(wp, 4, ["Ajuste", "Fase", "Estado", "Descripción", "Tablas", "Endpoints afectados", "Tipo de impacto",
+                     "¿Rompe consumidores?", "Requiere decisión de negocio"], [8, 6, 16, 60, 30, 50, 30, 12, 16])
     rutas_por_tabla = {}
     for ep in inv["endpoints"]:
         ctrl = ep["controlador"].split("/")[1]
@@ -286,9 +396,12 @@ def main():
                 out.append(f"/{r}")
         return ", ".join(out) if out else "Nuevo recurso"
 
-    from ajustes import AJUSTES
-    filas_p = [[a["id"], a["descripcion"], ", ".join(a["tablas"]), a.get("endpoints") or eps(a["tablas"]), a["impacto"],
-                a["rompe"], a["decision"]] for a in AJUSTES]
+    from ajustes import AJUSTES, CRITERIO
+    wp["A3"] = f"Criterio acordado con el LT: {CRITERIO}"
+    wp["A3"].font = Font(name=FUENTE, italic=True, size=10, color="595959")
+    filas_p = [[a["id"], a["fase"], a["estado"], a["descripcion"], ", ".join(a["tablas"]),
+                a.get("endpoints") or eps(a["tablas"]), a["impacto"], a["rompe"], a["decision"]]
+               for a in sorted(AJUSTES, key=lambda a: int(a["id"][1:]))]
     cuerpo(wp, 5, filas_p)
 
     # ---------------- Cobertura por entidad ----------------
@@ -317,16 +430,15 @@ def main():
 
     # ---------------- Supuestos y preguntas ----------------
     wq = wb.create_sheet("Supuestos y preguntas")
-    titulo(wq, "Supuestos del análisis y preguntas para el Analista de Requerimientos y el LT")
-    cabecera(wq, 4, ["#", "Tipo", "Descripción", "Dirigida a", "Respuesta"], [5, 12, 90, 22, 40])
-    from ajustes import PREGUNTAS, SUPUESTOS
-    # Supuestos S1..Sn; preguntas 1..n con la misma numeración del comentario de la issue #356
-    filas_q = [[f"S{i}", "Supuesto", s, "", ""] for i, s in enumerate(SUPUESTOS, start=1)]
-    filas_q += [[i, "Pregunta", p, a, ""] for i, (p, a) in enumerate(PREGUNTAS, start=1)]
+    titulo(wq, "Supuestos del análisis, preguntas con las respuestas del LT y temas para la sesión",
+           "Respuestas del comentario del LT en la issue #356 y de la sesión con el LT.")
+    cabecera(wq, 4, ["#", "Tipo", "Descripción", "Dirigida a", "Respuesta", "Estado"], [5, 14, 70, 16, 70, 22])
+    from ajustes import PREGUNTAS, SUPUESTOS, TEMAS_SESION
+    # Supuestos S1..Sn; preguntas 1..n con la misma numeración del comentario de la issue #356; temas T1..Tn
+    filas_q = [[f"S{i}", "Supuesto", s, "", "", ""] for i, s in enumerate(SUPUESTOS, start=1)]
+    filas_q += [[i, "Pregunta", p, a, r, e] for i, (p, a, r, e) in enumerate(PREGUNTAS, start=1)]
+    filas_q += [[f"T{i}", "Tema de sesión", t, "", "", "Pendiente"] for i, t in enumerate(TEMAS_SESION, start=1)]
     cuerpo(wq, 5, filas_q)
-    for r in range(5, 5 + len(filas_q)):
-        if wq.cell(row=r, column=2).value == "Pregunta":
-            wq.cell(row=r, column=5).fill = PatternFill("solid", fgColor="FFF2CC")
 
     # ---------------- Resumen ----------------
     wr = wb.create_sheet("Resumen", 0)
@@ -336,13 +448,16 @@ def main():
         ("Repositorio analizado", f"udistrital/gestion_contractual_crud · rama develop · commit {inv.get('commit', '')}"),
         ("Diccionario", "Diccionario_Datos_Contratacion_UD V2.0 08-06-2026.xlsx"),
         ("Casos de uso", "Casos Uso Contratacion Universidad Distrital.docx (CU-01 a CU-22)"),
-        ("Modelo ARGO v1", "Diagrama adjunto a la issue + modelo-database/README.md"),
+        ("Modelo ARGO v1 (producción)", "Diagrama adjunto a la issue + modelo-database/README.md"),
+        ("BD de pruebas", "Diagrama del LT en la issue #356 (respuesta 1) · fuentes/bd_pruebas.json"),
+        ("Ágora", "Tablas del proveedor compartidas por el LT (respuesta 2) · fuentes/agora.json"),
+        ("Respuestas", "Comentario del LT en la issue #356 y sesión con el LT"),
         ("Fecha de corte", inv.get("fecha", "")),
     ]
     for i, (k, v) in enumerate(info, start=4):
         wr.cell(row=i, column=1, value=k).font = Font(name=FUENTE, bold=True)
         wr.cell(row=i, column=2, value=v).font = Font(name=FUENTE)
-    fila = 11
+    fila = 4 + len(info) + 1
     wr.cell(row=fila, column=1, value="Volumen").font = Font(name=FUENTE, bold=True, size=12, color=AZUL)
     vol = [
         ("Entidades en el diccionario", len(dic)),
@@ -354,6 +469,10 @@ def main():
         ("Columnas del CRUD sin referencia en el diccionario", f"=COUNTA('CRUD sin diccionario'!A5:A{4 + len(filas_i)})"),
         ("Diferencias DDL vs entidad", f"=COUNTA('DDL vs entidad'!A5:A{4 + len(filas_d)})"),
         ("Desviaciones de lineamientos", f"=COUNTA(Lineamientos!A5:A{4 + len(filas_l)})"),
+        ("Tablas en el diagrama de la BD de pruebas", len(bd)),
+        ("Diferencias BD de pruebas vs DDL o entidad", f"=COUNTIF('BD de pruebas'!I5:I{fin_b},\"Difiere\")"),
+        ("Campos del diccionario mapeados a Ágora", len(filas_a)),
+        ("Campos sin columna visible en Ágora", f"=COUNTIF('Mapeo Ágora'!G5:G{fin_a},\"No visible\")"),
     ]
     for i, (k, v) in enumerate(vol, start=fila + 1):
         wr.cell(row=i, column=1, value=k).font = Font(name=FUENTE)
@@ -401,7 +520,9 @@ def main():
         ws.page_setup.fitToHeight = 0
 
     wb.save(salida)
-    print(f"matriz: {len(filas)} | inversa: {len(filas_i)} | ddl vs entidad: {len(filas_d)} | lineamientos: {len(filas_l)} | ajustes: {len(filas_p)}")
+    print(f"matriz: {len(filas)} | inversa: {len(filas_i)} | ddl vs entidad: {len(filas_d)} | bd pruebas: {len(filas_b)} "
+          f"(difiere: {sum(1 for f in filas_b if f[8] == 'Difiere')}) | ágora: {len(filas_a)} | lineamientos: {len(filas_l)} "
+          f"| ajustes: {len(filas_p)}")
 
 
 if __name__ == "__main__":

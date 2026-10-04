@@ -65,7 +65,10 @@ def _opcion(bloque: str, clave: str):
 
 
 def parsear_entidad(ts: str, archivo: str) -> dict | None:
-    ent = re.search(r"@Entity\(\s*(?:'(\w+)')?\s*\)\s*export class (\w+)", ts)
+    # Las columnas comentadas (/* ... */ o //) no forman parte de la entidad
+    ts = re.sub(r"/\*.*?\*/", "", ts, flags=re.S)
+    ts = re.sub(r"^\s*//.*$", "", ts, flags=re.M)
+    ent =re.search(r"@Entity\(\s*(?:'(\w+)')?\s*\)\s*export class (\w+)", ts)
     if not ent:
         return None
     clase = ent.group(2)
