@@ -1,7 +1,7 @@
 # Browser Fingerprinting Open Source en Argo (Angular 21 + single-spa)
 
 Issue: udistrital/argo_documentacion#376 · Milestone: Soporte y arquitectura general · Fecha: 2026-10-15
-PRs: se agregan al abrirlos.
+PRs: [udistrital/gestion_contractual_crud#49](https://github.com/udistrital/gestion_contractual_crud/pull/49) · [udistrital/gestion_contractual_mf#130](https://github.com/udistrital/gestion_contractual_mf/pull/130) · [udistrital/argo_documentacion#380](https://github.com/udistrital/argo_documentacion/pull/380)
 
 ## 1. Contexto y alcance
 La issue pide investigar, evaluar e implementar una solución de browser fingerprinting de código abierto en Angular bajo single-spa, capturar la IP pública del cliente, construir un componente reutilizable entre microclientes y enviar la telemetría al backend con fines de auditoría y seguridad.
