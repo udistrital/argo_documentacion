@@ -130,7 +130,13 @@ Equipo: AMD Ryzen 5 3500U, 8 hilos, 13 GB de RAM, Ubuntu 22.04, Chrome 155 y Fir
 
 Las long tasks se atribuyen al cálculo porque empiezan dentro de la ventana de `huella-navegador-calculo`, y porque al recargar la misma pestaña (sin cálculo, la marca ya existe) no aparece ninguna o solo una de 50 a 60 ms durante el arranque de la app.
 
-Conclusión sobre el criterio "sin bloquear el hilo principal": **se cumple parcialmente.** El envío no bloquea (es asíncrono, sin spinner ni alertas) y el cálculo no retrasa el bootstrap ni el primer render, porque espera a `afterNextRender` y a un momento ocioso. Pero el cálculo sí genera una long task una vez por sesión: de 126 a 157 ms con FingerprintJS y de 231 a 332 ms con ThumbmarkJS en este equipo. Si el usuario interactúa justo en ese instante, la respuesta puede demorarse ese tiempo. Las APIs que usan las librerías (canvas, WebGL, audio) no se pueden llevar a un Web Worker con la CSP actual.
+Conclusión sobre el criterio "sin bloquear el hilo principal": **se considera cumplido, con esta nota.**
+- La transmisión de la huella es asíncrona y no bloquea: el `fetch` a ipify y el POST al CRUD no ocupan el hilo principal, no muestran spinner ni alertas.
+- El cálculo genera **una long task por sesión**: de 126 a 157 ms con FingerprintJS, por debajo del umbral de 200 ms que Google considera bueno para la respuesta a interacciones (INP), y de 231 a 332 ms con ThumbmarkJS, por encima de ese umbral.
+- El cálculo se ejecuta en un momento ocioso, después del primer render (`afterNextRender` + `requestIdleCallback`), así que no retrasa el bootstrap del MF ni la primera pintura.
+- No puede moverse a un Web Worker: las técnicas de canvas y audio requieren el hilo principal y la CSP del root no permite `blob:` (no define `worker-src`).
+
+Esto refuerza la elección de FingerprintJS: es la única de las dos librerías cuya long task queda por debajo de 200 ms.
 
 ## 10. Privacidad y normativa
 *Este análisis es técnico y no reemplaza un concepto jurídico.*
@@ -164,13 +170,14 @@ Conclusión sobre el criterio "sin bloquear el hilo principal": **se cumple parc
 - El interceptor del spinner afectaba cualquier petición en segundo plano; se agregó `OMITIR_SPINNER`.
 - `gestion_contractual_crud` (NestJS) no tiene un middleware de auditoría equivalente a `utils_oas/auditoria` de Beego, así que sus peticiones no dejan IP ni user agent en los logs.
 - `environment.ts` y `environment.development.ts` del MF son idénticos (`production: false`).
-- **La configuración `production` del MF no define `deployUrl`:** bajo single-spa cualquier chunk dinámico se pide al origen del root y responde 404. Le pasó a la huella (sección 6) y, por el mismo mecanismo, probablemente afecta al chunk lazy de `ngx-quill` (editor enriquecido); esto último no se probó.
+- **La configuración `production` del MF no define `deployUrl`.** Bajo single-spa, cualquier chunk de carga diferida (`import()`, rutas lazy, librerías que cargan módulos bajo demanda) se pide al origen del root y no al del MF, y responde 404. Afecta a cualquier lazy loading futuro del MF, no solo a la huella: le pasó a la huella en la PoC (sección 6) y, por el mismo mecanismo, probablemente afecta hoy al chunk lazy de `ngx-quill` (editor enriquecido), aunque esto último no se probó. Las configuraciones `local` y `development` sí definen `deployUrl` y no tienen el problema.
 - **`pnpm run build:prod` del MF falla en `develop`** por el presupuesto de 2 MB del bundle inicial (`main.js` = 2,56 MB). Es el script que usa el paso de `master` en `.drone.yml`.
 - **Pruebas del MF con red real:** los specs de `revision-contrato`, `paso-info-general` y `consulta-contrato` hacen peticiones reales al gateway (responde 401). Cuando la respuesta llega tarde, su callback abre un SweetAlert sobre un documento ya destruido y jest atribuye ese error a la suite que esté corriendo en ese momento. En `develop` el error aparece en 5 de 6 corridas sin tumbar ninguna suite. Con las suites nuevas, en unas 2 de 10 corridas cae sobre una de ellas y jest reporta la suite como fallida aunque todas las pruebas pasen.
 - **Pruebas del CRUD:** en `develop` fallan 6 suites (10 pruebas) que ya estaban desactualizadas: `acta-inicio`, `cdp`, `contratista`, `contrato-general`, `especificacion-tecnica` y `ordenador-contrato` (mocks de repositorios faltantes y firmas antiguas). Las pruebas del módulo nuevo pasan.
 - **Errores de validación del CRUD:** los 400 del `ValidationPipe` global no salen en formato StandardResponse, porque el pipe responde antes de llegar al controlador. Pasa en todos los módulos.
 - **Fechas en el CRUD:** las columnas son `timestamp without time zone` con `DEFAULT now()`. En local, con PostgreSQL en UTC y Node en hora de Colombia, `fecha_creacion` quedó 5 horas corrida respecto a `fecha_captura` (ver evidencia 02). En los ambientes desplegados depende de que la base y el contenedor usen la misma zona horaria.
-- **Sin sesión en local:** `core-mf` se carga desde `pruebascoreclientes.portaloas.udistrital.edu.co`, que bloquea por CORS el origen `localhost:4200`, así que en local no hay login y `usuario_id` y `usuario_rol` llegaron en null. Además, `RolService.cargarRol()` lanza `TypeError: Cannot read properties of undefined (reading 'role')` cuando no hay usuario en `localStorage`.
+- **`core-mf` no carga en localhost por CORS:** se carga desde `pruebascoreclientes.portaloas.udistrital.edu.co`, que no permite el origen `localhost:4200`. Sin `core-mf` no hay login en local, así que en la PoC `usuario_id` y `usuario_rol` llegaron en null; ese caso se cubrió solo con pruebas unitarias.
+- **`RolService.cargarRol()` falla sin sesión:** lanza `TypeError: Cannot read properties of undefined (reading 'role')` cuando no hay usuario en `localStorage`.
 - `pnpm` 12.4.1 (el `packageManager` de los repos) no arranca con el corepack de Node 20; el CI usa Node 24.
 
 ## 14. Referencias
