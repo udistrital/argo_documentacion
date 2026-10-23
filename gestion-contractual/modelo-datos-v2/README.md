@@ -8,7 +8,7 @@
 
 | Archivo | Contenido |
 |---|---|
-| `modelo-argo-v2.dbml` | Modelo en DBML: fuente de verdad del modelo (se puede pegar en dbdiagram.io) |
+| `modelo-argo-v2.dbml` | Modelo en DBML: fuente de verdad, publicada en [dbdiagram.io](https://dbdiagram.io/d/6adb8b82aac330141004baa1) |
 | `ddl/creacion-tablas.sql` | DDL de la base nueva para la #385 |
 | `ddl/migracion-desde-v2.up.sql` y `.down.sql` | Migración desde el modelo actual de develop, conservando los datos, y su reverso |
 | `ddl/carga-inicial-unidad-ejecutora.sql` | Carga inicial de las tablas de unidad ejecutora |
@@ -103,8 +103,10 @@ Comentario "Validación con el equipo" del 22/10/2026: https://github.com/udistr
 
 ## 6. Modelo
 
-- **dbdiagram.io:** pendiente. El diagrama se crea a partir de `modelo-argo-v2.dbml` y su enlace se agrega aquí.
-- **Imagen:** `evidencias/08-modelo-render-local.png` (y `.svg`), renderizada localmente desde el mismo DBML con `@softwaretechnik/dbml-renderer`.
+- **dbdiagram.io:** [ARGO v2 — Modelo de datos (#384)](https://dbdiagram.io/d/6adb8b82aac330141004baa1), enlace público de solo lectura. Contiene el mismo `modelo-argo-v2.dbml` y las tablas están ordenadas por dominio (TableGroup). En el plan gratuito, dbdiagram no dibuja los marcos de los TableGroup ni las notas adhesivas: los grupos se ven como columnas y las notas siguen en el DBML (sección 10).
+- **Imagen:** `evidencias/08-modelo-dbdiagram.png`, exportada desde dbdiagram.io. `evidencias/08-modelo-dbdiagram.pdf` es la misma imagen en PDF, generada localmente porque la exportación a PDF de dbdiagram no se completó. `evidencias/09-dbdiagram-abierto.png` es el diagrama abierto en dbdiagram.io.
+
+![Diagrama del modelo refinado exportado desde dbdiagram.io](evidencias/08-modelo-dbdiagram.png)
 
 **17 tablas, 14 relaciones, 6 dominios:**
 
@@ -197,6 +199,8 @@ PostgreSQL 16.13 en contenedor `postgres:16-alpine`.
 | Ítem 19 | Confirmar la interpretación de "Rectoría 01, IDEXUD 02" y el visto bueno de las dos tablas (S4) | LT |
 | A9 | Detalle de "con ajustes" (S6) | LT |
 | ARGO v1 | Validar el soporte de migración de `ordenador_contrato` y el mapeo de `notas-migracion.md` §5 | LT |
+| Tipo de `vigencia` | `contrato_general.vigencia` es `varchar(4)`, mientras que `disponibilidad_presupuestal.vigencia_cdp` y `registro_presupuestal.vigencia_rp` son `integer`. `vigencia` forma parte del `UNIQUE (numero_contrato, vigencia)` | LT |
+| Tipo de `numero_registro_presupuestal` | Es `integer` en `registro_presupuestal` y `varchar(50)` en `acta_inicio` | LT |
 
 ## 11. Impacto en la #385
 
