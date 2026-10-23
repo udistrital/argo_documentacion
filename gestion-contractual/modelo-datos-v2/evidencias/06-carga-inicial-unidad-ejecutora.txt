@@ -1,0 +1,14 @@
+# Carga inicial de unidad ejecutora en la BD limpia
+$ psql -d limpia -c "set search_path to contratacion" -f ddl/carga-inicial-unidad-ejecutora.sql
+
+ unidad_ejecutora_id | prefijo_numero_contrato | sufijo_numero_contrato 
+---------------------+-------------------------+------------------------
+                6818 |                         | 
+                6819 | ID-                     | 
+(2 rows)
+
+ unidad_ejecutora_id | parametros 
+---------------------+------------
+                6819 |         75
+(1 row)
+

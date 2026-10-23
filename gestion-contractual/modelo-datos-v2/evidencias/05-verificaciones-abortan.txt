@@ -1,0 +1,43 @@
+# Prueba 4c — Las verificaciones del up abortan la migración
+# Cada caso parte de una BD nueva con el DDL de develop y los datos de prueba, agrega el dato problemático y ejecuta el up.
+
+=== Caso: A14: número de contrato duplicado en la vigencia
+Datos que se agregan sobre datos-prueba-migracion.sql:
+UPDATE contrato_general SET numero_contrato = '101' WHERE id = 3;
+
+Salida de migracion-desde-v2.up.sql:
+psql:ddl/migracion-desde-v2.up.sql:92: ERROR:  Migración #384 abortada: números de contrato duplicados por vigencia (numero/vigencia (cantidad)): 101/2026 (2).
+CONTEXT:  PL/pgSQL function inline_code_block line 39 at RAISE
+código de salida psql: 3
+Esquema sin cambios tras el aborto: sí (pg_dump --schema-only idéntico)
+
+=== Caso: S4: contrato sin unidad ejecutora
+Datos que se agregan sobre datos-prueba-migracion.sql:
+UPDATE contrato_general SET unidad_ejecutora_id = NULL WHERE id IN (2, 3);
+
+Salida de migracion-desde-v2.up.sql:
+psql:ddl/migracion-desde-v2.up.sql:92: ERROR:  Migración #384 abortada: contratos sin unidad_ejecutora_id (id): 2, 3. Asigne 6818 (Rectoría) o 6819 (IDEXUD) antes de migrar.
+CONTEXT:  PL/pgSQL function inline_code_block line 31 at RAISE
+código de salida psql: 3
+Esquema sin cambios tras el aborto: sí (pg_dump --schema-only idéntico)
+
+=== Caso: Ítem 16: dos contratistas para el mismo contrato
+Datos que se agregan sobre datos-prueba-migracion.sql:
+INSERT INTO contratista (numero_documento, contrato_general_id, activo, fecha_creacion) VALUES ('52000111', 1, true, now());
+
+Salida de migracion-desde-v2.up.sql:
+psql:ddl/migracion-desde-v2.up.sql:92: ERROR:  Migración #384 abortada: contratos con más de un contratista (contrato_general_id (cantidad)): 1 (2). La relación es 1 a 1.
+CONTEXT:  PL/pgSQL function inline_code_block line 14 at RAISE
+código de salida psql: 3
+Esquema sin cambios tras el aborto: sí (pg_dump --schema-only idéntico)
+
+=== Caso: Texto más largo que la nueva longitud
+Datos que se agregan sobre datos-prueba-migracion.sql:
+UPDATE contrato_general SET objeto = repeat('x', 2001) WHERE id = 3;
+
+Salida de migracion-desde-v2.up.sql:
+psql:ddl/migracion-desde-v2.up.sql:92: ERROR:  Migración #384 abortada: textos más largos que la nueva longitud: contrato_general.objeto > 2000 (1).
+CONTEXT:  PL/pgSQL function inline_code_block line 57 at RAISE
+código de salida psql: 3
+Esquema sin cambios tras el aborto: sí (pg_dump --schema-only idéntico)
+

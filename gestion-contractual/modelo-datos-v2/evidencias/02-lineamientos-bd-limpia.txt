@@ -1,0 +1,52 @@
+# Prueba 4a (complemento) — Lineamientos verificados sobre el catálogo de la BD limpia
+# Cada consulta lista lo que incumple; una tabla vacía significa que se cumple.
+
+1. Tablas sin activo boolean NOT NULL DEFAULT true:
+ table_name 
+------------
+
+2. Tablas sin fecha_creacion / fecha_modificacion timestamp NOT NULL:
+ table_name 
+------------
+
+3. varchar sin longitud:
+ ?column? 
+----------
+
+4. numeric de montos distinto de (20,7) o porcentaje (5,4):
+ ?column? 
+----------
+
+5. PK que no se llama id serial:
+ conrelid 
+----------
+
+6. Restricciones FK/UNIQUE fuera de la nomenclatura:
+ conname 
+---------
+
+7. Índices fuera de la nomenclatura:
+ indexname 
+-----------
+
+8. Columnas FK sin índice que empiece por ellas:
+ ?column? 
+----------
+
+9. Tablas sin COMMENT ON TABLE:
+ relname 
+---------
+
+10. Columnas *_id sin FK física y sin COMMENT (referencias externas no documentadas):
+ ?column? 
+----------
+
+11. Identificadores de más de 63 caracteres (PostgreSQL los truncaría):
+                            ?column?                            
+----------------------------------------------------------------
+ ninguno posible: los nombres se validaron en el DBML (máx. 62)
+
+12. Nombres en plural o con mayúsculas:
+ relname 
+---------
+
