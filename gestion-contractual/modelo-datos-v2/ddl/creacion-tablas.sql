@@ -1,7 +1,8 @@
 -- =====================================================================
--- ARGO v2 · Gestión contractual · Modelo de datos refinado (#384)
+-- ARGO v2 · Gestión contractual · Modelo de datos final (#384, #389)
 -- DDL de la base nueva para la #385 (CRUD en Beego v2).
--- Fuente del modelo: ../modelo-argo-v2.dbml
+-- Fuente del modelo: ../modelo-argo-v2.dbml (modelo final adjunto por el
+-- LT en la #389, comentario 6452443769).
 --
 -- Base de datos: administrativa (provisional, supuesto S3).
 -- Esquema: contratacion (provisional, supuesto S3). Para cambiarlo basta
@@ -10,6 +11,10 @@
 -- Referencias externas (Parámetros CRUD, Terceros, OIKOS, SiCapital,
 -- Gestor Documental) son integer sin FK física; el COMMENT de cada
 -- columna indica a qué apuntan.
+--
+-- documento_contrato es polimórfica (entidad_tipo + entidad_id) y no tiene
+-- FK física ni CHECK, por decisión del LT: el CRUD valida que entidad_tipo
+-- sea contrato_general, poliza o acta_inicio y que exista entidad_id.
 -- =====================================================================
 
 SET search_path TO contratacion;
@@ -27,7 +32,7 @@ $$;
 CREATE TABLE contrato_general (
     id                              serial          NOT NULL,
     numero_contrato                 varchar(50),
-    vigencia                        varchar(4),
+    vigencia_id                     integer,
     consecutivo_elaboracion         varchar(50),
     unidad_ejecutora_id             integer         NOT NULL,
     tipo_compromiso_id              integer,
@@ -64,12 +69,10 @@ CREATE TABLE contrato_general (
     proveedor_numero_documento      varchar(20),
     tipo_persona_id                 integer,
     clase_proveedor_id              integer,
-    lugar_ejecucion_pais_id         integer,
-    lugar_ejecucion_ciudad_id       integer,
-    lugar_ejecucion_municipio_id    integer,
-    lugar_ejecucion_dependencia_id  integer,
-    lugar_ejecucion_sede_id         integer,
-    lugar_ejecucion_direccion       varchar(150),
+    dependencia_solicitante_id      integer,
+    sede_solicitante_id             integer,
+    dependencia_solicitante_legado_id integer,
+    sede_solicitante_legado_id      integer,
     usuario_id                      integer,
     usuario_rol                     varchar(40),
     usuario_legado                  varchar(15),
@@ -77,15 +80,15 @@ CREATE TABLE contrato_general (
     fecha_creacion                  timestamp       NOT NULL DEFAULT now(),
     fecha_modificacion              timestamp       NOT NULL DEFAULT now(),
     CONSTRAINT pk_contrato_general PRIMARY KEY (id),
-    CONSTRAINT uq_numero_contrato_vigencia_contrato_general UNIQUE (numero_contrato, vigencia)
+    CONSTRAINT uq_numero_contrato_vigencia_id_contrato_general UNIQUE (numero_contrato, vigencia_id)
 );
 
 CREATE INDEX idx_contrato_general_unidad_ejecutora_id ON contrato_general (unidad_ejecutora_id);
 CREATE INDEX idx_contrato_general_tipo_contrato_id ON contrato_general (tipo_contrato_id);
 
-COMMENT ON TABLE contrato_general IS 'Contrato y su información básica. Absorbe los datos 1 a 1 del proveedor (antes contratista) y del lugar de ejecución';
+COMMENT ON TABLE contrato_general IS 'Contrato y su información básica. Absorbe los datos 1 a 1 del proveedor (antes contratista) y del solicitante';
 COMMENT ON COLUMN contrato_general.numero_contrato IS 'Número oficial del contrato. Se genera con la RN de generación cuando el contrato pasa a SUSCRITO; en ARGO v1 viene migrado. Nulo hasta la suscripción (A14)';
-COMMENT ON COLUMN contrato_general.vigencia IS 'Año de vigencia del contrato (2025, 2026, ...)';
+COMMENT ON COLUMN contrato_general.vigencia_id IS 'Parámetros CRUD, tipo de parámetro Vigencia (tipo por confirmar). Año de vigencia del contrato';
 COMMENT ON COLUMN contrato_general.consecutivo_elaboracion IS 'Consecutivo de elaboración, previo a la suscripción';
 COMMENT ON COLUMN contrato_general.unidad_ejecutora_id IS 'Parámetros CRUD, tipo 146 Unidad Ejecutora (6818 Rectoría, 6819 IDEXUD)';
 COMMENT ON COLUMN contrato_general.tipo_compromiso_id IS 'Parámetros CRUD, tipo 111 Compromiso';
@@ -122,12 +125,10 @@ COMMENT ON COLUMN contrato_general.fecha_suscripcion IS 'Fecha en que se suscrib
 COMMENT ON COLUMN contrato_general.proveedor_numero_documento IS 'Número de documento del proveedor. Antes contratista.numero_documento (ítem 16). El proveedor se consulta en Ágora por este número';
 COMMENT ON COLUMN contrato_general.tipo_persona_id IS 'Parámetros CRUD, tipo 132 Tipo Persona (natural o jurídica) del proveedor. Antes contratista.tipo_persona_id';
 COMMENT ON COLUMN contrato_general.clase_proveedor_id IS 'Parámetros CRUD, tipo 120 Clase Contratista (único o sociedad temporal). Antes contratista.clase_contratista_id';
-COMMENT ON COLUMN contrato_general.lugar_ejecucion_pais_id IS 'País del lugar de ejecución (referencia externa por confirmar: OIKOS o Parámetros). Antes lugar_ejecucion.pais_id. Pendiente validar depuración de datos (supuesto S7)';
-COMMENT ON COLUMN contrato_general.lugar_ejecucion_ciudad_id IS 'Ciudad del lugar de ejecución (referencia externa por confirmar). Antes lugar_ejecucion.ciudad_id (supuesto S7)';
-COMMENT ON COLUMN contrato_general.lugar_ejecucion_municipio_id IS 'Municipio del lugar de ejecución (referencia externa por confirmar). Antes lugar_ejecucion.municipio_id (supuesto S7)';
-COMMENT ON COLUMN contrato_general.lugar_ejecucion_dependencia_id IS 'OIKOS, dependencia del lugar de ejecución. Antes lugar_ejecucion.dependencia_id (supuesto S7)';
-COMMENT ON COLUMN contrato_general.lugar_ejecucion_sede_id IS 'OIKOS, sede del lugar de ejecución. Antes lugar_ejecucion.sede_id (supuesto S7)';
-COMMENT ON COLUMN contrato_general.lugar_ejecucion_direccion IS 'Dirección del lugar de ejecución. Antes lugar_ejecucion.direccion (supuesto S7)';
+COMMENT ON COLUMN contrato_general.dependencia_solicitante_id IS 'OIKOS, dependencia que solicita el contrato.';
+COMMENT ON COLUMN contrato_general.sede_solicitante_id IS 'OIKOS, sede donde se origina la solicitud.';
+COMMENT ON COLUMN contrato_general.dependencia_solicitante_legado_id IS 'OIKOS, dependencia que solicita el contrato legado.';
+COMMENT ON COLUMN contrato_general.sede_solicitante_legado_id IS 'OIKOS, sede donde se origina la solicitud legado.';
 COMMENT ON COLUMN contrato_general.usuario_id IS 'Identificador del usuario que registra o modifica el contrato';
 COMMENT ON COLUMN contrato_general.usuario_rol IS 'Rol del usuario que registra o modifica el contrato';
 COMMENT ON COLUMN contrato_general.usuario_legado IS 'Usuario de ARGO v1, para compatibilidad con la migración';
@@ -151,32 +152,14 @@ CREATE TABLE estado_contrato (
 
 CREATE INDEX idx_estado_contrato_contrato_general_id ON estado_contrato (contrato_general_id);
 
-COMMENT ON TABLE estado_contrato IS 'Historial de estados del contrato (general e interno)';
-COMMENT ON COLUMN estado_contrato.estado_parametro_id IS 'Parámetros CRUD, tipo 137 Estados del contrato (estado general)';
-COMMENT ON COLUMN estado_contrato.estado_interno_parametro_id IS 'Parámetros CRUD, tipo 141 Estados internos del contrato';
+COMMENT ON TABLE estado_contrato IS 'Historial de estados del contrato: el visible para el usuario y el de la máquina de estados interna (ítem 10)';
+COMMENT ON COLUMN estado_contrato.estado_parametro_id IS 'Parámetros CRUD, tipo 137 Estados del contrato. Estado visible para el usuario (ítem 10)';
+COMMENT ON COLUMN estado_contrato.estado_interno_parametro_id IS 'Parámetros CRUD, tipo 141 Estados internos del contrato. Máquina de estados interna (ítem 10)';
 COMMENT ON COLUMN estado_contrato.actual IS 'Marca el estado vigente del contrato';
 COMMENT ON COLUMN estado_contrato.motivo IS 'Razón del cambio de estado';
 COMMENT ON COLUMN estado_contrato.fecha_evento IS 'Fecha del cambio de estado';
 COMMENT ON COLUMN estado_contrato.usuario_id IS 'Identificador del usuario que efectúa el cambio de estado';
 COMMENT ON COLUMN estado_contrato.usuario_rol IS 'Rol del usuario que efectúa el cambio de estado';
-
-CREATE TABLE solicitante (
-    id                              serial          NOT NULL,
-    contrato_general_id             integer         NOT NULL,
-    dependencia_id                  integer         NOT NULL,
-    sede_id                         integer         NOT NULL,
-    activo                          boolean         NOT NULL DEFAULT true,
-    fecha_creacion                  timestamp       NOT NULL DEFAULT now(),
-    fecha_modificacion              timestamp       NOT NULL DEFAULT now(),
-    CONSTRAINT pk_solicitante PRIMARY KEY (id),
-    CONSTRAINT fk_solicitante_contrato_general FOREIGN KEY (contrato_general_id) REFERENCES contrato_general (id)
-);
-
-CREATE INDEX idx_solicitante_contrato_general_id ON solicitante (contrato_general_id);
-
-COMMENT ON TABLE solicitante IS 'Dependencia y sede que solicitan el contrato. Cardinalidad 1 a 1 por validar (A12)';
-COMMENT ON COLUMN solicitante.dependencia_id IS 'OIKOS, dependencia que solicita el contrato. Antes dependencia_solicitante_id';
-COMMENT ON COLUMN solicitante.sede_id IS 'OIKOS, sede donde se origina la solicitud. Antes sede_solicitante_id';
 
 CREATE TABLE supervisor_contrato (
     id                              serial          NOT NULL,
@@ -314,7 +297,7 @@ CREATE TABLE disponibilidad_presupuestal (
     id                              serial          NOT NULL,
     contrato_general_id             integer         NOT NULL,
     numero_cdp_id                   integer,
-    vigencia_cdp                    integer,
+    vigencia_cdp_id                 integer,
     fecha_registro                  date,
     activo                          boolean         NOT NULL DEFAULT true,
     fecha_creacion                  timestamp       NOT NULL DEFAULT now(),
@@ -327,14 +310,14 @@ CREATE INDEX idx_disponibilidad_presupuestal_contrato_general_id ON disponibilid
 
 COMMENT ON TABLE disponibilidad_presupuestal IS 'Certificados de disponibilidad presupuestal (CDP) del contrato';
 COMMENT ON COLUMN disponibilidad_presupuestal.numero_cdp_id IS 'SiCapital, número del CDP con el que se consulta la fuente';
-COMMENT ON COLUMN disponibilidad_presupuestal.vigencia_cdp IS 'Año de vigencia del CDP';
+COMMENT ON COLUMN disponibilidad_presupuestal.vigencia_cdp_id IS 'Año de vigencia del CDP';
 COMMENT ON COLUMN disponibilidad_presupuestal.fecha_registro IS 'Fecha de registro del CDP';
 
 CREATE TABLE registro_presupuestal (
     id                              serial          NOT NULL,
     disponibilidad_presupuestal_id  integer         NOT NULL,
     numero_registro_presupuestal    integer,
-    vigencia_rp                     integer,
+    vigencia_rp_id                  integer,
     fecha_registro                  date,
     activo                          boolean         NOT NULL DEFAULT true,
     fecha_creacion                  timestamp       NOT NULL DEFAULT now(),
@@ -348,7 +331,7 @@ CREATE INDEX idx_registro_presupuestal_disponibilidad_presupuestal_id ON registr
 COMMENT ON TABLE registro_presupuestal IS 'Registros presupuestales (RP) expedidos sobre un CDP';
 COMMENT ON COLUMN registro_presupuestal.disponibilidad_presupuestal_id IS 'Antes cdp_id';
 COMMENT ON COLUMN registro_presupuestal.numero_registro_presupuestal IS 'Número del registro presupuestal (RP). Antes registro_presupuestal';
-COMMENT ON COLUMN registro_presupuestal.vigencia_rp IS 'Año de vigencia del RP';
+COMMENT ON COLUMN registro_presupuestal.vigencia_rp_id IS 'Año de vigencia del RP';
 COMMENT ON COLUMN registro_presupuestal.fecha_registro IS 'Fecha de registro del RP';
 
 -- ---------------------------------------------------------------------
@@ -360,7 +343,6 @@ CREATE TABLE poliza (
     contrato_general_id             integer         NOT NULL,
     numero_poliza                   varchar(50),
     entidad_aseguradora_id          integer,
-    estado_poliza_id                integer,
     descripcion                     varchar(255),
     fecha_inicio                    date,
     fecha_fin                       date,
@@ -381,7 +363,6 @@ CREATE INDEX idx_poliza_contrato_general_id ON poliza (contrato_general_id);
 COMMENT ON TABLE poliza IS 'Pólizas expedidas para las garantías del contrato';
 COMMENT ON COLUMN poliza.numero_poliza IS 'Número con el que la aseguradora identifica la póliza. Sin restricción de unicidad (#351)';
 COMMENT ON COLUMN poliza.entidad_aseguradora_id IS 'Parámetros CRUD, entidad aseguradora (tipo de parámetro por confirmar)';
-COMMENT ON COLUMN poliza.estado_poliza_id IS 'Parámetros CRUD, estado de la póliza. Estados por definir con la Analista (A7, supuesto S5)';
 COMMENT ON COLUMN poliza.descripcion IS 'Descripción de la póliza';
 COMMENT ON COLUMN poliza.fecha_inicio IS 'Inicio de vigencia de la póliza';
 COMMENT ON COLUMN poliza.fecha_fin IS 'Fin de vigencia de la póliza';
@@ -390,6 +371,28 @@ COMMENT ON COLUMN poliza.fecha_aprobacion IS 'Fecha en que la Universidad aprueb
 COMMENT ON COLUMN poliza.usuario_id IS 'Identificador del usuario que registra o modifica la póliza';
 COMMENT ON COLUMN poliza.usuario_rol IS 'Rol del usuario que registra o modifica la póliza';
 COMMENT ON COLUMN poliza.usuario_legado IS 'Usuario de ARGO v1, para compatibilidad con la migración';
+
+CREATE TABLE estado_poliza (
+    id                              serial          NOT NULL,
+    poliza_id                       integer         NOT NULL,
+    estado_parametro_id             integer         NOT NULL,
+    motivo                          varchar(250),
+    usuario_id                      integer         NOT NULL,
+    usuario_rol                     varchar(40),
+    activo                          boolean         NOT NULL DEFAULT true,
+    fecha_creacion                  timestamp       NOT NULL DEFAULT now(),
+    fecha_modificacion              timestamp       NOT NULL DEFAULT now(),
+    CONSTRAINT pk_estado_poliza PRIMARY KEY (id),
+    CONSTRAINT fk_estado_poliza_poliza FOREIGN KEY (poliza_id) REFERENCES poliza (id)
+);
+
+CREATE INDEX idx_estado_poliza_poliza_id ON estado_poliza (poliza_id);
+
+COMMENT ON TABLE estado_poliza IS 'Historial de estados de la póliza. El estado vigente es el registro más reciente';
+COMMENT ON COLUMN estado_poliza.estado_parametro_id IS 'Parámetros CRUD, estado de la póliza (tipo de parámetro por confirmar; estados por definir con la Analista)';
+COMMENT ON COLUMN estado_poliza.motivo IS 'Razón del cambio de estado';
+COMMENT ON COLUMN estado_poliza.usuario_id IS 'Identificador del usuario que efectúa el cambio de estado';
+COMMENT ON COLUMN estado_poliza.usuario_rol IS 'Rol del usuario que efectúa el cambio de estado';
 
 CREATE TABLE amparo_poliza (
     id                              serial          NOT NULL,
@@ -434,7 +437,8 @@ COMMENT ON COLUMN amparo_poliza.usuario_rol IS 'Rol del usuario que registra o m
 
 CREATE TABLE documento_contrato (
     id                              serial          NOT NULL,
-    contrato_general_id             integer         NOT NULL,
+    entidad_tipo                    varchar(50)     NOT NULL,
+    entidad_id                      integer         NOT NULL,
     tipo_documento_id               integer,
     documento_id                    integer,
     documento_enlace                varchar(50),
@@ -443,13 +447,14 @@ CREATE TABLE documento_contrato (
     activo                          boolean         NOT NULL DEFAULT true,
     fecha_creacion                  timestamp       NOT NULL DEFAULT now(),
     fecha_modificacion              timestamp       NOT NULL DEFAULT now(),
-    CONSTRAINT pk_documento_contrato PRIMARY KEY (id),
-    CONSTRAINT fk_documento_contrato_contrato_general FOREIGN KEY (contrato_general_id) REFERENCES contrato_general (id)
+    CONSTRAINT pk_documento_contrato PRIMARY KEY (id)
 );
 
-CREATE INDEX idx_documento_contrato_contrato_general_id ON documento_contrato (contrato_general_id);
+CREATE INDEX idx_documento_contrato_entidad_tipo_entidad_id ON documento_contrato (entidad_tipo, entidad_id);
 
-COMMENT ON TABLE documento_contrato IS 'Documentos del contrato en una sola tabla, sin estados (A9 "con ajustes"; supuesto S6)';
+COMMENT ON TABLE documento_contrato IS 'Documentos del contrato en una sola tabla, sin estados (A9). Relación polimórfica: un documento pertenece a un contrato_general, una poliza o un acta_inicio. Se incorpora firma manual; si se integra otro servicio se registra igualmente en documento_contrato (ítem 42)';
+COMMENT ON COLUMN documento_contrato.entidad_tipo IS 'Tabla a la que pertenece el documento: contrato_general, poliza o acta_inicio';
+COMMENT ON COLUMN documento_contrato.entidad_id IS 'Identificador del registro en la tabla indicada por entidad_tipo (sin FK física)';
 COMMENT ON COLUMN documento_contrato.tipo_documento_id IS 'Parámetros CRUD, tipo de documento (tipo 133 Documentos Contrato)';
 COMMENT ON COLUMN documento_contrato.documento_id IS 'Gestor Documental, identificador del documento';
 COMMENT ON COLUMN documento_contrato.documento_enlace IS 'Gestor Documental, enlace del documento';
@@ -495,84 +500,3 @@ COMMENT ON COLUMN acta_inicio.nombre_interventor IS 'Nombre del interventor, cua
 COMMENT ON COLUMN acta_inicio.usuario_id IS 'Identificador del usuario que registra el acta';
 COMMENT ON COLUMN acta_inicio.usuario_rol IS 'Rol del usuario que registra el acta';
 COMMENT ON COLUMN acta_inicio.usuario_legado IS 'Usuario de ARGO v1, para compatibilidad con la migración';
-
--- ---------------------------------------------------------------------
--- Unidad ejecutora
--- ---------------------------------------------------------------------
-
-CREATE TABLE parametro_unidad_ejecutora (
-    id                              serial          NOT NULL,
-    parametro_id                    integer         NOT NULL,
-    unidad_ejecutora_id             integer         NOT NULL,
-    activo                          boolean         NOT NULL DEFAULT true,
-    fecha_creacion                  timestamp       NOT NULL DEFAULT now(),
-    fecha_modificacion              timestamp       NOT NULL DEFAULT now(),
-    CONSTRAINT pk_parametro_unidad_ejecutora PRIMARY KEY (id),
-    CONSTRAINT uq_parametro_id_unidad_ejecutora_id_parametro_unidad_ejecutora UNIQUE (parametro_id, unidad_ejecutora_id)
-);
-
-CREATE INDEX idx_parametro_unidad_ejecutora_unidad_ejecutora_id ON parametro_unidad_ejecutora (unidad_ejecutora_id);
-
-COMMENT ON TABLE parametro_unidad_ejecutora IS 'Valores paramétricos que aplican a cada unidad ejecutora (propuesta del 21/10, supuesto S4). Sin registro significa que no aplica';
-COMMENT ON COLUMN parametro_unidad_ejecutora.parametro_id IS 'Parámetros CRUD, parametros.parametro.id (otra BD, sin FK física)';
-COMMENT ON COLUMN parametro_unidad_ejecutora.unidad_ejecutora_id IS 'Parámetros CRUD, tipo 146 Unidad Ejecutora';
-
-CREATE TABLE configuracion_unidad_ejecutora (
-    id                              serial          NOT NULL,
-    unidad_ejecutora_id             integer         NOT NULL,
-    prefijo_numero_contrato         varchar(10)     NOT NULL DEFAULT '',
-    sufijo_numero_contrato          varchar(10)     NOT NULL DEFAULT '',
-    activo                          boolean         NOT NULL DEFAULT true,
-    fecha_creacion                  timestamp       NOT NULL DEFAULT now(),
-    fecha_modificacion              timestamp       NOT NULL DEFAULT now(),
-    CONSTRAINT pk_configuracion_unidad_ejecutora PRIMARY KEY (id),
-    CONSTRAINT uq_unidad_ejecutora_id_configuracion_unidad_ejecutora UNIQUE (unidad_ejecutora_id)
-);
-
-COMMENT ON TABLE configuracion_unidad_ejecutora IS 'Formato del número de contrato por unidad ejecutora; reemplaza conf.ts del MID (propuesta del 21/10, supuesto S4)';
-COMMENT ON COLUMN configuracion_unidad_ejecutora.unidad_ejecutora_id IS 'Parámetros CRUD, tipo 146 Unidad Ejecutora';
-COMMENT ON COLUMN configuracion_unidad_ejecutora.prefijo_numero_contrato IS 'Prefijo del número de contrato (hoy Rectoría vacío, IDEXUD "ID-")';
-COMMENT ON COLUMN configuracion_unidad_ejecutora.sufijo_numero_contrato IS 'Sufijo del número de contrato (hoy vacío en ambas)';
-
--- ---------------------------------------------------------------------
--- Auditoría
--- ---------------------------------------------------------------------
-
-CREATE TABLE huella_navegador (
-    id                              serial          NOT NULL,
-    huella                          varchar(64)     NOT NULL,
-    libreria                        varchar(50)     NOT NULL,
-    version_libreria                varchar(20)     NOT NULL,
-    confianza                       numeric(5,4),
-    componentes                     jsonb,
-    direccion_ip                    varchar(45),
-    direccion_ip_servidor           varchar(45),
-    user_agent                      varchar(512)    NOT NULL,
-    usuario_id                      integer,
-    usuario_rol                     varchar(40),
-    microcliente                    varchar(100)    NOT NULL,
-    ruta                            varchar(255),
-    fecha_captura                   timestamp       NOT NULL,
-    activo                          boolean         NOT NULL DEFAULT true,
-    fecha_creacion                  timestamp       NOT NULL DEFAULT now(),
-    fecha_modificacion              timestamp       NOT NULL DEFAULT now(),
-    CONSTRAINT pk_huella_navegador PRIMARY KEY (id)
-);
-
-CREATE INDEX idx_huella_navegador_huella ON huella_navegador (huella);
-CREATE INDEX idx_huella_navegador_usuario_id ON huella_navegador (usuario_id);
-
-COMMENT ON TABLE huella_navegador IS 'Huella digital del navegador e IP para auditoría (#376, PR gestion_contractual_crud#49; supuesto S8)';
-COMMENT ON COLUMN huella_navegador.huella IS 'Identificador calculado por la librería de fingerprinting';
-COMMENT ON COLUMN huella_navegador.libreria IS 'Librería con la que se calculó la huella';
-COMMENT ON COLUMN huella_navegador.version_libreria IS 'Versión de la librería';
-COMMENT ON COLUMN huella_navegador.confianza IS 'Puntaje de confianza entre 0 y 1. Nulo si la librería no lo entrega';
-COMMENT ON COLUMN huella_navegador.componentes IS 'Componentes como hash SHA-256 truncado, duración y error. No guarda valores crudos';
-COMMENT ON COLUMN huella_navegador.direccion_ip IS 'IP pública reportada por el cliente';
-COMMENT ON COLUMN huella_navegador.direccion_ip_servidor IS 'IP con la que llega la petición al servidor';
-COMMENT ON COLUMN huella_navegador.user_agent IS 'User agent del navegador';
-COMMENT ON COLUMN huella_navegador.usuario_id IS 'Identificador del usuario autenticado al capturar la huella';
-COMMENT ON COLUMN huella_navegador.usuario_rol IS 'Rol del usuario autenticado al capturar la huella';
-COMMENT ON COLUMN huella_navegador.microcliente IS 'Microcliente que capturó la huella';
-COMMENT ON COLUMN huella_navegador.ruta IS 'Ruta de la página, sin query string';
-COMMENT ON COLUMN huella_navegador.fecha_captura IS 'Fecha y hora de la captura en el navegador';
