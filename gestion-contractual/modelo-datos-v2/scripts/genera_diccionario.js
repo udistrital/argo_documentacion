@@ -76,7 +76,7 @@ function main() {
   for (const g of esquema.tableGroups) for (const t of g.tables) grupoDe.set(t.name, g.name);
 
   const out = [];
-  out.push('# Diccionario de datos — ARGO v2, gestión contractual (#384)');
+  out.push('# Diccionario de datos — ARGO v2, gestión contractual (#384 y #389)');
   out.push('');
   out.push('> Generado por `scripts/genera_diccionario.js` desde `modelo-argo-v2.dbml`. No se edita a mano.');
   out.push('');
