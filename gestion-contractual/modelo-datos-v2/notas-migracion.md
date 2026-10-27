@@ -1,5 +1,14 @@
 # Notas de migración — modelo de datos ARGO v2 refinado (#384)
 
+> [!WARNING]
+> **Obsoleto para el modelo final (#389).** Este documento y los scripts `ddl/migracion-desde-v2.up.sql`, `ddl/migracion-desde-v2.down.sql` y `ddl/carga-inicial-unidad-ejecutora.sql` corresponden al modelo del PR #394 y no aplican al modelo final:
+> - **Migración:** el LT respondió al ítem 40 "No, se va a implementar el nuevo" ([comentario 6433877493](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6433877493)), y la #385 crea la base desde `ddl/creacion-tablas.sql`. Además, la migración se escribió para el modelo del PR #394: crea `huella_navegador`, `parametro_unidad_ejecutora` y `configuracion_unidad_ejecutora` y absorbe `lugar_ejecucion`, que el modelo final no tiene, y no contempla `estado_poliza`, `vigencia_id` ni la relación polimórfica de `documento_contrato`.
+> - **Carga inicial:** el LT retiró `parametro_unidad_ejecutora` ("Se remueve la tabla parametro unidad ejecutora", mismo comentario), y `configuracion_unidad_ejecutora` no está en el modelo final.
+>
+> Se conservan como referencia, sin borrarlos. **Pregunta abierta para el LT:** ¿se confirma que no hay migración de datos desde el modelo actual de `gestion_contractual_crud` ni desde ARGO v1 hacia el modelo final? Si la hay, estos scripts se deben rehacer sobre el modelo final.
+>
+> El contenido que sigue se mantiene sin cambios, tal como se escribió para la #384.
+
 Este documento acompaña a los scripts de `ddl/`. Explica cómo pasar al modelo refinado, tanto en una base nueva (#385) como en una base que ya tiene el modelo actual de `gestion_contractual_crud`.
 
 ## 1. Archivos
@@ -7,9 +16,9 @@ Este documento acompaña a los scripts de `ddl/`. Explica cómo pasar al modelo 
 | Archivo | Uso |
 |---|---|
 | `ddl/creacion-tablas.sql` | DDL de la base nueva para la #385. Crea el esquema (`contratacion`, provisional) y las 17 tablas. |
-| `ddl/migracion-desde-v2.up.sql` | Lleva una base con el DDL actual de develop (`gestion_contractual_crud` 9e20927) al modelo refinado, conservando los datos. |
-| `ddl/migracion-desde-v2.down.sql` | Reverso del anterior. |
-| `ddl/carga-inicial-unidad-ejecutora.sql` | Carga inicial de `configuracion_unidad_ejecutora` y de `parametro_unidad_ejecutora` para IDEXUD. |
+| `ddl/migracion-desde-v2.up.sql` | **Obsoleto (#389).** Lleva una base con el DDL actual de develop (`gestion_contractual_crud` 9e20927) al modelo refinado, conservando los datos. |
+| `ddl/migracion-desde-v2.down.sql` | **Obsoleto (#389).** Reverso del anterior. |
+| `ddl/carga-inicial-unidad-ejecutora.sql` | **Obsoleto (#389).** Carga inicial de `configuracion_unidad_ejecutora` y de `parametro_unidad_ejecutora` para IDEXUD. |
 | `scripts/genera_carga_unidad_ejecutora.py` | Regenera la carga inicial desde el consolidado depurado por negocio. |
 | `scripts/sincroniza_comentarios.py` | Copia los `COMMENT ON` de los DDL a los scripts de migración. |
 | `scripts/datos-prueba-migracion.sql` | Datos mínimos para probar la migración. |

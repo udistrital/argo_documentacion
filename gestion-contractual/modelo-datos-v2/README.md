@@ -10,8 +10,8 @@
 |---|---|
 | `modelo-argo-v2.dbml` | Modelo en DBML: fuente de verdad, publicada en [dbdiagram.io](https://dbdiagram.io/d/6adb8b82aac330141004baa1) |
 | `ddl/creacion-tablas.sql` | DDL de la base nueva para la #385 |
-| `ddl/migracion-desde-v2.up.sql` y `.down.sql` | Migración desde el modelo actual de develop, conservando los datos, y su reverso |
-| `ddl/carga-inicial-unidad-ejecutora.sql` | Carga inicial de las tablas de unidad ejecutora |
+| `ddl/migracion-desde-v2.up.sql` y `.down.sql` | **Obsoletos para el modelo final (#389):** migración desde el modelo actual de develop, conservando los datos, y su reverso. Ver `notas-migracion.md` |
+| `ddl/carga-inicial-unidad-ejecutora.sql` | **Obsoleto para el modelo final (#389):** carga inicial de las tablas de unidad ejecutora. Ver `notas-migracion.md` |
 | `notas-migracion.md` | Orden de ejecución, requisitos, mapeo de ARGO v1, ajuste de códigos en Parámetros, carga inicial e impacto en consumidores |
 | `diccionario-datos.md` | Diccionario de datos (A13), generado desde el DBML |
 | `scripts/` | Generadores del diccionario y de la carga inicial, sincronizador de comentarios y datos de prueba |
