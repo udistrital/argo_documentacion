@@ -1,24 +1,27 @@
-# Modelo de datos ARGO v2 refinado — Issue #384
+# Modelo de datos ARGO v2 — Modelo final (#384, #389)
 
 ## 1. Objeto y alcance
 
-**Objeto.** Revisar y ajustar el modelo de datos de gestión contractual de ARGO v2 con base en el análisis de las issues #356 y #368 y en las decisiones del LT del 22/10/2026. El resultado es el modelo del que se genera el CRUD de la #385 (Beego v2, ingeniería inversa desde la base de datos).
+**Objeto.** Modelo de datos de gestión contractual de ARGO v2 del que se genera el CRUD de la #385 (Beego v2, ingeniería inversa desde la base de datos).
+- La #384 lo refinó con base en el análisis de las issues #356 y #368 y en las decisiones del LT del 22/10/2026.
+- La #389 lo cierra con las decisiones del 26 y 27/10/2026 y con el **modelo final que adjuntó el LT** ([comentario 6452443769](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6452443769)).
 
 **Entregables:**
 
 | Archivo | Contenido |
 |---|---|
-| `modelo-argo-v2.dbml` | Modelo en DBML: fuente de verdad, publicada en [dbdiagram.io](https://dbdiagram.io/d/6adb8b82aac330141004baa1) |
-| `ddl/creacion-tablas.sql` | DDL de la base nueva para la #385 |
+| `modelo-argo-v2.dbml` | Modelo en DBML: fuente de verdad. Es el DBML final del LT, con las notas actualizadas en la #389 |
+| `ddl/creacion-tablas.sql` | DDL de la base nueva para la #385 (14 tablas) |
+| `diccionario-datos.md` | Diccionario de datos (A13), generado desde el DBML |
 | `ddl/migracion-desde-v2.up.sql` y `.down.sql` | **Obsoletos para el modelo final (#389):** migración desde el modelo actual de develop, conservando los datos, y su reverso. Ver `notas-migracion.md` |
 | `ddl/carga-inicial-unidad-ejecutora.sql` | **Obsoleto para el modelo final (#389):** carga inicial de las tablas de unidad ejecutora. Ver `notas-migracion.md` |
-| `notas-migracion.md` | Orden de ejecución, requisitos, mapeo de ARGO v1, ajuste de códigos en Parámetros, carga inicial e impacto en consumidores |
-| `diccionario-datos.md` | Diccionario de datos (A13), generado desde el DBML |
+| `notas-migracion.md` | Notas de migración de la #384, **obsoletas para el modelo final** (sección 8) |
 | `scripts/` | Generadores del diccionario y de la carga inicial, sincronizador de comentarios y datos de prueba |
-| `evidencias/` | Salidas de las pruebas y capturas |
+| `evidencias/` | Pruebas y capturas: `01`–`09` de la #384 y `389/` de la #389 |
 
 **Fuera de alcance:**
 - Implementar el CRUD (#385).
+- Cambiar la estructura del modelo final del LT: tablas, columnas, tipos y relaciones quedan como él los entregó.
 - Cambiar datos en Parámetros u otros servicios.
 - Los temas en stand by, que quedan como notas en el diagrama (sección 10).
 
@@ -26,194 +29,174 @@
 
 | Fuente | Versión |
 |---|---|
+| Modelo final del LT | Adjunto `argo_v2_modelo_datos.txt` del [comentario 6452443769](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6452443769) (27/10/2026), copiado íntegro en el commit `c015bb4` |
+| Diagrama final | [dbdiagram.io](https://dbdiagram.io/d/6ad7138cd7bbc90c21d6e18d) ([comentario 6448780824](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6448780824)) y su exportación en el [comentario 6453949520](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6453949520) |
+| Modelo de la #384 | PR #394, rama `feature/384-modelo-datos-v2`, commit `6a10489` |
 | `gestion_contractual_crud`, `sql/creacion-tablas.sql` | develop `9e20927` (2026-10-05) |
-| `huella_navegador` (#376) | PR gestion_contractual_crud#49, commit `0198621` (sin mergear) |
-| Análisis de la #356 (`gestion-contractual/analisis-modelo-datos/`) | main `b396fd1` |
-| Columnas nuevas de `acta_inicio` (#359) | `minuta_contractual_mid`, rama `feature/359-actualizar-integrar-actas-inicio` (PR #13, sin mergear) |
-| Consumidores revisados | `gestion_contractual_mid` develop `133bb75`, `gestion_contractual_mf` develop `f546335`, `poliza_mid` `a47b471` |
-| Consolidado de parámetros depurado por negocio | Adjunto de la #384 (`consolidado_parametros_argo_v2_2026-10-13 (1).xlsx`) |
-| Modelo de ARGO v1 | Diagrama compartido por el LT en la #356 (28/09/2026) |
+| Consumidores revisados | `gestion_contractual_mid` develop `133bb75`, `gestion_contractual_mf` develop `f546335` |
 | Lineamiento de modelos relacionales | `udistrital/lineamientos_oas`, `modelo_de_datos/lineamientos_modelos_relacionales.md` (master) |
 
 ## 3. Decisiones del LT
 
-Comentario "Validación con el equipo" del 22/10/2026: https://github.com/udistrital/argo_documentacion/issues/384#issuecomment-6347875572
+### 3.1 Del 26 y 27/10/2026 (#389)
 
-| Tema | Decisión |
-|---|---|
-| A1–A5 | No aplican por implementación nueva. El modelo nuevo cumple los lineamientos desde el inicio |
-| A6, ítem 9 | Agregar `fecha_suscripcion` en `contrato_general` |
-| A7 | La póliza sí tiene estado; los estados están pendientes de definir |
-| A8 | Stand by, pendiente de validación con Ágora |
-| A9 | Documentos en una sola tabla, sin estados, "con ajustes" |
-| A10 | Novedades y terminación van en una etapa posterior |
-| A11 | Validar si el proyecto de extensión va en un campo actual o es un selector nuevo exclusivo de IDEXUD |
-| A12 | Stand by. Contratista 1 a 1; confirmar si el ordenador puede ser múltiple; validar si el solicitante es 1 a 1 |
-| A13 | Sí: completar el diccionario |
-| A14, ítem 7 | Sí: `UNIQUE (numero_contrato, vigencia)`. El número viene migrado de ARGO v1 y se genera con la RN de generación al pasar a SUSCRITO; antes solo existe el consecutivo de elaboración |
-| Observación general | Agregar `usuario_id` y `usuario_rol` en `contrato_general`, `poliza`, `amparo_poliza`, `estado_contrato`, `acta_inicio` y `documento_contrato` |
-| Ítem 2 | Incluir todas las tablas excepto `lugar_ejecucion`; `ordenador_contrato` con la nota "validar soporte migración ARGO v1" |
-| Ítem 15 | `contratista` pasa a `proveedor` |
-| Ítem 16 | Por ser 1 a 1, los campos van en `contrato_general`: `proveedor_numero_documento`, `tipo_persona_id`, `clase_proveedor_id` |
-| Ítem 19 | "Ajuste registros a: Rectoría 01, IDEXUD 02". Agrupar selectores por unidad ejecutora si aplica (Analista) |
+Fuentes:
+- respuestas del LT por ítem del consolidado: [comentario 6433877493](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6433877493);
+- decisiones de la reunión del 26/10, publicadas por Ivan: [comentario 6448000059](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6448000059);
+- modelo conceptual con ajustes de Karen: [comentario 6447478068](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6447478068);
+- modelo final del LT: [comentario 6452443769](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6452443769).
 
-## 4. Trazabilidad
-
-| Decisión o ítem del consolidado | Cambio en el modelo | Archivo |
+| Ítem | Decisión | Efecto en el modelo |
 |---|---|---|
-| A1–A5 (no aplican) | PK `id serial`, borrado lógico con `activo`, montos `numeric(20,7)`, varchar con longitud, nombres de restricciones según lineamiento; `registro_presupuestal` incluida (ítem 2) | `modelo-argo-v2.dbml`, `ddl/creacion-tablas.sql`, `evidencias/02-lineamientos-bd-limpia.txt` |
-| A6, ítem 9 | `contrato_general.fecha_suscripcion date` nullable. No existe `fecha_firma` | DBML, DDL, migración |
-| A7 | `poliza.estado_poliza_id` nullable sin catálogo (S5) y nota en el diagrama | DBML, DDL, migración |
-| A8 | Nota en el diagrama; no se modela | DBML |
-| A9 | `documento_contrato` sin estados, con `usuario_id` y `usuario_rol` (S6) | DBML, DDL, migración |
-| A10 | Fuera del modelo | — |
-| A11 | Nota en el diagrama; no se modela | DBML |
-| A12 | Nota en el diagrama; no se crean UNIQUE en `contrato_general_id` | DBML |
-| A13 | Diccionario generado desde el DBML | `diccionario-datos.md`, `scripts/genera_diccionario.js` |
-| A14, ítem 7 | `uq_numero_contrato_vigencia_contrato_general`; `numero_contrato` nullable hasta la suscripción; la migración aborta si hay duplicados | DBML, DDL, `migracion-desde-v2.up.sql`, `evidencias/05-verificaciones-abortan.txt` |
-| Observación general | `usuario_id integer` y `usuario_rol varchar(40)` en las 6 tablas (mismo tipo que ya tenían `estado_contrato` y `poliza`) | DBML, DDL, migración |
-| Ítem 2 | 14 de las 16 tablas del DDL actual (sin `lugar_ejecucion` ni `contratista`, absorbidas), más 3 nuevas; nota en `ordenador_contrato` | DBML, DDL |
-| Ítems 15 y 16 | `contratista` se elimina; sus datos pasan a `contrato_general.proveedor_numero_documento`, `tipo_persona_id` y `clase_proveedor_id`. No tenía otras columnas de negocio | DBML, DDL, migración |
-| Ítem 19 | `parametro_unidad_ejecutora`, `configuracion_unidad_ejecutora`, `NOT NULL` e índice en `contrato_general.unidad_ejecutora_id` (S4); códigos 01/02 en Parámetros como ajuste de datos | DBML, DDL, migración, `notas-migracion.md` §6 y §7, `ddl/carga-inicial-unidad-ejecutora.sql` |
-| Ítem 23 | Se mantienen `regimen_contratacion_id` y `tema_gasto_inversion_id` (S1) | DBML, DDL |
-| Ítem 47 | 7 columnas nuevas en `acta_inicio` (S2) | DBML, DDL, migración |
-| Ítem 51 | Esquema `contratacion` y base `administrativa`, provisionales (S3) | DDL, `notas-migracion.md` |
-| #376 | `huella_navegador` (S8) | DBML, DDL, migración |
+| 19 | "Se remueve la tabla parametro unidad ejecutora" | Sale `parametro_unidad_ejecutora` |
+| 35 (A7) | "Agregar tabla de estados a póliza" | Nueva `estado_poliza`; sale `poliza.estado_poliza_id` |
+| 82 | `vigencia_id` | `contrato_general.vigencia varchar(4)` pasa a `vigencia_id integer` (Parámetros CRUD); también `vigencia_cdp_id` y `vigencia_rp_id` |
+| 78 | Relación polimórfica de los documentos | `documento_contrato.contrato_general_id` pasa a `entidad_tipo` + `entidad_id` (`contrato_general`, `poliza` o `acta_inicio`), sin FK física ni CHECK: valida el CRUD |
+| 40 | "No, se va a implementar el nuevo" | La migración y la carga inicial quedan obsoletas (sección 8) |
+| 42 | "Se incorpora firma manual, si se integra otro servicio se registra igualmente en documento_contrato" | Nota en `documento_contrato` |
+| 47 | "A nivel de modelo no afecta, se debe controlar a nivel de implementación (generación)" | Las columnas de `acta_inicio` se mantienen (S2) |
+| 10 | Estado visible y máquina de estados interna (#384, 24/10) | Notas en `estado_contrato` |
+| 2 | No incluir `lugar_ejecucion` (#384, 22/10) | El modelo final no absorbe sus columnas en `contrato_general` |
+| Solicitante | Absorbido en el modelo final | `dependencia_solicitante_id`, `sede_solicitante_id` y sus `_legado_id` en `contrato_general`; sale `solicitante` |
+| 28, 29, 34, 36, 37, 41, 43, 44, 46, 49 | De implementación o de otros módulos | Sin efecto en el modelo |
 
-## 5. Supuestos (pendientes de confirmar)
+### 3.2 Del 22/10/2026 (#384)
 
-| # | Tema | Supuesto aplicado |
+Comentario "Validación con el equipo": https://github.com/udistrital/argo_documentacion/issues/384#issuecomment-6347875572. Siguen vigentes:
+- A6: `fecha_suscripcion` en `contrato_general`;
+- A13: diccionario;
+- A14: `UNIQUE (numero_contrato, vigencia)`, que hoy es `uq_numero_contrato_vigencia_id_contrato_general`;
+- `usuario_id` y `usuario_rol` en las tablas de negocio;
+- ítems 15 y 16: proveedor absorbido en `contrato_general`.
+
+## 4. Supuestos
+
+| # | Tema | Estado en el modelo final |
 |---|---|---|
-| S1 | Ítem 23 | `regimen_contratacion_id` (116) y `tema_gasto_inversion_id` (126) se mantienen, nullable, aunque negocio propuso retirarlos |
-| S2 | Ítem 47 | Las 7 columnas de `acta_inicio` de la #359 se incluyen, nullable: `fecha_suscripcion date`, `numero_acta varchar(50)`, `valor_disponibilidad numeric(20,7)`, `numero_registro_presupuestal varchar(50)`, `valor_registro_presupuestal numeric(20,7)`, `valor_anticipo numeric(20,7)`, `nombre_interventor varchar(250)`. El MID las envía sin longitudes, así que las longitudes son provisionales. Los datos de CDP y RP duplican `disponibilidad_presupuestal` y `registro_presupuestal`, y `acta_inicio.fecha_suscripcion` es la fecha del acta, no la del contrato |
-| S3 | Ítem 51 | Base `administrativa` y esquema `contratacion`, provisionales. El DDL fija el esquema en una sola línea (`SET search_path TO contratacion;`); el bloque `DO` crea ese esquema |
-| S4 | Ítem 19 | Se incluyen las dos tablas de la propuesta del 21/10 tal como están publicadas, más `NOT NULL` e índice en `contrato_general.unidad_ejecutora_id`. "Rectoría 01, IDEXUD 02" se interpreta como el `codigo_abreviacion` de los parámetros 6818 y 6819 (ajuste de datos en Parámetros, no de esquema) |
-| S5 | A7 | `poliza.estado_poliza_id integer` nullable, referencia a Parámetros sin FK física, con la nota "estados por definir con la Analista" |
-| S6 | A9 | `documento_contrato` sigue siendo una sola tabla sin estados; el ajuste aplicado son `usuario_id` y `usuario_rol`. Falta el detalle de "con ajustes" |
-| S7 | `lugar_ejecucion` | La tabla se elimina y sus columnas pasan nullable a `contrato_general` con prefijo `lugar_ejecucion_`, con la nota "pendiente validar depuración de datos contra resoluciones en producción (Analista)" |
-| S8 | #376 | Se incluye `huella_navegador` como está en el PR gestion_contractual_crud#49, con un ajuste: `fecha_modificacion` pasa a `NOT NULL` para cumplir el lineamiento |
+| S1 | Régimen de contratación y tema de gasto de inversión se mantienen, nullable | Pendiente (ítem 23: "Validar integración y compatibilidad") |
+| S2 | Columnas nuevas de `acta_inicio` | Se mantienen: el LT indicó que no afecta el modelo (ítem 47) |
+| S3 | Base `administrativa` y esquema `contratacion` | Pendiente (ítem 51) |
+| S4 | Tablas de unidad ejecutora y códigos 01/02 | Obsoleto: las dos tablas no están en el modelo final; los códigos quedan en "Validación paramétrica" (ítems 80 y 146) |
+| S5 | `poliza.estado_poliza_id` | Reemplazado por `estado_poliza` (ítem 35) |
+| S6 | `documento_contrato` "con ajustes" | Resuelto: relación polimórfica (ítem 78) |
+| S7 | `lugar_ejecucion` absorbida | Resuelto: sus columnas no están en el modelo final (ítem 2) |
+| S8 | `huella_navegador` | No está en el modelo final; pendiente de confirmar con el LT (sección 10) |
 
-**Otras decisiones de este análisis, también por confirmar:**
-- **Longitudes nuevas.** Las columnas que en develop eran varchar sin longitud quedan así: `modo_pago` 1000, `objeto` 2000, `justificacion` 4000, `actividades` 8000, `condiciones` 4000, `descripcion` 2000 (`especificacion_tecnica` y `acta_inicio`), `destinacion` 1000, `cargo_legado` 250, `resolucion` 250 y `documento_identidad` 20. La migración aborta si algún dato las supera.
-- **Renombres por lineamiento:**
-  - `solicitante.dependencia_solicitante_id` → `dependencia_id` y `sede_solicitante_id` → `sede_id`;
-  - `registro_presupuestal.cdp_id` → `disponibilidad_presupuestal_id`;
-  - `registro_presupuestal.registro_presupuestal` → `numero_registro_presupuestal`.
-- **`valor_tasa_cambio`** pasa de `numeric(16,10)` a `numeric(20,7)`. La migración aborta si se perdieran decimales.
+## 5. Modelo
 
-## 6. Modelo
+- **dbdiagram.io:** [ARGO v2 — Modelo de datos](https://dbdiagram.io/d/6ad7138cd7bbc90c21d6e18d). Es el diagrama del modelo final; se abre sin sesión (`evidencias/389/09-dbdiagram-incognito.png`). El editor de ese diagrama tiene el DBML del LT con sus notas originales; las notas actualizadas están en `modelo-argo-v2.dbml`.
+- **Imagen:** `evidencias/389/10-modelo-final-dbdiagram.png`, exportación del diagrama final publicada en el [comentario 6453949520](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6453949520).
 
-- **dbdiagram.io:** [ARGO v2 — Modelo de datos (#384)](https://dbdiagram.io/d/6adb8b82aac330141004baa1), enlace público de solo lectura. Contiene el mismo `modelo-argo-v2.dbml` y las tablas están ordenadas por dominio (TableGroup). En el plan gratuito, dbdiagram no dibuja los marcos de los TableGroup ni las notas adhesivas: los grupos se ven como columnas y las notas siguen en el DBML (sección 10).
-- **Imagen:** `evidencias/08-modelo-dbdiagram.png`, exportada desde dbdiagram.io. `evidencias/08-modelo-dbdiagram.pdf` es la misma imagen en PDF, generada localmente porque la exportación a PDF de dbdiagram no se completó. `evidencias/09-dbdiagram-abierto.png` es el diagrama abierto en dbdiagram.io.
+![Diagrama del modelo final exportado desde dbdiagram.io](evidencias/389/10-modelo-final-dbdiagram.png)
 
-![Diagrama del modelo refinado exportado desde dbdiagram.io](evidencias/08-modelo-dbdiagram.png)
-
-**17 tablas, 14 relaciones, 6 dominios:**
+**14 tablas, 199 columnas, 13 FK, 2 UNIQUE y 16 índices, en 4 dominios:**
 
 | Dominio | Tablas |
 |---|---|
-| Contrato | `contrato_general`, `estado_contrato`, `solicitante`, `supervisor_contrato`, `ordenador_contrato`, `contrato_arrendamiento` (1 a 1), `convenio`, `especificacion_tecnica` |
+| Contrato | `contrato_general`, `estado_contrato`, `supervisor_contrato`, `ordenador_contrato`, `contrato_arrendamiento` (1 a 1), `convenio`, `especificacion_tecnica` |
 | Presupuesto | `disponibilidad_presupuestal`, `registro_presupuestal` |
-| Póliza y amparos | `poliza`, `amparo_poliza` |
-| Documentos y actas | `documento_contrato`, `acta_inicio` |
-| Unidad ejecutora | `parametro_unidad_ejecutora`, `configuracion_unidad_ejecutora` |
-| Auditoría | `huella_navegador` |
+| Póliza y amparos | `poliza`, `amparo_poliza`, `estado_poliza` |
+| Documentos y actas | `documento_contrato` (polimórfica), `acta_inicio` |
 
 **Reglas comunes:**
 - Toda tabla tiene `id serial` (`pk_<tabla>`), `activo boolean NOT NULL DEFAULT true`, `fecha_creacion` y `fecha_modificacion timestamp NOT NULL DEFAULT now()`, y `COMMENT ON TABLE`.
-- Las referencias a Parámetros CRUD, Terceros, OIKOS, SiCapital y Gestor Documental son `integer` sin FK física, con un comentario que dice a qué apuntan (y el tipo de parámetro cuando se conoce).
-- Cada FK tiene índice. Ningún identificador supera 63 caracteres (el más largo tiene 62).
+- Las referencias a Parámetros CRUD, Terceros, OIKOS, SiCapital y Gestor Documental son `integer` sin FK física, con un comentario que dice a qué apuntan.
+- `documento_contrato` no tiene FK física: `entidad_tipo` dice a qué tabla pertenece el documento y `entidad_id` a qué registro. La BD no restringe ninguno de los dos (`evidencias/389/05-entidad-tipo-invalido.txt`).
+- Cada FK tiene índice.
 
-## 7. Cambios frente al modelo actual (develop 9e20927)
+## 6. Cambios frente al modelo del PR #394
 
-### 7.1 Tablas
+### 6.1 Tablas
 
 | Cambio | Tablas |
 |---|---|
-| Eliminadas y absorbidas en `contrato_general` | `contratista` (ítems 15 y 16), `lugar_ejecucion` (S7) |
-| Nuevas | `parametro_unidad_ejecutora`, `configuracion_unidad_ejecutora` (S4), `huella_navegador` (S8) |
-| Sin cambio de columnas, solo restricciones y auditoría | `estado_contrato`, `convenio` |
+| Se absorbe en `contrato_general` | `solicitante` |
+| Salen del modelo | `parametro_unidad_ejecutora` (ítem 19), `configuracion_unidad_ejecutora` y `huella_navegador` (las dos últimas, pendientes de confirmar con el LT) |
+| Nueva | `estado_poliza` (ítem 35) |
+| Sin cambios de columnas | `estado_contrato`, `supervisor_contrato`, `ordenador_contrato`, `contrato_arrendamiento`, `convenio`, `especificacion_tecnica`, `amparo_poliza`, `acta_inicio` |
 
-### 7.2 Columnas por tabla
+### 6.2 Columnas
 
-| Tabla | Nuevas | Renombradas | Cambio de tipo o nulabilidad |
-|---|---|---|---|
-| `contrato_general` | `fecha_suscripcion`, `proveedor_numero_documento`, `tipo_persona_id`, `clase_proveedor_id`, `lugar_ejecucion_pais_id`, `lugar_ejecucion_ciudad_id`, `lugar_ejecucion_municipio_id`, `lugar_ejecucion_dependencia_id`, `lugar_ejecucion_sede_id`, `lugar_ejecucion_direccion`, `usuario_id`, `usuario_rol` | — | `valor_pesos`, `valor_contrato_me` y `valor_tasa_cambio` a `numeric(20,7)`; `modo_pago`, `objeto`, `justificacion`, `actividades` y `condiciones` con longitud; `unidad_ejecutora_id` NOT NULL |
-| `solicitante` | — | `dependencia_solicitante_id` → `dependencia_id`, `sede_solicitante_id` → `sede_id` | `fecha_modificacion` NOT NULL |
-| `supervisor_contrato` | — | — | `cargo_legado varchar(250)`; `fecha_modificacion` NOT NULL |
-| `ordenador_contrato` | — | — | `resolucion varchar(250)`, `documento_identidad varchar(20)`; `fecha_modificacion` NOT NULL |
-| `contrato_arrendamiento` | — | — | `destinacion varchar(1000)`; montos a `numeric(20,7)` |
-| `especificacion_tecnica` | — | — | `descripcion varchar(2000)`; montos a `numeric(20,7)` |
-| `disponibilidad_presupuestal` | — | — | `activo` NOT NULL |
-| `registro_presupuestal` | — | `cdp_id` → `disponibilidad_presupuestal_id`, `registro_presupuestal` → `numero_registro_presupuestal` | — |
-| `poliza` | `estado_poliza_id`, `usuario_rol` | — | — |
-| `amparo_poliza` | `usuario_id`, `usuario_rol` | — | — |
-| `documento_contrato` | `usuario_id`, `usuario_rol` | — | — |
-| `acta_inicio` | `fecha_suscripcion`, `numero_acta`, `valor_disponibilidad`, `numero_registro_presupuestal`, `valor_registro_presupuestal`, `valor_anticipo`, `nombre_interventor`, `usuario_rol` | — | `descripcion varchar(2000)` |
+| Tabla | Antes (PR #394) | Modelo final |
+|---|---|---|
+| `contrato_general` | `vigencia varchar(4)` | `vigencia_id integer` (Parámetros CRUD) |
+| `contrato_general` | `lugar_ejecucion_pais_id`, `_ciudad_id`, `_municipio_id`, `_dependencia_id`, `_sede_id`, `_direccion` | Retiradas |
+| `contrato_general` | — (en `solicitante`: `dependencia_id`, `sede_id`) | `dependencia_solicitante_id`, `sede_solicitante_id`, `dependencia_solicitante_legado_id`, `sede_solicitante_legado_id`, nullable |
+| `disponibilidad_presupuestal` | `vigencia_cdp` | `vigencia_cdp_id` |
+| `registro_presupuestal` | `vigencia_rp` | `vigencia_rp_id` |
+| `poliza` | `estado_poliza_id` | Retirada; el estado pasa a `estado_poliza` |
+| `documento_contrato` | `contrato_general_id` (FK) | `entidad_tipo varchar(50)` + `entidad_id integer`, sin FK |
 
-**En todas las tablas:**
-- `activo` con `DEFAULT true`, fechas con `DEFAULT now()`.
-- Restricciones e índices renombrados a `pk_`, `fk_`, `uq_` e `idx_<tabla>_<campo>`.
-- Índices nuevos en las FK que no los tenían.
-- `UNIQUE (numero_contrato, vigencia)` en `contrato_general`.
+### 6.3 Restricciones e índices
 
-No se elimina ninguna columna de negocio: las de `contratista` y `lugar_ejecucion` pasan a `contrato_general`.
+| Antes (PR #394) | Modelo final |
+|---|---|
+| `uq_numero_contrato_vigencia_contrato_general` | `uq_numero_contrato_vigencia_id_contrato_general` |
+| `fk_documento_contrato_contrato_general` e `idx_documento_contrato_contrato_general_id` | `idx_documento_contrato_entidad_tipo_entidad_id` (sin FK) |
+| `fk_solicitante_contrato_general`, `idx_solicitante_contrato_general_id` | Salen con la tabla |
+| — | `fk_estado_poliza_poliza`, `idx_estado_poliza_poliza_id` |
 
-## 8. Migración
+## 7. DDL y lineamientos
 
-Ver `notas-migracion.md`, que incluye:
-- el orden de ejecución y los requisitos;
-- las verificaciones que abortan;
-- el mapeo de ARGO v1 (`numero_contrato`, `ordenador_contrato` y otros), sin scripts;
-- el ajuste de códigos 01/02 en Parámetros;
-- la carga inicial de unidad ejecutora (IDEXUD: 75 parámetros; Rectoría, pendiente de la #383; unidad 03, pendiente);
-- el impacto en el MID, el MF y `poliza_mid`, tabla por tabla.
+`ddl/creacion-tablas.sql` implementa el DBML final:
+- **Esquema y base:** esquema `contratacion` y base `administrativa`, provisionales (S3). El esquema se cambia en la línea `SET search_path`, y el bloque `DO` lo crea.
+- **Restricciones:** `CONSTRAINT pk_<tabla>`, `fk_<origen>_<referenciada>` y `uq_<col>_<tabla>` dentro de cada `CREATE TABLE`, e índices `idx_<tabla>_<campo>`, con los mismos nombres del DBML.
+- **Comentarios:** `COMMENT ON TABLE` y `COMMENT ON COLUMN` tomados de las notas del DBML.
+- **Sin CHECK:** el modelo no tiene `ck_`. La polimórfica de `documento_contrato` va sin FK ni CHECK, por decisión del LT.
 
-## 9. Pruebas y evidencias
+La consulta de lineamientos de la #384 no encuentra incumplimientos sobre el catálogo (sección 9).
 
-PostgreSQL 16.13 en contenedor `postgres:16-alpine`.
+## 8. Migración y carga inicial (obsoletas)
+
+`ddl/migracion-desde-v2.up.sql`, `ddl/migracion-desde-v2.down.sql` y `ddl/carga-inicial-unidad-ejecutora.sql` se conservan como referencia, pero **no aplican al modelo final**:
+- **Migración:** el LT respondió al ítem 40 "No, se va a implementar el nuevo", y la #385 crea la base desde `ddl/creacion-tablas.sql`. Además, la migración se escribió para el modelo del PR #394 (crea tablas que el modelo final no tiene y no contempla `estado_poliza`, `vigencia_id` ni la polimórfica).
+- **Carga inicial:** el LT retiró `parametro_unidad_ejecutora`, y `configuracion_unidad_ejecutora` no está en el modelo final.
+- **Pregunta abierta para el LT:** ¿se confirma que no hay migración de datos hacia el modelo final, ni desde el modelo actual de `gestion_contractual_crud` ni desde ARGO v1? Si la hay, la migración se rehace sobre el modelo final.
+
+`notas-migracion.md` tiene el mismo aviso al inicio.
+
+## 9. Pruebas y evidencias (#389)
+
+PostgreSQL 16.13 en el contenedor `postgres:16-alpine` (`pg384`), sobre una base de prueba que se crea y se borra en cada corrida. Las pruebas d), e) y f) corren dentro de una transacción con `ROLLBACK`. Cada evidencia tiene su `.txt` (salida completa) y su `.png`.
 
 | Prueba | Resultado | Evidencia |
 |---|---|---|
-| a) BD limpia con `ddl/creacion-tablas.sql` | Sin errores: 17 tablas en el esquema `contratacion` | `evidencias/01-ddl-bd-limpia.txt` (`\dn`, `\dt`, `\d+` de `contrato_general`, `acta_inicio` y `parametro_unidad_ejecutora`) y `.png` |
-| a) Lineamientos sobre el catálogo | 12 controles sin incumplimientos | `evidencias/02-lineamientos-bd-limpia.txt` y `.png` |
-| DDL frente a `dbml2sql` (@dbml/cli 3.14.1) | 0 diferencias en 229 columnas, 14 FK, 21 únicos (17 PK y 4 UNIQUE), 19 índices y los comentarios de tablas y columnas. Se corrigió en el DBML la dirección de la FK 1 a 1 | `evidencias/03-ddl-vs-dbml2sql.txt` y `.png` |
-| b) Migración up sobre el DDL de develop con datos de prueba | Datos de `contratista` y `lugar_ejecucion` en `contrato_general`; esquema resultante igual al de la BD limpia (0 diferencias) | `evidencias/04-migracion-up-down.txt` y `.png` |
-| b) Migración down | `pg_dump --schema-only` idéntico al original (solo cambia el token aleatorio de `\restrict`); datos de `contratista` y `lugar_ejecucion` restaurados | `evidencias/04-migracion-up-down.txt` |
-| c) Verificaciones del up | Abortan con mensaje y sin cambios en 4 casos: duplicado de A14, unidad ejecutora nula, dos contratistas por contrato y texto largo | `evidencias/05-verificaciones-abortan.txt` y `.png` |
-| Carga inicial de unidad ejecutora | 2 configuraciones y 75 parámetros de IDEXUD | `evidencias/06-carga-inicial-unidad-ejecutora.txt` |
-| d) Humo para la #385 con `bee generate appcode` (Go 1.27.3, bee v2, beego v2.1.0) | 17 modelos, 17 controladores y 17 namespaces; `go build` sin errores. El código generado no se versiona | `evidencias/07-bee-generate-appcode.txt` y `.png` |
+| a) BD limpia con `ddl/creacion-tablas.sql` | Sin errores: 14 tablas en el esquema `contratacion` | `evidencias/389/01-ddl-bd-limpia` |
+| b) Lineamientos sobre el catálogo | 12 controles sin incumplimientos | `evidencias/389/02-lineamientos` |
+| c) DDL frente a `dbml2sql` (@dbml/cli 3.14.1) del mismo DBML | 0 diferencias en 471 líneas (199 columnas, 27 PK y FK, 32 índices y los comentarios de 14 tablas y 199 columnas). Diferencias esperadas, normalizadas: nombre de la PK, UNIQUE como índice único y prefijo de esquema | `evidencias/389/03-ddl-vs-dbml2sql` |
+| d) `numero_contrato` duplicado en la misma vigencia | Rechazado por `uq_numero_contrato_vigencia_id_contrato_general`; en otra vigencia se acepta | `evidencias/389/04-unique-numero-contrato` |
+| e) `entidad_tipo` inválido en `documento_contrato` | **Aceptado por la BD**, igual que un `entidad_id` inexistente: lo debe validar el CRUD de la #385 | `evidencias/389/05-entidad-tipo-invalido` |
+| f) Borrado lógico | `UPDATE activo = false`: la fila sigue en la tabla y un listado de activos no la devuelve | `evidencias/389/06-borrado-logico` |
+| Diff de las notas del DBML | Solo cambian notas; el SQL de `dbml2sql` antes y después difiere únicamente en los `COMMENT ON` | `evidencias/389/07-diff-notas-dbml` |
+| Diccionario renderizado | 14 tablas, 199 columnas | `evidencias/389/08-diccionario-renderizado.png` |
+| Diagrama sin sesión | Se abre en una ventana de incógnito de Chrome | `evidencias/389/09-dbdiagram-incognito.png` |
 
-## 10. Pendientes con la Analista y el LT
+Las evidencias `01`–`09` de la raíz de `evidencias/` son de la #384 y corresponden al modelo del PR #394.
 
-| Tema | Pendiente | Responsable según la fuente |
+## 10. Pendientes con el LT y la Analista
+
+| Tema | Pendiente | Responsable |
 |---|---|---|
-| A7 | Definir los estados de la póliza (catálogo para `estado_poliza_id`) | Analista |
-| A8 | Campos del estudio previo y del proceso, pendientes de la integración con Ágora | Analista / LT |
-| A11 | Proyecto de extensión: campo actual o selector nuevo exclusivo de IDEXUD | Analista |
-| A12 | Confirmar si un contrato puede tener varios ordenadores y si el solicitante es 1 a 1 | Analista |
-| Lugar de ejecución | Validar la depuración de datos contra resoluciones en producción (S7) | Analista |
-| Ítem 23 | Confirmar que régimen de contratación y tema de gasto de inversión se mantienen (S1) | LT |
-| Ítem 47 | Confirmar las columnas nuevas de `acta_inicio` y sus longitudes (S2) | LT |
-| Ítem 51 | Confirmar la base y el esquema definitivos (S3) | LT |
-| Ítem 19 | Confirmar la interpretación de "Rectoría 01, IDEXUD 02" y el visto bueno de las dos tablas (S4) | LT |
-| A9 | Detalle de "con ajustes" (S6) | LT |
-| ARGO v1 | Validar el soporte de migración de `ordenador_contrato` y el mapeo de `notas-migracion.md` §5 | LT |
-| Tipo de `vigencia` | `contrato_general.vigencia` es `varchar(4)`, mientras que `disponibilidad_presupuestal.vigencia_cdp` y `registro_presupuestal.vigencia_rp` son `integer`. `vigencia` forma parte del `UNIQUE (numero_contrato, vigencia)` | LT |
-| Tipo de `numero_registro_presupuestal` | Es `integer` en `registro_presupuestal` y `varchar(50)` en `acta_inicio` | LT |
+| `huella_navegador` | No está en el modelo final. Se había definido con `metadatos` jsonb y columnas generadas (#384, 24/10). ¿Sale del modelo v2? | LT |
+| `configuracion_unidad_ejecutora` | No está en el modelo final, aunque el comentario 6448000059 dice que se mantiene | LT |
+| `documento_contrato` | ¿Lleva `metadatos` jsonb, que estaba en los dos diagramas? ¿El nombre final es `documento_contrato` o `documento`? | LT |
+| Ítem 8 | ¿Se agrega UNIQUE a `consecutivo_elaboracion`? Hoy el modelo no lo tiene | LT |
+| Ítem 13 | "Se debe unificar": ¿es la absorción de `solicitante` en `contrato_general`? | LT |
+| Ítem 18 | ¿Se conserva `supervisor_contrato.digito_verificacion`? | LT |
+| Migración | ¿Se confirma que no hay migración de datos (ítem 40)? | LT |
+| PR #394 | ¿Se cierra, dado que este modelo lo reemplaza? | LT |
+| `vigencia_cdp_id`, `vigencia_rp_id` | Tienen sufijo `_id` y su nota dice "Año de vigencia": ¿son referencias a Parámetros o el año? | LT |
+| A8, A11, A12 | Estudio previo (Ágora), proyecto de extensión y ordenadores múltiples | Analista |
+| S1, S3 | Régimen y tema de gasto (ítem 23); base y esquema (ítem 51) | LT |
+| Parámetros | Validación paramétrica (ítems 80, 146, 7, 30, 31, 32, 33 y 45) y estados de la póliza | LT / Analista |
 
 ## 11. Impacto en la #385
 
-- **Generación.** El CRUD se genera con `bee generate appcode` desde una base creada con `ddl/creacion-tablas.sql`. La prueba de humo generó un modelo y un controlador por cada una de las 17 tablas y compila.
-- **Ajustes sobre lo generado** (ver `evidencias/07-bee-generate-appcode.txt`):
-  - agregar `;auto` a la PK;
-  - punteros o tipos nulos en columnas nullable, para no leer NULL como 0;
-  - un tipo con precisión para `numeric(20,7)` en lugar de `float64`;
-  - el tipo de `componentes` (jsonb);
-  - `rel(one)` para `contrato_arrendamiento`.
-- **Conexión.** La base y el esquema son provisionales (S3); la conexión debe usar el `search_path` del esquema.
-- **Contrato de API.** La API anterior exponía `contratistas` y `lugares-ejecucion`. En el modelo nuevo esos datos están en `contrato_general`, así que el MID y el MF deben ajustarse (`notas-migracion.md` §8).
-- **Unidad ejecutora.** La #385 debe exponer `parametro_unidad_ejecutora` y `configuracion_unidad_ejecutora`. El MID puede reemplazar `conf.ts` por `configuracion_unidad_ejecutora`.
+- **Generación:** el CRUD se genera con `bee generate appcode` desde una base creada con `ddl/creacion-tablas.sql`. Los ajustes sobre lo generado que se identificaron en la #384 siguen aplicando: `;auto` en la PK, tipos nulos, tipo con precisión para `numeric(20,7)` y `rel(one)` en `contrato_arrendamiento`.
+- **Borrado lógico:** el DELETE debe ser lógico (`activo = false`). Hoy 7 servicios del CRUD NestJS borran físico (`cdp`, `contratista`, `documento-contrato`, `estado-contrato`, `lugar-ejecucion`, `solicitante` y `supervisor`).
+- **Polimórfica:** el CRUD valida que `entidad_tipo` sea `contrato_general`, `poliza` o `acta_inicio` y que exista `entidad_id`, y desactiva los documentos cuando se desactiva su registro.
+- **Consumidores:** el MF envía hoy `contrato_general_id` a `documentos-contratos` en `polizas.service.ts` (`getActaGuardada` y `registrarDocumentoActa`) y en `contrato-general-crud.service.ts`; debe pasar a `entidad_tipo` y `entidad_id`. Lo mismo aplica a los consumidores de `contratistas`, `lugares-ejecucion` y `solicitantes`, que ya no existen como tablas.
+- **Conexión:** la base y el esquema son provisionales (S3); la conexión debe usar el `search_path` del esquema.
 
 ## Regenerar
 
@@ -221,10 +204,4 @@ PostgreSQL 16.13 en contenedor `postgres:16-alpine`.
 # Diccionario de datos
 npm install --prefix /tmp/dbml @dbml/core@3
 NODE_PATH=/tmp/dbml/node_modules node scripts/genera_diccionario.js
-
-# Comentarios de los scripts de migración (tras cambiar el DDL)
-python3 scripts/sincroniza_comentarios.py <gestion_contractual_crud>/sql/creacion-tablas.sql
-
-# Carga inicial de unidad ejecutora
-python3 scripts/genera_carga_unidad_ejecutora.py <consolidado depurado .xlsx>
 ```
