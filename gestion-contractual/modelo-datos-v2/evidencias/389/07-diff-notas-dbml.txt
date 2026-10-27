@@ -1,0 +1,62 @@
+# Diff de las notas del DBML (commit b80acec: docs: se actualizan las notas del DBML al modelo final)
+# Solo cambian notas: el SQL de dbml2sql antes y después difiere únicamente en los COMMENT ON.
+
+diff --git a/gestion-contractual/modelo-datos-v2/modelo-argo-v2.dbml b/gestion-contractual/modelo-datos-v2/modelo-argo-v2.dbml
+index 4280557..c538750 100644
+--- a/gestion-contractual/modelo-datos-v2/modelo-argo-v2.dbml
++++ b/gestion-contractual/modelo-datos-v2/modelo-argo-v2.dbml
+@@ -1,2 +1,2 @@
+-// Modelo de datos ARGO v2 refinado — issue udistrital/argo_documentacion#384
++// Modelo de datos ARGO v2 refinado — issues udistrital/argo_documentacion#384 y #389
+ // Fuente de verdad del modelo. El DDL de ddl/creacion-tablas.sql lo implementa.
+@@ -7,3 +7,4 @@ Project argo_v2_gestion_contractual {
+   Modelo de datos de gestión contractual de ARGO v2, refinado en la issue #384 con las decisiones del LT
+-  del 22/10/2026 (comentario "Validación con el equipo"). Base de la #385 (CRUD en Beego v2).
++  del 22/10/2026 (comentario "Validación con el equipo") y cerrado en la #389 con las decisiones del
++  26 y 27/10/2026 (modelo final adjunto por el LT). Base de la #385 (CRUD en Beego v2).
+ 
+@@ -12,4 +13,5 @@ Project argo_v2_gestion_contractual {
+     integer sin FK física; cada columna indica a qué apunta.
+-  - Se retiran las tablas lugar_ejecucion y contratista: sus datos pasan a contrato_general.
+-  - Los temas en stand by se dejan como notas (A8, A11, A12, solicitante y ordenador).
++  - Se retiran las tablas contratista y solicitante: sus datos pasan a contrato_general.
++  - Se retira la tabla lugar_ejecucion: sus columnas no pasan a contrato_general (ítem 2).
++  - Los temas en stand by se dejan como notas (A8, A11, A12 y ordenador).
+   '''
+@@ -78,3 +80,3 @@ Table contrato_general {
+ 
+-  Note: 'Contrato y su información básica. Absorbe los datos 1 a 1 del proveedor (antes contratista) y del lugar de ejecución'
++  Note: 'Contrato y su información básica. Absorbe los datos 1 a 1 del proveedor (antes contratista) y del solicitante'
+ }
+@@ -84,4 +86,4 @@ Table estado_contrato {
+   contrato_general_id integer [not null]
+-  estado_parametro_id integer [note: 'Parámetros CRUD, tipo 137 Estados del contrato (estado general)']
+-  estado_interno_parametro_id integer [note: 'Parámetros CRUD, tipo 141 Estados internos del contrato']
++  estado_parametro_id integer [note: 'Parámetros CRUD, tipo 137 Estados del contrato. Estado visible para el usuario (ítem 10)']
++  estado_interno_parametro_id integer [note: 'Parámetros CRUD, tipo 141 Estados internos del contrato. Máquina de estados interna (ítem 10)']
+   actual boolean [not null, note: 'Marca el estado vigente del contrato']
+@@ -99,3 +101,3 @@ Table estado_contrato {
+ 
+-  Note: 'Historial de estados del contrato (general e interno)'
++  Note: 'Historial de estados del contrato: el visible para el usuario y el de la máquina de estados interna (ítem 10)'
+ }
+@@ -334,3 +336,3 @@ Table documento_contrato {
+ 
+-  Note: 'Documentos del contrato en una sola tabla, sin estados (A9 "con ajustes"; supuesto S6). Relación polimórfica: un documento pertenece a un contrato_general, una poliza o un acta_inicio'
++  Note: 'Documentos del contrato en una sola tabla, sin estados (A9). Relación polimórfica: un documento pertenece a un contrato_general, una poliza o un acta_inicio. Se incorpora firma manual; si se integra otro servicio se registra igualmente en documento_contrato (ítem 42)'
+ }
+@@ -436,3 +438,3 @@ Proveedor: 1 a 1, absorbido en contrato_general.
+ Ordenador: confirmar si un contrato puede tener varios.
+-Solicitante: validar si es 1 a 1.
++Solicitante: 1 a 1, absorbido en contrato_general (dependencia_solicitante_id, sede_solicitante_id y sus columnas _legado_id).
+ No se crean UNIQUE en contrato_general_id.
+@@ -444,5 +446,6 @@ Note nota_lugar_ejecucion {
+ Lugar de ejecución
+-La tabla lugar_ejecucion no se incluye. Sus columnas pasan a contrato_general
+-con prefijo lugar_ejecucion_. Pendiente validar la depuración de datos contra
+-resoluciones en producción (Analista).
++La tabla lugar_ejecucion no se incluye (ítem 2) y sus columnas no pasan a
++contrato_general: el modelo final del LT (#389) retira las columnas lugar_ejecucion_.
++La validación de la depuración de datos contra resoluciones en producción queda
++con la Analista.
+ '''

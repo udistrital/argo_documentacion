@@ -1,0 +1,36 @@
+# f) Borrado lógico: UPDATE activo = false; la fila sigue existiendo
+
+SET search_path TO contratacion;
+BEGIN;
+INSERT INTO contrato_general (unidad_ejecutora_id, vigencia_id, numero_contrato) VALUES (6819, 2026, 'ID-15') RETURNING id, numero_contrato, vigencia_id;
+ id | numero_contrato | vigencia_id 
+----+-----------------+-------------
+  5 | ID-15           |        2026
+(1 row)
+
+INSERT INTO poliza (contrato_general_id, numero_poliza) SELECT id, 'POL-001' FROM contrato_general RETURNING id, numero_poliza, activo;
+ id | numero_poliza | activo 
+----+---------------+--------
+  1 | POL-001       | t
+(1 row)
+
+UPDATE poliza SET activo = false, fecha_modificacion = now() WHERE numero_poliza = 'POL-001' RETURNING id, numero_poliza, activo;
+ id | numero_poliza | activo 
+----+---------------+--------
+  1 | POL-001       | f
+(1 row)
+
+SELECT count(*) AS filas_poliza, count(*) FILTER (WHERE activo) AS activas FROM poliza;
+ filas_poliza | activas 
+--------------+---------
+            1 |       0
+(1 row)
+
+SELECT id, numero_poliza, activo FROM poliza WHERE activo;
+ id | numero_poliza | activo 
+----+---------------+--------
+(0 rows)
+
+ROLLBACK;
+
+Resultado: la póliza queda con activo = false y sigue en la tabla; un listado de activos no la devuelve.

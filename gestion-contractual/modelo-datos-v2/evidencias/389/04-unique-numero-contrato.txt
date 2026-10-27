@@ -1,0 +1,30 @@
+# d) numero_contrato duplicado en la misma vigencia: lo rechaza uq_numero_contrato_vigencia_id_contrato_general
+
+SET search_path TO contratacion;
+BEGIN;
+INSERT INTO contrato_general (unidad_ejecutora_id, vigencia_id, numero_contrato) VALUES (6819, 2026, 'ID-15') RETURNING id, numero_contrato, vigencia_id;
+ id | numero_contrato | vigencia_id 
+----+-----------------+-------------
+  1 | ID-15           |        2026
+(1 row)
+
+INSERT INTO contrato_general (unidad_ejecutora_id, vigencia_id, numero_contrato) VALUES (6819, 2026, 'ID-15');
+ERROR:  duplicate key value violates unique constraint "uq_numero_contrato_vigencia_id_contrato_general"
+DETAIL:  Key (numero_contrato, vigencia_id)=(ID-15, 2026) already exists.
+ROLLBACK;
+BEGIN;
+INSERT INTO contrato_general (unidad_ejecutora_id, vigencia_id, numero_contrato) VALUES (6819, 2026, 'ID-15') RETURNING id, numero_contrato, vigencia_id;
+ id | numero_contrato | vigencia_id 
+----+-----------------+-------------
+  3 | ID-15           |        2026
+(1 row)
+
+INSERT INTO contrato_general (unidad_ejecutora_id, vigencia_id, numero_contrato) VALUES (6819, 2027, 'ID-15') RETURNING id, numero_contrato, vigencia_id;
+ id | numero_contrato | vigencia_id 
+----+-----------------+-------------
+  4 | ID-15           |        2027
+(1 row)
+
+ROLLBACK;
+
+Resultado: el mismo número en la misma vigencia se rechaza; en otra vigencia se acepta.

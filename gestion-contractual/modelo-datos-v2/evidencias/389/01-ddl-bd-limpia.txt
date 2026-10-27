@@ -1,0 +1,70 @@
+# a) DDL en BD limpia: ddl/creacion-tablas.sql en la BD de prueba prueba389 (PostgreSQL 16.13)
+# psql -v ON_ERROR_STOP=1 -f ddl/creacion-tablas.sql
+Resultado: sin errores
+
+     List of schemas
+     Name     |  Owner   
+--------------+----------
+ contratacion | postgres
+(1 row)
+
+                       List of relations
+    Schema    |            Name             | Type  |  Owner   
+--------------+-----------------------------+-------+----------
+ contratacion | acta_inicio                 | table | postgres
+ contratacion | amparo_poliza               | table | postgres
+ contratacion | contrato_arrendamiento      | table | postgres
+ contratacion | contrato_general            | table | postgres
+ contratacion | convenio                    | table | postgres
+ contratacion | disponibilidad_presupuestal | table | postgres
+ contratacion | documento_contrato          | table | postgres
+ contratacion | especificacion_tecnica      | table | postgres
+ contratacion | estado_contrato             | table | postgres
+ contratacion | estado_poliza               | table | postgres
+ contratacion | ordenador_contrato          | table | postgres
+ contratacion | poliza                      | table | postgres
+ contratacion | registro_presupuestal       | table | postgres
+ contratacion | supervisor_contrato         | table | postgres
+(14 rows)
+
+ tablas 
+--------
+     14
+(1 row)
+
+                                                Table "contratacion.documento_contrato"
+       Column       |            Type             | Collation | Nullable |                           Default                           
+--------------------+-----------------------------+-----------+----------+-------------------------------------------------------------
+ id                 | integer                     |           | not null | nextval('contratacion.documento_contrato_id_seq'::regclass)
+ entidad_tipo       | character varying(50)       |           | not null | 
+ entidad_id         | integer                     |           | not null | 
+ tipo_documento_id  | integer                     |           |          | 
+ documento_id       | integer                     |           |          | 
+ documento_enlace   | character varying(50)       |           |          | 
+ usuario_id         | integer                     |           |          | 
+ usuario_rol        | character varying(40)       |           |          | 
+ activo             | boolean                     |           | not null | true
+ fecha_creacion     | timestamp without time zone |           | not null | now()
+ fecha_modificacion | timestamp without time zone |           | not null | now()
+Indexes:
+    "pk_documento_contrato" PRIMARY KEY, btree (id)
+    "idx_documento_contrato_entidad_tipo_entidad_id" btree (entidad_tipo, entidad_id)
+
+                                                Table "contratacion.estado_poliza"
+       Column        |            Type             | Collation | Nullable |                        Default                         
+---------------------+-----------------------------+-----------+----------+--------------------------------------------------------
+ id                  | integer                     |           | not null | nextval('contratacion.estado_poliza_id_seq'::regclass)
+ poliza_id           | integer                     |           | not null | 
+ estado_parametro_id | integer                     |           | not null | 
+ motivo              | character varying(250)      |           |          | 
+ usuario_id          | integer                     |           | not null | 
+ usuario_rol         | character varying(40)       |           |          | 
+ activo              | boolean                     |           | not null | true
+ fecha_creacion      | timestamp without time zone |           | not null | now()
+ fecha_modificacion  | timestamp without time zone |           | not null | now()
+Indexes:
+    "pk_estado_poliza" PRIMARY KEY, btree (id)
+    "idx_estado_poliza_poliza_id" btree (poliza_id)
+Foreign-key constraints:
+    "fk_estado_poliza_poliza" FOREIGN KEY (poliza_id) REFERENCES contratacion.poliza(id)
+

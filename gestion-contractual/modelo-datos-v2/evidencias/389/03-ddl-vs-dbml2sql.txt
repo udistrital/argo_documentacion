@@ -1,0 +1,14 @@
+# c) DDL (ddl/creacion-tablas.sql) frente al SQL que genera @dbml/cli 3.14.1 (dbml2sql) desde modelo-argo-v2.dbml
+# Ambos se cargaron en la BD de prueba (esquemas contratacion y dbml2sql) y se compararon con describe.sql de la #384:
+# columnas (tipo, nulo, defecto), restricciones, índices y comentarios de tablas y columnas.
+#
+# Diferencias esperadas, que se normalizan antes de comparar:
+#  1. dbml2sql no permite nombrar la PK: crea <tabla>_pkey; el DDL usa CONSTRAINT pk_<tabla>.
+#  2. dbml2sql expresa UNIQUE como CREATE UNIQUE INDEX; el DDL, como CONSTRAINT uq_... UNIQUE.
+#     Ambos crean el mismo índice único con el mismo nombre, así que se comparan los índices.
+#  3. Cada modelo se cargó en su propio esquema: se compara sin el prefijo de esquema.
+
+Líneas comparadas: 471 (CCM 199, COL 199, CON 27, IDX 32, TCM 14)
+  COL = columnas, CON = restricciones (PK y FK), IDX = índices, TCM / CCM = comentarios de tabla / columna
+Restricciones UNIQUE del DDL (comparadas como índice único): uq_contrato_general_id_contrato_arrendamiento, uq_numero_contrato_vigencia_id_contrato_general
+Diferencias: 0
