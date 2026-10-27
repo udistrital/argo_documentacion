@@ -11,7 +11,7 @@ Project argo_v2_gestion_contractual {
   - Las referencias a Parámetros CRUD, Terceros, OIKOS, SiCapital, Ágora y al Gestor Documental son
     integer sin FK física; cada columna indica a qué apunta.
   - Se retiran las tablas lugar_ejecucion y contratista: sus datos pasan a contrato_general.
-  - Los temas en stand by se dejan como notas (A7, A8, A11, A12, solicitante y ordenador).
+  - Los temas en stand by se dejan como notas (A8, A11, A12, solicitante y ordenador).
   '''
 }
 
@@ -22,7 +22,7 @@ Project argo_v2_gestion_contractual {
 Table contrato_general {
   id serial [pk]
   numero_contrato varchar(50) [note: 'Número oficial del contrato. Se genera con la RN de generación cuando el contrato pasa a SUSCRITO; en ARGO v1 viene migrado. Nulo hasta la suscripción (A14)']
-  vigencia varchar(4) [note: 'Año de vigencia del contrato (2025, 2026, ...)']
+  vigencia_id integer [note: 'Parámetros CRUD, tipo de parámetro Vigencia (tipo por confirmar). Año de vigencia del contrato']
   consecutivo_elaboracion varchar(50) [note: 'Consecutivo de elaboración, previo a la suscripción']
   unidad_ejecutora_id integer [not null, note: 'Parámetros CRUD, tipo 146 Unidad Ejecutora (6818 Rectoría, 6819 IDEXUD)']
   tipo_compromiso_id integer [note: 'Parámetros CRUD, tipo 111 Compromiso']
@@ -59,12 +59,10 @@ Table contrato_general {
   proveedor_numero_documento varchar(20) [note: 'Número de documento del proveedor. Antes contratista.numero_documento (ítem 16). El proveedor se consulta en Ágora por este número']
   tipo_persona_id integer [note: 'Parámetros CRUD, tipo 132 Tipo Persona (natural o jurídica) del proveedor. Antes contratista.tipo_persona_id']
   clase_proveedor_id integer [note: 'Parámetros CRUD, tipo 120 Clase Contratista (único o sociedad temporal). Antes contratista.clase_contratista_id']
-  lugar_ejecucion_pais_id integer [note: 'País del lugar de ejecución (referencia externa por confirmar: OIKOS o Parámetros). Antes lugar_ejecucion.pais_id. Pendiente validar depuración de datos (supuesto S7)']
-  lugar_ejecucion_ciudad_id integer [note: 'Ciudad del lugar de ejecución (referencia externa por confirmar). Antes lugar_ejecucion.ciudad_id (supuesto S7)']
-  lugar_ejecucion_municipio_id integer [note: 'Municipio del lugar de ejecución (referencia externa por confirmar). Antes lugar_ejecucion.municipio_id (supuesto S7)']
-  lugar_ejecucion_dependencia_id integer [note: 'OIKOS, dependencia del lugar de ejecución. Antes lugar_ejecucion.dependencia_id (supuesto S7)']
-  lugar_ejecucion_sede_id integer [note: 'OIKOS, sede del lugar de ejecución. Antes lugar_ejecucion.sede_id (supuesto S7)']
-  lugar_ejecucion_direccion varchar(150) [note: 'Dirección del lugar de ejecución. Antes lugar_ejecucion.direccion (supuesto S7)']
+  dependencia_solicitante_id integer [null, note: 'OIKOS, dependencia que solicita el contrato.']
+  sede_solicitante_id integer [null, note: 'OIKOS, sede donde se origina la solicitud.']
+  dependencia_solicitante_legado_id integer [null, note: 'OIKOS, dependencia que solicita el contrato legado.']
+  sede_solicitante_legado_id integer [null, note: 'OIKOS, sede donde se origina la solicitud legado.']
   usuario_id integer [note: 'Identificador del usuario que registra o modifica el contrato']
   usuario_rol varchar(40) [note: 'Rol del usuario que registra o modifica el contrato']
   usuario_legado varchar(15) [note: 'Usuario de ARGO v1, para compatibilidad con la migración']
@@ -73,7 +71,7 @@ Table contrato_general {
   fecha_modificacion timestamp [not null, default: `now()`]
 
   indexes {
-    (numero_contrato, vigencia) [unique, name: 'uq_numero_contrato_vigencia_contrato_general']
+    (numero_contrato, vigencia_id) [unique, name: 'uq_numero_contrato_vigencia_id_contrato_general']
     unidad_ejecutora_id [name: 'idx_contrato_general_unidad_ejecutora_id']
     tipo_contrato_id [name: 'idx_contrato_general_tipo_contrato_id']
   }
@@ -102,21 +100,7 @@ Table estado_contrato {
   Note: 'Historial de estados del contrato (general e interno)'
 }
 
-Table solicitante {
-  id serial [pk]
-  contrato_general_id integer [not null]
-  dependencia_id integer [not null, note: 'OIKOS, dependencia que solicita el contrato. Antes dependencia_solicitante_id']
-  sede_id integer [not null, note: 'OIKOS, sede donde se origina la solicitud. Antes sede_solicitante_id']
-  activo boolean [not null, default: true]
-  fecha_creacion timestamp [not null, default: `now()`]
-  fecha_modificacion timestamp [not null, default: `now()`]
 
-  indexes {
-    contrato_general_id [name: 'idx_solicitante_contrato_general_id']
-  }
-
-  Note: 'Dependencia y sede que solicitan el contrato. Cardinalidad 1 a 1 por validar (A12)'
-}
 
 Table supervisor_contrato {
   id serial [pk]
@@ -226,7 +210,7 @@ Table disponibilidad_presupuestal {
   id serial [pk]
   contrato_general_id integer [not null]
   numero_cdp_id integer [note: 'SiCapital, número del CDP con el que se consulta la fuente']
-  vigencia_cdp integer [note: 'Año de vigencia del CDP']
+  vigencia_cdp_id integer [note: 'Año de vigencia del CDP']
   fecha_registro date [note: 'Fecha de registro del CDP']
   activo boolean [not null, default: true]
   fecha_creacion timestamp [not null, default: `now()`]
@@ -243,7 +227,7 @@ Table registro_presupuestal {
   id serial [pk]
   disponibilidad_presupuestal_id integer [not null, note: 'Antes cdp_id']
   numero_registro_presupuestal integer [note: 'Número del registro presupuestal (RP). Antes registro_presupuestal']
-  vigencia_rp integer [note: 'Año de vigencia del RP']
+  vigencia_rp_id integer [note: 'Año de vigencia del RP']
   fecha_registro date [note: 'Fecha de registro del RP']
   activo boolean [not null, default: true]
   fecha_creacion timestamp [not null, default: `now()`]
@@ -265,7 +249,6 @@ Table poliza {
   contrato_general_id integer [not null]
   numero_poliza varchar(50) [note: 'Número con el que la aseguradora identifica la póliza. Sin restricción de unicidad (#351)']
   entidad_aseguradora_id integer [note: 'Parámetros CRUD, entidad aseguradora (tipo de parámetro por confirmar)']
-  estado_poliza_id integer [note: 'Parámetros CRUD, estado de la póliza. Estados por definir con la Analista (A7, supuesto S5)']
   descripcion varchar(255) [note: 'Descripción de la póliza']
   fecha_inicio date [note: 'Inicio de vigencia de la póliza']
   fecha_fin date [note: 'Fin de vigencia de la póliza']
@@ -283,6 +266,24 @@ Table poliza {
   }
 
   Note: 'Pólizas expedidas para las garantías del contrato'
+}
+
+Table estado_poliza {
+  id serial [pk]
+  poliza_id integer [not null]
+  estado_parametro_id integer [not null, note: 'Parámetros CRUD, estado de la póliza (tipo de parámetro por confirmar; estados por definir con la Analista)']
+  motivo varchar(250) [note: 'Razón del cambio de estado']
+  usuario_id integer [not null, note: 'Identificador del usuario que efectúa el cambio de estado']
+  usuario_rol varchar(40) [note: 'Rol del usuario que efectúa el cambio de estado']
+  activo boolean [not null, default: true]
+  fecha_creacion timestamp [not null, default: `now()`]
+  fecha_modificacion timestamp [not null, default: `now()`]
+
+  indexes {
+    poliza_id [name: 'idx_estado_poliza_poliza_id']
+  }
+
+  Note: 'Historial de estados de la póliza. El estado vigente es el registro más reciente'
 }
 
 Table amparo_poliza {
@@ -316,7 +317,8 @@ Table amparo_poliza {
 
 Table documento_contrato {
   id serial [pk]
-  contrato_general_id integer [not null]
+  entidad_tipo varchar(50) [not null, note: 'Tabla a la que pertenece el documento: contrato_general, poliza o acta_inicio']
+  entidad_id integer [not null, note: 'Identificador del registro en la tabla indicada por entidad_tipo (sin FK física)']
   tipo_documento_id integer [note: 'Parámetros CRUD, tipo de documento (tipo 133 Documentos Contrato)']
   documento_id integer [note: 'Gestor Documental, identificador del documento']
   documento_enlace varchar(50) [note: 'Gestor Documental, enlace del documento']
@@ -327,10 +329,10 @@ Table documento_contrato {
   fecha_modificacion timestamp [not null, default: `now()`]
 
   indexes {
-    contrato_general_id [name: 'idx_documento_contrato_contrato_general_id']
+    (entidad_tipo, entidad_id) [name: 'idx_documento_contrato_entidad_tipo_entidad_id']
   }
 
-  Note: 'Documentos del contrato en una sola tabla, sin estados (A9 "con ajustes"; supuesto S6)'
+  Note: 'Documentos del contrato en una sola tabla, sin estados (A9 "con ajustes"; supuesto S6). Relación polimórfica: un documento pertenece a un contrato_general, una poliza o un acta_inicio'
 }
 
 Table acta_inicio {
@@ -361,89 +363,21 @@ Table acta_inicio {
 }
 
 //////////////////////////////////////////////////////////////////////
-// Unidad ejecutora
-//////////////////////////////////////////////////////////////////////
-
-Table parametro_unidad_ejecutora {
-  id serial [pk]
-  parametro_id integer [not null, note: 'Parámetros CRUD, parametros.parametro.id (otra BD, sin FK física)']
-  unidad_ejecutora_id integer [not null, note: 'Parámetros CRUD, tipo 146 Unidad Ejecutora']
-  activo boolean [not null, default: true]
-  fecha_creacion timestamp [not null, default: `now()`]
-  fecha_modificacion timestamp [not null, default: `now()`]
-
-  indexes {
-    (parametro_id, unidad_ejecutora_id) [unique, name: 'uq_parametro_id_unidad_ejecutora_id_parametro_unidad_ejecutora']
-    unidad_ejecutora_id [name: 'idx_parametro_unidad_ejecutora_unidad_ejecutora_id']
-  }
-
-  Note: 'Valores paramétricos que aplican a cada unidad ejecutora (propuesta del 21/10, supuesto S4). Sin registro significa que no aplica'
-}
-
-Table configuracion_unidad_ejecutora {
-  id serial [pk]
-  unidad_ejecutora_id integer [not null, note: 'Parámetros CRUD, tipo 146 Unidad Ejecutora']
-  prefijo_numero_contrato varchar(10) [not null, default: '', note: 'Prefijo del número de contrato (hoy Rectoría vacío, IDEXUD "ID-")']
-  sufijo_numero_contrato varchar(10) [not null, default: '', note: 'Sufijo del número de contrato (hoy vacío en ambas)']
-  activo boolean [not null, default: true]
-  fecha_creacion timestamp [not null, default: `now()`]
-  fecha_modificacion timestamp [not null, default: `now()`]
-
-  indexes {
-    unidad_ejecutora_id [unique, name: 'uq_unidad_ejecutora_id_configuracion_unidad_ejecutora']
-  }
-
-  Note: 'Formato del número de contrato por unidad ejecutora; reemplaza conf.ts del MID (propuesta del 21/10, supuesto S4)'
-}
-
-//////////////////////////////////////////////////////////////////////
-// Auditoría
-//////////////////////////////////////////////////////////////////////
-
-Table huella_navegador {
-  id serial [pk]
-  huella varchar(64) [not null, note: 'Identificador calculado por la librería de fingerprinting']
-  libreria varchar(50) [not null, note: 'Librería con la que se calculó la huella']
-  version_libreria varchar(20) [not null, note: 'Versión de la librería']
-  confianza numeric(5,4) [note: 'Puntaje de confianza entre 0 y 1. Nulo si la librería no lo entrega']
-  componentes jsonb [note: 'Componentes como hash SHA-256 truncado, duración y error. No guarda valores crudos']
-  direccion_ip varchar(45) [note: 'IP pública reportada por el cliente']
-  direccion_ip_servidor varchar(45) [note: 'IP con la que llega la petición al servidor']
-  user_agent varchar(512) [not null, note: 'User agent del navegador']
-  usuario_id integer [note: 'Identificador del usuario autenticado al capturar la huella']
-  usuario_rol varchar(40) [note: 'Rol del usuario autenticado al capturar la huella']
-  microcliente varchar(100) [not null, note: 'Microcliente que capturó la huella']
-  ruta varchar(255) [note: 'Ruta de la página, sin query string']
-  fecha_captura timestamp [not null, note: 'Fecha y hora de la captura en el navegador']
-  activo boolean [not null, default: true]
-  fecha_creacion timestamp [not null, default: `now()`]
-  fecha_modificacion timestamp [not null, default: `now()`]
-
-  indexes {
-    huella [name: 'idx_huella_navegador_huella']
-    usuario_id [name: 'idx_huella_navegador_usuario_id']
-  }
-
-  Note: 'Huella digital del navegador e IP para auditoría (#376, PR gestion_contractual_crud#49; supuesto S8)'
-}
-
-//////////////////////////////////////////////////////////////////////
 // Relaciones
 //////////////////////////////////////////////////////////////////////
 
 Ref fk_estado_contrato_contrato_general: estado_contrato.contrato_general_id > contrato_general.id
-Ref fk_solicitante_contrato_general: solicitante.contrato_general_id > contrato_general.id
 Ref fk_supervisor_contrato_contrato_general: supervisor_contrato.contrato_general_id > contrato_general.id
 Ref fk_ordenador_contrato_contrato_general: ordenador_contrato.contrato_general_id > contrato_general.id
 Ref fk_contrato_arrendamiento_contrato_general: contrato_general.id - contrato_arrendamiento.contrato_general_id
 Ref fk_convenio_contrato_general: convenio.contrato_general_id > contrato_general.id
 Ref fk_especificacion_tecnica_contrato_general: especificacion_tecnica.contrato_general_id > contrato_general.id
+Ref fk_estado_poliza_poliza: estado_poliza.poliza_id > poliza.id
 Ref fk_disponibilidad_presupuestal_contrato_general: disponibilidad_presupuestal.contrato_general_id > contrato_general.id
 Ref fk_registro_presupuestal_disponibilidad_presupuestal: registro_presupuestal.disponibilidad_presupuestal_id > disponibilidad_presupuestal.id
 Ref fk_poliza_contrato_general: poliza.contrato_general_id > contrato_general.id
 Ref fk_amparo_poliza_contrato_general: amparo_poliza.contrato_general_id > contrato_general.id
 Ref fk_amparo_poliza_poliza: amparo_poliza.poliza_id > poliza.id
-Ref fk_documento_contrato_contrato_general: documento_contrato.contrato_general_id > contrato_general.id
 Ref fk_acta_inicio_contrato_general: acta_inicio.contrato_general_id > contrato_general.id
 
 //////////////////////////////////////////////////////////////////////
@@ -453,7 +387,6 @@ Ref fk_acta_inicio_contrato_general: acta_inicio.contrato_general_id > contrato_
 TableGroup contrato {
   contrato_general
   estado_contrato
-  solicitante
   supervisor_contrato
   ordenador_contrato
   contrato_arrendamiento
@@ -469,6 +402,7 @@ TableGroup presupuesto {
 TableGroup poliza_y_amparos {
   poliza
   amparo_poliza
+  estado_poliza
 }
 
 TableGroup documentos_y_actas {
@@ -476,26 +410,10 @@ TableGroup documentos_y_actas {
   acta_inicio
 }
 
-TableGroup unidad_ejecutora {
-  parametro_unidad_ejecutora
-  configuracion_unidad_ejecutora
-}
-
-TableGroup auditoria {
-  huella_navegador
-}
-
 //////////////////////////////////////////////////////////////////////
 // Temas en stand by o pendientes (no se modelan)
 //////////////////////////////////////////////////////////////////////
 
-Note nota_a7_estado_poliza {
-'''
-A7 · Estado de la póliza
-El LT confirmó que la póliza tiene estado. Los estados están pendientes de definir con la Analista.
-Se deja poliza.estado_poliza_id nullable, sin catálogo (supuesto S5).
-'''
-}
 
 Note nota_a8_estudio_previo {
 '''
