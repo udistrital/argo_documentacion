@@ -1,0 +1,4 @@
+interface:
+  display_name: "ARGO Backlog Planner"
+  short_description: "Redacta y estima Issues de ARGO con trazabilidad"
+  default_prompt: "Usa $argo-backlog-planner para convertir estas tareas en Issues claras, con dependencias, reglas aplicables y estimación en PH."
