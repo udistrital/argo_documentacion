@@ -1,16 +1,16 @@
 # ARGO: Estado de Despliegues, CI, PRs y Alertas de Seguridad
-> *Estado generado automáticamente:* `2026-11-09 04:53:13 UTC`
+> *Estado generado automáticamente:* `2026-11-09 04:56:29 UTC`
 
 ---
-## [cargue_archivo_mid_serverless](https://github.com/udistrital/cargue_archivo_mid_serverless)
-- **Alertas de Seguridad (Dependabot):** ⚠️ **1 total** (Crit: 1, High: 0, Med: 0, Low: 0)
+## [gestion_contractual_root_mf](https://github.com/udistrital/gestion_contractual_root_mf)
+- **Alertas de Seguridad (Dependabot):** ⚠️ **12 total** (Crit: 1, High: 4, Med: 4, Low: 3)
 - **Estado de Pull Requests:** ✅ Sin PRs pendientes
 
 ### Estado CI
 
-| develop | release/1.0.0 | release/0.0.1 | master |
-| -- | -- | -- | -- |
-| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/cargue_archivo_mid_serverless/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/cargue_archivo_mid_serverless/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/cargue_archivo_mid_serverless/status.svg?ref=refs/heads/release%2F1.0.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/cargue_archivo_mid_serverless/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/cargue_archivo_mid_serverless/status.svg?ref=refs/heads/release%2F0.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/cargue_archivo_mid_serverless/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/cargue_archivo_mid_serverless/status.svg?ref=refs/heads/master)](https://hubci.portaloas.udistrital.edu.co/udistrital/cargue_archivo_mid_serverless/) |
+| develop | release/2.0.1 | release/2.0.0 |
+| -- | -- | -- |
+| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_root_mf/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_root_mf/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_root_mf/status.svg?ref=refs/heads/release%2F2.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_root_mf/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_root_mf/status.svg?ref=refs/heads/release%2F2.0.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_root_mf/) |
 
 ### Pull Requests Pendientes por Resolver (Abiertos)
 
@@ -22,35 +22,9 @@
 
 | Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
 |---|---|---|---|
-| `develop` | 2026-09-23 11:29:28 UTC | [#16 - feat: migración de dependencias a pyproject.toml udistrital/sisifo_documentacion/issues/890](https://github.com/udistrital/cargue_archivo_mid_serverless/pull/16) | @diegobauto |
-| `release/0.0.1` | 2026-04-13 15:23:42 UTC | [#14 - feat: agregada función con separador por columna](https://github.com/udistrital/cargue_archivo_mid_serverless/pull/14) | @edwargl7 |
-| `master` | 2026-10-16 00:45:21 UTC | [#17 - feat: Release 1.0.0 migración de dependencias a pyproject.toml](https://github.com/udistrital/cargue_archivo_mid_serverless/pull/17) | @JorgeLo1 |
-
----
-
-## [clausulas_paragrafos_crud](https://github.com/udistrital/clausulas_paragrafos_crud)
-- **Alertas de Seguridad (Dependabot):** ⚠️ **145 total** (Crit: 6, High: 82, Med: 34, Low: 23)
-- **Estado de Pull Requests:** ⚠️ **1 PR(s) pendiente(s)** (1 en `develop`)
-
-### Estado CI
-
-| develop | release/0.0.1 |
-| -- | -- |
-| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/clausulas_paragrafos_crud/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/clausulas_paragrafos_crud/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/clausulas_paragrafos_crud/status.svg?ref=refs/heads/release%2F0.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/clausulas_paragrafos_crud/) |
-
-### Pull Requests Pendientes por Resolver (Abiertos)
-
-| PR | Rama Origen | Rama Destino | Creado (UTC) | Autor |
-|---|---|---|---|---|
-| [#14 - devops: Actualizacion de dependencias a NestJS 12, Mongoose 9 y TypeScript 6 udistrital/argo_documentacion#364](https://github.com/udistrital/clausulas_paragrafos_crud/pull/14) | `feature/actualizacion-dependencias-364` | `develop` | 2026-10-07 23:56:56 UTC | @Ivan64Lopez58 |
-
-
-### Último Despliegue por Rama
-
-| Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
-|---|---|---|---|
-| `develop` | 2025-01-21 23:32:29 UTC | [#13 - feat: Implementación de unidad ejecutora en Plantilla udistrital/argo_documentacion#303](https://github.com/udistrital/clausulas_paragrafos_crud/pull/13) | @Lau2ri |
-| `release/0.0.1` | 2024-11-13 18:25:07 UTC | [#12 - feat: Se remueve paso de test en el drone temporalmente](https://github.com/udistrital/clausulas_paragrafos_crud/pull/12) | @edwargl7 |
+| `develop` | 2026-10-27 19:08:12 UTC | [#38 - Add new microfrontend URLs to environment config](https://github.com/udistrital/gestion_contractual_root_mf/pull/38) | @LethSphere |
+| `release/2.0.0` | 2026-10-27 19:08:32 UTC | [#39 - Add new microfrontend URLs to environment config](https://github.com/udistrital/gestion_contractual_root_mf/pull/39) | @LethSphere |
+| `release/2.0.1` | 2026-10-27 19:09:02 UTC | [#40 - Add new microfrontend URLs to environment config](https://github.com/udistrital/gestion_contractual_root_mf/pull/40) | @LethSphere |
 
 ---
 
@@ -85,6 +59,35 @@
 
 ---
 
+## [gestion_contractual_mid](https://github.com/udistrital/gestion_contractual_mid)
+- **Alertas de Seguridad (Dependabot):** ✅ Sin alertas abiertas
+- **Estado de Pull Requests:** ⚠️ **3 PR(s) pendiente(s)** (3 en `develop`)
+
+### Estado CI
+
+| develop | release/1.1.0 | release/1.0.0 | release/0.0.1 |
+| -- | -- | -- | -- |
+| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mid/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mid/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mid/status.svg?ref=refs/heads/release%2F1.1.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mid/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mid/status.svg?ref=refs/heads/release%2F1.0.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mid/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mid/status.svg?ref=refs/heads/release%2F0.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mid/) |
+
+### Pull Requests Pendientes por Resolver (Abiertos)
+
+| PR | Rama Origen | Rama Destino | Creado (UTC) | Autor |
+|---|---|---|---|---|
+| [#29 - feat: Swagger 2.0 del MID a partir del OpenAPI 3.0 #397](https://github.com/udistrital/gestion_contractual_mid/pull/29) | `feature/397-swagger-openapi-v2` | `develop` | 2026-11-07 18:40:52 UTC | @andrestorresaioros |
+| [#28 - refactor: llamadas de pólizas, amparos y cargue masivo al CRUD Beego v2 #397](https://github.com/udistrital/gestion_contractual_mid/pull/28) | `feature/397-polizas-crud-beego` | `develop` | 2026-11-05 12:52:03 UTC | @andrestorresaioros |
+| [#27 - refactor: llamadas de contratos y estados al CRUD Beego v2 #397](https://github.com/udistrital/gestion_contractual_mid/pull/27) | `feature/397-contratos-crud-beego` | `develop` | 2026-11-05 12:46:17 UTC | @andrestorresaioros |
+
+
+### Último Despliegue por Rama
+
+| Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
+|---|---|---|---|
+| `develop` | 2026-11-04 01:35:32 UTC | [#25 - feat: ajuste variables de entorno a lineamientos](https://github.com/udistrital/gestion_contractual_mid/pull/25) | @jupmorenor |
+| `release/0.0.1` | 2025-02-12 13:19:45 UTC | [#18 - feat: Genearación consecutivo y número de contrato y ajustes integración de cambios crud](https://github.com/udistrital/gestion_contractual_mid/pull/18) | @edwargl7 |
+| `release/1.1.0` | 2026-11-04 01:38:28 UTC | [#26 - feat: ajuste variables de entorno a lineamientos](https://github.com/udistrital/gestion_contractual_mid/pull/26) | @edwargl7 |
+
+---
+
 ## [gestion_contractual_crud](https://github.com/udistrital/gestion_contractual_crud)
 - **Alertas de Seguridad (Dependabot):** ✅ Sin alertas abiertas
 - **Estado de Pull Requests:** ⚠️ **3 PR(s) pendiente(s)** (3 en `develop`)
@@ -115,61 +118,6 @@
 
 ---
 
-## [gestion_contractual_mid](https://github.com/udistrital/gestion_contractual_mid)
-- **Alertas de Seguridad (Dependabot):** ✅ Sin alertas abiertas
-- **Estado de Pull Requests:** ⚠️ **3 PR(s) pendiente(s)** (3 en `develop`)
-
-### Estado CI
-
-| develop | release/1.1.0 | release/1.0.0 | release/0.0.1 |
-| -- | -- | -- | -- |
-| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mid/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mid/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mid/status.svg?ref=refs/heads/release%2F1.1.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mid/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mid/status.svg?ref=refs/heads/release%2F1.0.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mid/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mid/status.svg?ref=refs/heads/release%2F0.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mid/) |
-
-### Pull Requests Pendientes por Resolver (Abiertos)
-
-| PR | Rama Origen | Rama Destino | Creado (UTC) | Autor |
-|---|---|---|---|---|
-| [#29 - feat: Swagger 2.0 del MID a partir del OpenAPI 3.0 #397](https://github.com/udistrital/gestion_contractual_mid/pull/29) | `feature/397-swagger-openapi-v2` | `develop` | 2026-11-07 18:40:52 UTC | @andrestorresaioros |
-| [#28 - refactor: llamadas de pólizas, amparos y cargue masivo al CRUD Beego v2 #397](https://github.com/udistrital/gestion_contractual_mid/pull/28) | `feature/397-polizas-crud-beego` | `develop` | 2026-11-05 12:52:03 UTC | @andrestorresaioros |
-| [#27 - refactor: llamadas de contratos y estados al CRUD Beego v2 #397](https://github.com/udistrital/gestion_contractual_mid/pull/27) | `feature/397-contratos-crud-beego` | `develop` | 2026-11-05 12:46:17 UTC | @andrestorresaioros |
-
-
-### Último Despliegue por Rama
-
-| Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
-|---|---|---|---|
-| `develop` | 2026-11-04 01:35:32 UTC | [#25 - feat: ajuste variables de entorno a lineamientos](https://github.com/udistrital/gestion_contractual_mid/pull/25) | @jupmorenor |
-| `release/0.0.1` | 2025-02-12 13:19:45 UTC | [#18 - feat: Genearación consecutivo y número de contrato y ajustes integración de cambios crud](https://github.com/udistrital/gestion_contractual_mid/pull/18) | @edwargl7 |
-| `release/1.1.0` | 2026-11-04 01:38:28 UTC | [#26 - feat: ajuste variables de entorno a lineamientos](https://github.com/udistrital/gestion_contractual_mid/pull/26) | @edwargl7 |
-
----
-
-## [gestion_contractual_root_mf](https://github.com/udistrital/gestion_contractual_root_mf)
-- **Alertas de Seguridad (Dependabot):** ⚠️ **12 total** (Crit: 1, High: 4, Med: 4, Low: 3)
-- **Estado de Pull Requests:** ✅ Sin PRs pendientes
-
-### Estado CI
-
-| develop | release/2.0.1 | release/2.0.0 |
-| -- | -- | -- |
-| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_root_mf/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_root_mf/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_root_mf/status.svg?ref=refs/heads/release%2F2.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_root_mf/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_root_mf/status.svg?ref=refs/heads/release%2F2.0.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_root_mf/) |
-
-### Pull Requests Pendientes por Resolver (Abiertos)
-
-✅ *Sin PRs pendientes por resolver en este repositorio.*
-
-
-
-### Último Despliegue por Rama
-
-| Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
-|---|---|---|---|
-| `develop` | 2026-10-27 19:08:12 UTC | [#38 - Add new microfrontend URLs to environment config](https://github.com/udistrital/gestion_contractual_root_mf/pull/38) | @LethSphere |
-| `release/2.0.0` | 2026-10-27 19:08:32 UTC | [#39 - Add new microfrontend URLs to environment config](https://github.com/udistrital/gestion_contractual_root_mf/pull/39) | @LethSphere |
-| `release/2.0.1` | 2026-10-27 19:09:02 UTC | [#40 - Add new microfrontend URLs to environment config](https://github.com/udistrital/gestion_contractual_root_mf/pull/40) | @LethSphere |
-
----
-
 ## [minuta_contractual_mid](https://github.com/udistrital/minuta_contractual_mid)
 - **Alertas de Seguridad (Dependabot):** ✅ Sin alertas abiertas
 - **Estado de Pull Requests:** ⚠️ **1 PR(s) pendiente(s)** (1 en `develop`)
@@ -194,6 +142,32 @@
 | `develop` | 2026-11-04 02:06:40 UTC | [#12 - Feature/360 plantilla acta aprobacion](https://github.com/udistrital/minuta_contractual_mid/pull/12) | @Ivan64Lopez58 |
 | `release/0.0.1` | 2025-02-12 13:18:56 UTC | [#7 - feat: Obtención contrato mid y optimización](https://github.com/udistrital/minuta_contractual_mid/pull/7) | @edwargl7 |
 | `release/1.0.0` | 2026-09-26 01:48:33 UTC | [#11 - Devops: Ajustes generación de minuta y actualización de dependencias](https://github.com/udistrital/minuta_contractual_mid/pull/11) | @edwargl7 |
+
+---
+
+## [clausulas_paragrafos_crud](https://github.com/udistrital/clausulas_paragrafos_crud)
+- **Alertas de Seguridad (Dependabot):** ⚠️ **145 total** (Crit: 6, High: 82, Med: 34, Low: 23)
+- **Estado de Pull Requests:** ⚠️ **1 PR(s) pendiente(s)** (1 en `develop`)
+
+### Estado CI
+
+| develop | release/0.0.1 |
+| -- | -- |
+| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/clausulas_paragrafos_crud/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/clausulas_paragrafos_crud/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/clausulas_paragrafos_crud/status.svg?ref=refs/heads/release%2F0.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/clausulas_paragrafos_crud/) |
+
+### Pull Requests Pendientes por Resolver (Abiertos)
+
+| PR | Rama Origen | Rama Destino | Creado (UTC) | Autor |
+|---|---|---|---|---|
+| [#14 - devops: Actualizacion de dependencias a NestJS 12, Mongoose 9 y TypeScript 6 udistrital/argo_documentacion#364](https://github.com/udistrital/clausulas_paragrafos_crud/pull/14) | `feature/actualizacion-dependencias-364` | `develop` | 2026-10-07 23:56:56 UTC | @Ivan64Lopez58 |
+
+
+### Último Despliegue por Rama
+
+| Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
+|---|---|---|---|
+| `develop` | 2025-01-21 23:32:29 UTC | [#13 - feat: Implementación de unidad ejecutora en Plantilla udistrital/argo_documentacion#303](https://github.com/udistrital/clausulas_paragrafos_crud/pull/13) | @Lau2ri |
+| `release/0.0.1` | 2024-11-13 18:25:07 UTC | [#12 - feat: Se remueve paso de test en el drone temporalmente](https://github.com/udistrital/clausulas_paragrafos_crud/pull/12) | @edwargl7 |
 
 ---
 
@@ -298,5 +272,84 @@
 | `release/1.0.0` | 2026-06-09 19:40:02 UTC | [#36 - fix: ajuste error non-breaking spaces](https://github.com/udistrital/renderizado_plantillas_html/pull/36) | @edwargl7 |
 | `release/1.0.1` | 2026-09-24 19:07:44 UTC | [#42 - devops: udate drone y dockerfile](https://github.com/udistrital/renderizado_plantillas_html/pull/42) | @jupmorenor |
 | `master` | 2026-11-04 02:08:01 UTC | [#44 - feat: release/1.0.1](https://github.com/udistrital/renderizado_plantillas_html/pull/44) | @CristianCGutierrezG |
+
+---
+
+## [plantillas_mid](https://github.com/udistrital/plantillas_mid)
+- **Alertas de Seguridad (Dependabot):** ✅ Sin alertas abiertas
+- **Estado de Pull Requests:** ⚠️ **1 PR(s) pendiente(s)** (1 en `master`)
+
+### Estado CI
+
+| develop | release/1.0.2 | release/1.0.1 | master |
+| -- | -- | -- | -- |
+| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/plantillas_mid/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/plantillas_mid/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/plantillas_mid/status.svg?ref=refs/heads/release%2F1.0.2)](https://hubci.portaloas.udistrital.edu.co/udistrital/plantillas_mid/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/plantillas_mid/status.svg?ref=refs/heads/release%2F1.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/plantillas_mid/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/plantillas_mid/status.svg?ref=refs/heads/master)](https://hubci.portaloas.udistrital.edu.co/udistrital/plantillas_mid/) |
+
+### Pull Requests Pendientes por Resolver (Abiertos)
+
+| PR | Rama Origen | Rama Destino | Creado (UTC) | Autor |
+|---|---|---|---|---|
+| [#32 - feat: release/1.0.1](https://github.com/udistrital/plantillas_mid/pull/32) | `release/1.0.1` | `master` | 2026-10-16 03:16:26 UTC | @CristianCGutierrezG |
+
+
+### Último Despliegue por Rama
+
+| Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
+|---|---|---|---|
+| `develop` | 2026-10-29 03:20:24 UTC | [#34 - fix: https://github.com/udistrital/sisifo_documentacion/issues/938  S…](https://github.com/udistrital/plantillas_mid/pull/34) | @Sgarcia8 |
+| `master` | 2026-05-29 04:39:16 UTC | [#30 - feat: ajuste fmt](https://github.com/udistrital/plantillas_mid/pull/30) | @edwargl7 |
+
+---
+
+## [plantillas_crud_serverless](https://github.com/udistrital/plantillas_crud_serverless)
+- **Alertas de Seguridad (Dependabot):** ⚠️ **14 total** (Crit: 0, High: 6, Med: 8, Low: 0)
+- **Estado de Pull Requests:** ⚠️ **1 PR(s) pendiente(s)** (1 en `master`)
+
+### Estado CI
+
+| develop | release/1.0.1 | master |
+| -- | -- | -- |
+| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/plantillas_crud_serverless/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/plantillas_crud_serverless/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/plantillas_crud_serverless/status.svg?ref=refs/heads/release%2F1.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/plantillas_crud_serverless/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/plantillas_crud_serverless/status.svg?ref=refs/heads/master)](https://hubci.portaloas.udistrital.edu.co/udistrital/plantillas_crud_serverless/) |
+
+### Pull Requests Pendientes por Resolver (Abiertos)
+
+| PR | Rama Origen | Rama Destino | Creado (UTC) | Autor |
+|---|---|---|---|---|
+| [#14 - feat: se agrega v2 al servicio que soporta versionamiento en plantillas](https://github.com/udistrital/plantillas_crud_serverless/pull/14) | `feature/plantillas-versionadas` | `master` | 2026-08-27 15:01:48 UTC | @LethSphere |
+
+
+### Último Despliegue por Rama
+
+| Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
+|---|---|---|---|
+| `develop` | 2026-05-29 04:43:41 UTC | [#11 - fix: Hotfix/add authdb](https://github.com/udistrital/plantillas_crud_serverless/pull/11) | @edwargl7 |
+| `release/1.0.1` | 2026-05-29 04:44:53 UTC | [#12 - feat: ajuste conexión base de datos y actualizada versión python](https://github.com/udistrital/plantillas_crud_serverless/pull/12) | @edwargl7 |
+| `master` | 2026-05-29 04:46:49 UTC | [#13 - feat: Release/1.0.1](https://github.com/udistrital/plantillas_crud_serverless/pull/13) | @edwargl7 |
+
+---
+
+## [cargue_archivo_mid_serverless](https://github.com/udistrital/cargue_archivo_mid_serverless)
+- **Alertas de Seguridad (Dependabot):** ⚠️ **1 total** (Crit: 1, High: 0, Med: 0, Low: 0)
+- **Estado de Pull Requests:** ✅ Sin PRs pendientes
+
+### Estado CI
+
+| develop | release/1.0.0 | release/0.0.1 | master |
+| -- | -- | -- | -- |
+| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/cargue_archivo_mid_serverless/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/cargue_archivo_mid_serverless/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/cargue_archivo_mid_serverless/status.svg?ref=refs/heads/release%2F1.0.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/cargue_archivo_mid_serverless/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/cargue_archivo_mid_serverless/status.svg?ref=refs/heads/release%2F0.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/cargue_archivo_mid_serverless/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/cargue_archivo_mid_serverless/status.svg?ref=refs/heads/master)](https://hubci.portaloas.udistrital.edu.co/udistrital/cargue_archivo_mid_serverless/) |
+
+### Pull Requests Pendientes por Resolver (Abiertos)
+
+✅ *Sin PRs pendientes por resolver en este repositorio.*
+
+
+
+### Último Despliegue por Rama
+
+| Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
+|---|---|---|---|
+| `develop` | 2026-09-23 11:29:28 UTC | [#16 - feat: migración de dependencias a pyproject.toml udistrital/sisifo_documentacion/issues/890](https://github.com/udistrital/cargue_archivo_mid_serverless/pull/16) | @diegobauto |
+| `release/0.0.1` | 2026-04-13 15:23:42 UTC | [#14 - feat: agregada función con separador por columna](https://github.com/udistrital/cargue_archivo_mid_serverless/pull/14) | @edwargl7 |
+| `master` | 2026-10-16 00:45:21 UTC | [#17 - feat: Release 1.0.0 migración de dependencias a pyproject.toml](https://github.com/udistrital/cargue_archivo_mid_serverless/pull/17) | @JorgeLo1 |
 
 ---
