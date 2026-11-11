@@ -1,5 +1,6 @@
 -- =====================================================================
 -- ARGO v2 · Gestión contractual · Modelo de datos final (#384, #389)
+-- con los ajustes de la implementación del CRUD (#385, #386 y #396).
 -- DDL de la base nueva para la #385 (CRUD en Beego v2).
 -- Fuente del modelo: ../modelo-argo-v2.dbml (modelo final adjunto por el
 -- LT en la #389, comentario 6452443769).
@@ -32,7 +33,7 @@ $$;
 CREATE TABLE contrato_general (
     id                              serial          NOT NULL,
     numero_contrato                 varchar(50),
-    vigencia_id                     integer,
+    vigencia_id                     integer         NOT NULL,
     consecutivo_elaboracion         varchar(50),
     unidad_ejecutora_id             integer         NOT NULL,
     tipo_compromiso_id              integer,
@@ -57,11 +58,11 @@ CREATE TABLE contrato_general (
     tema_gasto_inversion_id         integer,
     medio_pago_id                   integer,
     clausula_registro_presupuestal  boolean,
-    modo_pago                       varchar(1000),
-    objeto                          varchar(2000),
-    justificacion                   varchar(4000),
-    actividades                     varchar(8000),
-    condiciones                     varchar(4000),
+    modo_pago                       varchar,
+    objeto                          varchar,
+    justificacion                   varchar,
+    actividades                     varchar,
+    condiciones                     varchar,
     observaciones                   varchar(1000),
     fecha_inicial                   date,
     fecha_final                     date,
@@ -70,7 +71,6 @@ CREATE TABLE contrato_general (
     tipo_persona_id                 integer,
     clase_proveedor_id              integer,
     dependencia_solicitante_id      integer,
-    sede_solicitante_id             integer,
     dependencia_solicitante_legado_id integer,
     sede_solicitante_legado_id      integer,
     usuario_id                      integer,
@@ -80,7 +80,8 @@ CREATE TABLE contrato_general (
     fecha_creacion                  timestamp       NOT NULL DEFAULT now(),
     fecha_modificacion              timestamp       NOT NULL DEFAULT now(),
     CONSTRAINT pk_contrato_general PRIMARY KEY (id),
-    CONSTRAINT uq_numero_contrato_vigencia_id_contrato_general UNIQUE (numero_contrato, vigencia_id)
+    CONSTRAINT uq_numero_contrato_vigencia_id_contrato_general UNIQUE (numero_contrato, vigencia_id),
+    CONSTRAINT uq_consecutivo_elaboracion_contrato_general UNIQUE (unidad_ejecutora_id, vigencia_id, consecutivo_elaboracion)
 );
 
 CREATE INDEX idx_contrato_general_unidad_ejecutora_id ON contrato_general (unidad_ejecutora_id);
@@ -126,7 +127,6 @@ COMMENT ON COLUMN contrato_general.proveedor_numero_documento IS 'Número de doc
 COMMENT ON COLUMN contrato_general.tipo_persona_id IS 'Parámetros CRUD, tipo 132 Tipo Persona (natural o jurídica) del proveedor. Antes contratista.tipo_persona_id';
 COMMENT ON COLUMN contrato_general.clase_proveedor_id IS 'Parámetros CRUD, tipo 120 Clase Contratista (único o sociedad temporal). Antes contratista.clase_contratista_id';
 COMMENT ON COLUMN contrato_general.dependencia_solicitante_id IS 'OIKOS, dependencia que solicita el contrato.';
-COMMENT ON COLUMN contrato_general.sede_solicitante_id IS 'OIKOS, sede donde se origina la solicitud.';
 COMMENT ON COLUMN contrato_general.dependencia_solicitante_legado_id IS 'OIKOS, dependencia que solicita el contrato legado.';
 COMMENT ON COLUMN contrato_general.sede_solicitante_legado_id IS 'OIKOS, sede donde se origina la solicitud legado.';
 COMMENT ON COLUMN contrato_general.usuario_id IS 'Identificador del usuario que registra o modifica el contrato';
@@ -168,8 +168,7 @@ CREATE TABLE supervisor_contrato (
     documento                       integer,
     digito_verificacion             integer,
     cargo_id                        integer,
-    sede_id                         integer         NOT NULL,
-    dependencia_id                  integer         NOT NULL,
+    dependencia_id                  integer,
     sede_legado                     varchar(50),
     dependencia_legado              varchar(50),
     cargo_legado                    varchar(250),
@@ -188,7 +187,6 @@ COMMENT ON COLUMN supervisor_contrato.supervisor_id IS 'Terceros, tercero que ej
 COMMENT ON COLUMN supervisor_contrato.documento IS 'Documento del supervisor';
 COMMENT ON COLUMN supervisor_contrato.digito_verificacion IS 'Dígito de verificación del documento del supervisor';
 COMMENT ON COLUMN supervisor_contrato.cargo_id IS 'Parámetros CRUD, cargo del supervisor';
-COMMENT ON COLUMN supervisor_contrato.sede_id IS 'OIKOS, sede del supervisor';
 COMMENT ON COLUMN supervisor_contrato.dependencia_id IS 'OIKOS, dependencia del supervisor';
 COMMENT ON COLUMN supervisor_contrato.sede_legado IS 'Sede en sedes_SIC de ARGO v1';
 COMMENT ON COLUMN supervisor_contrato.dependencia_legado IS 'Dependencia en dependencias_SIC de ARGO v1';
@@ -223,7 +221,7 @@ COMMENT ON COLUMN ordenador_contrato.ordenador_sicapital_id IS 'ARGO v1, id_orde
 CREATE TABLE contrato_arrendamiento (
     id                              serial          NOT NULL,
     contrato_general_id             integer         NOT NULL,
-    destinacion                     varchar(1000),
+    destinacion                     varchar(5000),
     plazo_pago_mensual              integer,
     reajuste                        varchar(255),
     plazo_administracion            integer,
@@ -270,8 +268,8 @@ COMMENT ON COLUMN convenio.tipo_convenio_id IS 'Parámetros CRUD, tipo de conven
 CREATE TABLE especificacion_tecnica (
     id                              serial          NOT NULL,
     contrato_general_id             integer,
-    descripcion                     varchar(2000),
-    cantidad                        integer         NOT NULL,
+    descripcion                     varchar,
+    cantidad                        integer,
     valor_unitario                  numeric(20,7),
     valor_total                     numeric(20,7),
     activo                          boolean         NOT NULL DEFAULT true,
@@ -299,6 +297,7 @@ CREATE TABLE disponibilidad_presupuestal (
     numero_cdp_id                   integer,
     vigencia_cdp_id                 integer,
     fecha_registro                  date,
+    valor_a_tomar                   numeric(20,7),
     activo                          boolean         NOT NULL DEFAULT true,
     fecha_creacion                  timestamp       NOT NULL DEFAULT now(),
     fecha_modificacion              timestamp       NOT NULL DEFAULT now(),
@@ -312,6 +311,7 @@ COMMENT ON TABLE disponibilidad_presupuestal IS 'Certificados de disponibilidad 
 COMMENT ON COLUMN disponibilidad_presupuestal.numero_cdp_id IS 'SiCapital, número del CDP con el que se consulta la fuente';
 COMMENT ON COLUMN disponibilidad_presupuestal.vigencia_cdp_id IS 'Año de vigencia del CDP';
 COMMENT ON COLUMN disponibilidad_presupuestal.fecha_registro IS 'Fecha de registro del CDP';
+COMMENT ON COLUMN disponibilidad_presupuestal.valor_a_tomar IS 'Valor en pesos que el contrato toma del CDP (puede ser menor que el valor del CDP)';
 
 CREATE TABLE registro_presupuestal (
     id                              serial          NOT NULL,
@@ -343,7 +343,7 @@ CREATE TABLE poliza (
     contrato_general_id             integer         NOT NULL,
     numero_poliza                   varchar(50),
     entidad_aseguradora_id          integer,
-    descripcion                     varchar(255),
+    descripcion                     varchar,
     fecha_inicio                    date,
     fecha_fin                       date,
     fecha_expedicion                date,
@@ -402,7 +402,7 @@ CREATE TABLE amparo_poliza (
     tipo_valor_amparo_id            integer,
     suficiencia                     numeric(20,7),
     valor                           numeric(20,7),
-    descripcion                     varchar(255),
+    descripcion                     varchar,
     fecha_inicio                    date,
     fecha_fin                       date,
     usuario_id                      integer,
@@ -464,7 +464,7 @@ COMMENT ON COLUMN documento_contrato.usuario_rol IS 'Rol del usuario que registr
 CREATE TABLE acta_inicio (
     id                              serial          NOT NULL,
     contrato_general_id             integer         NOT NULL,
-    descripcion                     varchar(2000),
+    descripcion                     varchar,
     fecha_inicio                    date,
     fecha_fin                       date,
     fecha_suscripcion               date,
