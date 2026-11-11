@@ -23,7 +23,7 @@ Dominio: contrato.
 |---|---|---|---|---|---|
 | id | serial | No | secuencia | Identificador del registro (llave primaria) | Auditoría / llave |
 | numero_contrato | varchar(50) | Sí |  | Número oficial del contrato. Se genera con la RN de generación cuando el contrato pasa a SUSCRITO; en ARGO v1 viene migrado. Nulo hasta la suscripción (A14) | ARGO v2 |
-| vigencia_id | integer | Sí |  | Parámetros CRUD, tipo de parámetro Vigencia (tipo por confirmar). Año de vigencia del contrato | Parámetros CRUD |
+| vigencia_id | integer | No |  | Parámetros CRUD, tipo de parámetro Vigencia (tipo por confirmar). Año de vigencia del contrato | Parámetros CRUD |
 | consecutivo_elaboracion | varchar(50) | Sí |  | Consecutivo de elaboración, previo a la suscripción | ARGO v2 |
 | unidad_ejecutora_id | integer | No |  | Parámetros CRUD, tipo 146 Unidad Ejecutora (6818 Rectoría, 6819 IDEXUD) | Parámetros CRUD |
 | tipo_compromiso_id | integer | Sí |  | Parámetros CRUD, tipo 111 Compromiso | Parámetros CRUD |
@@ -48,11 +48,11 @@ Dominio: contrato.
 | tema_gasto_inversion_id | integer | Sí |  | Parámetros CRUD, tipo 126 Tema Gasto Inversión. Negocio propuso retirarlo; se mantiene nullable (supuesto S1) | Parámetros CRUD |
 | medio_pago_id | integer | Sí |  | Parámetros CRUD, tipo 127 Medio de Pago | Parámetros CRUD |
 | clausula_registro_presupuestal | boolean | Sí |  | Indica si el contrato requiere la cláusula adicional de registro presupuestal | ARGO v2 |
-| modo_pago | varchar(1000) | Sí |  | Modo de pago del contrato | ARGO v2 |
-| objeto | varchar(2000) | Sí |  | Objeto del contrato | ARGO v2 |
-| justificacion | varchar(4000) | Sí |  | Justificación del contrato | ARGO v2 |
-| actividades | varchar(8000) | Sí |  | Actividades del contrato, en un solo campo porque la fuente las entrega unificadas | ARGO v2 |
-| condiciones | varchar(4000) | Sí |  | Condiciones del contrato | ARGO v2 |
+| modo_pago | varchar | Sí |  | Modo de pago del contrato | ARGO v2 |
+| objeto | varchar | Sí |  | Objeto del contrato | ARGO v2 |
+| justificacion | varchar | Sí |  | Justificación del contrato | ARGO v2 |
+| actividades | varchar | Sí |  | Actividades del contrato, en un solo campo porque la fuente las entrega unificadas | ARGO v2 |
+| condiciones | varchar | Sí |  | Condiciones del contrato | ARGO v2 |
 | observaciones | varchar(1000) | Sí |  | Observaciones del contrato | ARGO v2 |
 | fecha_inicial | date | Sí |  | Fecha de inicio del contrato | ARGO v2 |
 | fecha_final | date | Sí |  | Fecha de finalización del contrato | ARGO v2 |
@@ -61,7 +61,6 @@ Dominio: contrato.
 | tipo_persona_id | integer | Sí |  | Parámetros CRUD, tipo 132 Tipo Persona (natural o jurídica) del proveedor. Antes contratista.tipo_persona_id | Parámetros CRUD |
 | clase_proveedor_id | integer | Sí |  | Parámetros CRUD, tipo 120 Clase Contratista (único o sociedad temporal). Antes contratista.clase_contratista_id | Parámetros CRUD |
 | dependencia_solicitante_id | integer | Sí |  | OIKOS, dependencia que solicita el contrato. | OIKOS |
-| sede_solicitante_id | integer | Sí |  | OIKOS, sede donde se origina la solicitud. | OIKOS |
 | dependencia_solicitante_legado_id | integer | Sí |  | OIKOS, dependencia que solicita el contrato legado. | OIKOS |
 | sede_solicitante_legado_id | integer | Sí |  | OIKOS, sede donde se origina la solicitud legado. | OIKOS |
 | usuario_id | integer | Sí |  | Identificador del usuario que registra o modifica el contrato | ARGO v2 |
@@ -71,7 +70,7 @@ Dominio: contrato.
 | fecha_creacion | timestamp | No | now() | Fecha y hora de creación del registro | Auditoría / llave |
 | fecha_modificacion | timestamp | No | now() | Fecha y hora de la última modificación; al crear es igual a fecha_creacion | Auditoría / llave |
 
-Restricciones e índices: `pk_contrato_general` PRIMARY KEY (id); UNIQUE `uq_numero_contrato_vigencia_id_contrato_general` (numero_contrato, vigencia_id); Índice `idx_contrato_general_unidad_ejecutora_id` (unidad_ejecutora_id); Índice `idx_contrato_general_tipo_contrato_id` (tipo_contrato_id).
+Restricciones e índices: `pk_contrato_general` PRIMARY KEY (id); UNIQUE `uq_numero_contrato_vigencia_id_contrato_general` (numero_contrato, vigencia_id); UNIQUE `uq_consecutivo_elaboracion_contrato_general` (unidad_ejecutora_id, vigencia_id, consecutivo_elaboracion); Índice `idx_contrato_general_unidad_ejecutora_id` (unidad_ejecutora_id); Índice `idx_contrato_general_tipo_contrato_id` (tipo_contrato_id).
 
 ## estado_contrato
 
@@ -110,8 +109,7 @@ Dominio: contrato.
 | documento | integer | Sí |  | Documento del supervisor | ARGO v2 |
 | digito_verificacion | integer | Sí |  | Dígito de verificación del documento del supervisor | ARGO v2 |
 | cargo_id | integer | Sí |  | Parámetros CRUD, cargo del supervisor | Parámetros CRUD |
-| sede_id | integer | No |  | OIKOS, sede del supervisor | OIKOS |
-| dependencia_id | integer | No |  | OIKOS, dependencia del supervisor | OIKOS |
+| dependencia_id | integer | Sí |  | OIKOS, dependencia del supervisor | OIKOS |
 | sede_legado | varchar(50) | Sí |  | Sede en sedes_SIC de ARGO v1 | ARGO v2 |
 | dependencia_legado | varchar(50) | Sí |  | Dependencia en dependencias_SIC de ARGO v1 | ARGO v2 |
 | cargo_legado | varchar(250) | Sí |  | Cargo en la tabla de supervisores de ARGO v1 | ARGO v2 |
@@ -153,7 +151,7 @@ Dominio: contrato.
 |---|---|---|---|---|---|
 | id | serial | No | secuencia | Identificador del registro (llave primaria) | Auditoría / llave |
 | contrato_general_id | integer | No |  |  | FK a contrato_general.id (fk_contrato_arrendamiento_contrato_general) |
-| destinacion | varchar(1000) | Sí |  | Uso previsto del inmueble arrendado | ARGO v2 |
+| destinacion | varchar(5000) | Sí |  | Uso previsto del inmueble arrendado | ARGO v2 |
 | plazo_pago_mensual | integer | Sí |  | Día del mes establecido para el pago | ARGO v2 |
 | reajuste | varchar(255) | Sí |  | Condición de reajuste del canon | ARGO v2 |
 | plazo_administracion | integer | Sí |  | Plazo de pago de la administración | ARGO v2 |
@@ -195,8 +193,8 @@ Dominio: contrato.
 |---|---|---|---|---|---|
 | id | serial | No | secuencia | Identificador del registro (llave primaria) | Auditoría / llave |
 | contrato_general_id | integer | Sí |  |  | FK a contrato_general.id (fk_especificacion_tecnica_contrato_general) |
-| descripcion | varchar(2000) | Sí |  | Descripción del ítem o servicio | ARGO v2 |
-| cantidad | integer | No |  | Cantidad de ítems | ARGO v2 |
+| descripcion | varchar | Sí |  | Descripción del ítem o servicio | ARGO v2 |
+| cantidad | integer | Sí |  | Cantidad de ítems | ARGO v2 |
 | valor_unitario | numeric(20,7) | Sí |  | Valor unitario del ítem | ARGO v2 |
 | valor_total | numeric(20,7) | Sí |  | Valor total del ítem | ARGO v2 |
 | activo | boolean | No | true | Indica si el registro está activo (borrado lógico) | Auditoría / llave |
@@ -218,6 +216,7 @@ Dominio: presupuesto.
 | numero_cdp_id | integer | Sí |  | SiCapital, número del CDP con el que se consulta la fuente | SiCapital |
 | vigencia_cdp_id | integer | Sí |  | Año de vigencia del CDP | ARGO v2 |
 | fecha_registro | date | Sí |  | Fecha de registro del CDP | ARGO v2 |
+| valor_a_tomar | numeric(20,7) | Sí |  | Valor en pesos que el contrato toma del CDP (puede ser menor que el valor del CDP) | ARGO v2 |
 | activo | boolean | No | true | Indica si el registro está activo (borrado lógico) | Auditoría / llave |
 | fecha_creacion | timestamp | No | now() | Fecha y hora de creación del registro | Auditoría / llave |
 | fecha_modificacion | timestamp | No | now() | Fecha y hora de la última modificación; al crear es igual a fecha_creacion | Auditoría / llave |
@@ -255,7 +254,7 @@ Dominio: poliza y amparos.
 | contrato_general_id | integer | No |  |  | FK a contrato_general.id (fk_poliza_contrato_general) |
 | numero_poliza | varchar(50) | Sí |  | Número con el que la aseguradora identifica la póliza. Sin restricción de unicidad (#351) | ARGO v2 |
 | entidad_aseguradora_id | integer | Sí |  | Parámetros CRUD, entidad aseguradora (tipo de parámetro por confirmar) | Parámetros CRUD |
-| descripcion | varchar(255) | Sí |  | Descripción de la póliza | ARGO v2 |
+| descripcion | varchar | Sí |  | Descripción de la póliza | ARGO v2 |
 | fecha_inicio | date | Sí |  | Inicio de vigencia de la póliza | ARGO v2 |
 | fecha_fin | date | Sí |  | Fin de vigencia de la póliza | ARGO v2 |
 | fecha_expedicion | date | Sí |  | Fecha en que la aseguradora expide la póliza | ARGO v2 |
@@ -304,7 +303,7 @@ Dominio: poliza y amparos.
 | tipo_valor_amparo_id | integer | Sí |  | Parámetros CRUD, tipo de valor de la suficiencia (porcentaje o SMLV; tipo de parámetro por confirmar) | Parámetros CRUD |
 | suficiencia | numeric(20,7) | Sí |  | Suficiencia del amparo. Se interpreta según tipo_valor_amparo_id; excepción a numeric(5,4) documentada en la #351 | ARGO v2 |
 | valor | numeric(20,7) | Sí |  | Valor asegurado del amparo | ARGO v2 |
-| descripcion | varchar(255) | Sí |  | Descripción del amparo | ARGO v2 |
+| descripcion | varchar | Sí |  | Descripción del amparo | ARGO v2 |
 | fecha_inicio | date | Sí |  | Inicio de vigencia del amparo | ARGO v2 |
 | fecha_fin | date | Sí |  | Fin de vigencia del amparo | ARGO v2 |
 | usuario_id | integer | Sí |  | Identificador del usuario que registra o modifica el amparo | ARGO v2 |
@@ -347,7 +346,7 @@ Dominio: documentos y actas.
 |---|---|---|---|---|---|
 | id | serial | No | secuencia | Identificador del registro (llave primaria) | Auditoría / llave |
 | contrato_general_id | integer | No |  |  | FK a contrato_general.id (fk_acta_inicio_contrato_general) |
-| descripcion | varchar(2000) | Sí |  | Descripción del acta de inicio | ARGO v2 |
+| descripcion | varchar | Sí |  | Descripción del acta de inicio | ARGO v2 |
 | fecha_inicio | date | Sí |  | Fecha de inicio de ejecución del contrato | ARGO v2 |
 | fecha_fin | date | Sí |  | Fecha prevista de finalización del contrato | ARGO v2 |
 | fecha_suscripcion | date | Sí |  | Fecha de suscripción del acta de inicio (no la del contrato). Supuesto S2 | ARGO v2 |
@@ -372,5 +371,5 @@ No se modelan; están como notas en el diagrama.
 
 - **A8 · Estudio previo y proceso contractual (stand by)**. Pendiente de validación con Ágora. No se modelan campos nuevos.
 - **A11 · Proyecto de extensión (por confirmar con la Analista)**. Validar si se registra en un campo actual o como un selector nuevo exclusivo de IDEXUD.
-- **A12 · Cardinalidad (stand by)**. Proveedor: 1 a 1, absorbido en contrato_general. Ordenador: confirmar si un contrato puede tener varios. Solicitante: 1 a 1, absorbido en contrato_general (dependencia_solicitante_id, sede_solicitante_id y sus columnas _legado_id). No se crean UNIQUE en contrato_general_id.
+- **A12 · Cardinalidad (stand by)**. Proveedor: 1 a 1, absorbido en contrato_general. Ordenador: confirmar si un contrato puede tener varios. Solicitante: 1 a 1, absorbido en contrato_general (dependencia_solicitante_id, dependencia_solicitante_legado_id y sede_solicitante_legado_id; sede_solicitante_id sale en la #396). No se crean UNIQUE en contrato_general_id.
 - **Lugar de ejecución**. La tabla lugar_ejecucion no se incluye (ítem 2) y sus columnas no pasan a contrato_general: el modelo final del LT (#389) retira las columnas lugar_ejecucion_. La validación de la depuración de datos contra resoluciones en producción queda con la Analista.
