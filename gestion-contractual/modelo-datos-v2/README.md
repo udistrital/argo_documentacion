@@ -5,6 +5,7 @@
 **Objeto.** Modelo de datos de gestión contractual de ARGO v2 del que se genera el CRUD de la #385 (Beego v2, ingeniería inversa desde la base de datos).
 - La #384 lo refinó con base en el análisis de las issues #356 y #368 y en las decisiones del LT del 22/10/2026.
 - La #389 lo cierra con las decisiones del 26 y 27/10/2026 y con el **modelo final que adjuntó el LT** ([comentario 6452443769](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6452443769)).
+- Durante la implementación del CRUD (#385, #386 y #396) se le hicieron ajustes, que se recogen aquí para que el modelo documentado sea el mismo que implementa `gestion_contractual_crud` (sección 6.4).
 
 **Entregables:**
 
@@ -21,7 +22,7 @@
 
 **Fuera de alcance:**
 - Implementar el CRUD (#385).
-- Cambiar la estructura del modelo final del LT: tablas, columnas, tipos y relaciones quedan como él los entregó.
+- Cambiar la estructura del modelo final del LT: tablas, columnas, tipos y relaciones quedan como él los entregó, salvo los ajustes de la implementación del CRUD (sección 6.4).
 - Cambiar datos en Parámetros u otros servicios.
 - Los temas en stand by, que quedan como notas en el diagrama (sección 10).
 
@@ -30,9 +31,10 @@
 | Fuente | Versión |
 |---|---|
 | Modelo final del LT | Adjunto `argo_v2_modelo_datos.txt` del [comentario 6452443769](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6452443769) (27/10/2026), copiado íntegro en el commit `c015bb4` |
-| Diagrama final | [dbdiagram.io](https://dbdiagram.io/d/6ad7138cd7bbc90c21d6e18d) ([comentario 6448780824](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6448780824)) y su exportación en el [comentario 6453949520](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6453949520) |
+| Diagrama final | [dbdiagram.io](https://dbdiagram.io/d/ARGO-v2-—-Modelo-de-datos-6ad7138cd7bbc90c21d6e18d) ([comentario 6448780824](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6448780824)) y su exportación en el [comentario 6453949520](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6453949520) |
 | Modelo de la #384 | PR #394, rama `feature/384-modelo-datos-v2`, commit `6a10489` |
 | `gestion_contractual_crud`, `sql/creacion-tablas.sql` | develop `9e20927` (2026-10-05) |
+| `gestion_contractual_crud`, `database/gestion_contractual.sql` y `.dbml` (ajustes de la sección 6.4) | Commits `a353c6f` (#385), `52c43da` (#386), `3a1e5ab` y `0307723` (#396) y `0eea134` (`valor_a_tomar`) |
 | Consumidores revisados | `gestion_contractual_mid` develop `133bb75`, `gestion_contractual_mf` develop `f546335` |
 | Lineamiento de modelos relacionales | `udistrital/lineamientos_oas`, `modelo_de_datos/lineamientos_modelos_relacionales.md` (master) |
 
@@ -57,7 +59,7 @@ Fuentes:
 | 47 | "A nivel de modelo no afecta, se debe controlar a nivel de implementación (generación)" | Las columnas de `acta_inicio` se mantienen (S2) |
 | 10 | Estado visible y máquina de estados interna (#384, 24/10) | Notas en `estado_contrato` |
 | 2 | No incluir `lugar_ejecucion` (#384, 22/10) | El modelo final no absorbe sus columnas en `contrato_general` |
-| Solicitante | Absorbido en el modelo final | `dependencia_solicitante_id`, `sede_solicitante_id` y sus `_legado_id` en `contrato_general`; sale `solicitante` |
+| Solicitante | Absorbido en el modelo final | `dependencia_solicitante_id`, `sede_solicitante_id` y sus `_legado_id` en `contrato_general`; sale `solicitante`. `sede_solicitante_id` sale después en la #396 (sección 6.4) |
 | 28, 29, 34, 36, 37, 41, 43, 44, 46, 49 | De implementación o de otros módulos | Sin efecto en el modelo |
 
 ### 3.2 Del 22/10/2026 (#384)
@@ -84,12 +86,12 @@ Comentario "Validación con el equipo": https://github.com/udistrital/argo_docum
 
 ## 5. Modelo
 
-- **dbdiagram.io:** [ARGO v2 — Modelo de datos](https://dbdiagram.io/d/6ad7138cd7bbc90c21d6e18d). Es el diagrama del modelo final; se abre sin sesión (`evidencias/389/09-dbdiagram-incognito.png`). El editor de ese diagrama tiene el DBML del LT con sus notas originales; las notas actualizadas están en `modelo-argo-v2.dbml`.
-- **Imagen:** `evidencias/389/10-modelo-final-dbdiagram.png`, exportación del diagrama final publicada en el [comentario 6453949520](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6453949520).
+- **dbdiagram.io:** [ARGO v2 — Modelo de datos](https://dbdiagram.io/d/ARGO-v2-—-Modelo-de-datos-6ad7138cd7bbc90c21d6e18d). Es el diagrama del modelo final; se abre sin sesión (`evidencias/389/09-dbdiagram-incognito.png`). El editor de ese diagrama tiene el DBML del LT con sus notas originales; las notas actualizadas están en `modelo-argo-v2.dbml`.
+- **Imagen:** `evidencias/389/10-modelo-final-dbdiagram.png` y su versión vectorial `evidencias/389/10-modelo-final-dbdiagram.svg`. Es el diagrama con los ajustes de la sección 6.4, el mismo de `database/modelo-datos-Argo.png` y `.svg` en `gestion_contractual_crud`. Reemplaza la exportación del diagrama final publicada en el [comentario 6453949520](https://github.com/udistrital/argo_documentacion/issues/389#issuecomment-6453949520).
 
-![Diagrama del modelo final exportado desde dbdiagram.io](evidencias/389/10-modelo-final-dbdiagram.png)
+![Diagrama del modelo de datos con los ajustes de la implementación del CRUD](evidencias/389/10-modelo-final-dbdiagram.png)
 
-**14 tablas, 199 columnas, 13 FK, 2 UNIQUE y 16 índices, en 4 dominios:**
+**14 tablas, 198 columnas, 13 FK, 3 UNIQUE y 16 índices, en 4 dominios:**
 
 | Dominio | Tablas |
 |---|---|
@@ -136,6 +138,23 @@ Comentario "Validación con el equipo": https://github.com/udistrital/argo_docum
 | `fk_solicitante_contrato_general`, `idx_solicitante_contrato_general_id` | Salen con la tabla |
 | — | `fk_estado_poliza_poliza`, `idx_estado_poliza_poliza_id` |
 
+### 6.4 Ajustes de la implementación del CRUD (#385, #386, #396)
+
+Cambios pedidos mientras se implementaba `gestion_contractual_crud`, después del modelo final de la #389. El modelo de este directorio queda igual al de `database/gestion_contractual.sql` y `database/gestion_contractual.dbml` del CRUD.
+
+| Issue | Tabla | Modelo final (#389) | Ajuste |
+|---|---|---|---|
+| #385 | `contrato_general` | `modo_pago varchar(1000)`, `objeto varchar(2000)`, `justificacion varchar(4000)`, `actividades varchar(8000)`, `condiciones varchar(4000)` | `varchar` sin límite |
+| #385 | `especificacion_tecnica`, `acta_inicio` | `descripcion varchar(2000)` | `varchar` sin límite |
+| #385 | `poliza`, `amparo_poliza` | `descripcion varchar(255)` | `varchar` sin límite |
+| #386 | `contrato_arrendamiento` | `destinacion varchar(1000)` | `varchar(5000)` |
+| #396 | `contrato_general` | `vigencia_id integer` nullable | `NOT NULL` |
+| #396 | `contrato_general` | Sin UNIQUE sobre el consecutivo (ítem 8) | `uq_consecutivo_elaboracion_contrato_general UNIQUE (unidad_ejecutora_id, vigencia_id, consecutivo_elaboracion)`, a solicitud del dev Andrés |
+| #396 | `contrato_general` | `sede_solicitante_id integer` | Retirada; se conservan `dependencia_solicitante_id` y las columnas `_legado_id` |
+| #396 | `supervisor_contrato` | `sede_id integer NOT NULL`, `dependencia_id integer NOT NULL` | `sede_id` retirada; `dependencia_id` nullable |
+| #396 | `especificacion_tecnica` | `cantidad integer NOT NULL` | Nullable |
+| — | `disponibilidad_presupuestal` | — | Nueva `valor_a_tomar numeric(20,7)`: valor en pesos que el contrato toma del CDP (puede ser menor que el valor del CDP) |
+
 ## 7. DDL y lineamientos
 
 `ddl/creacion-tablas.sql` implementa el DBML final:
@@ -173,6 +192,8 @@ PostgreSQL 16.13 en el contenedor `postgres:16-alpine` (`pg384`), sobre una base
 
 Las evidencias `01`–`09` de la raíz de `evidencias/` son de la #384 y corresponden al modelo del PR #394.
 
+Las pruebas de esta sección se corrieron sobre el modelo de la #389, antes de los ajustes de la sección 6.4. Tras esos ajustes se comparó la estructura del DBML, de `ddl/creacion-tablas.sql` y de `database/gestion_contractual.sql` del CRUD con `@dbml/core` 3 (tablas, columnas, tipos, NOT NULL, UNIQUE, índices y FK): 0 diferencias entre los tres. El diccionario se regeneró con `scripts/genera_diccionario.js` (14 tablas, 198 columnas).
+
 ## 10. Pendientes con el LT y la Analista
 
 | Tema | Pendiente | Responsable |
@@ -180,7 +201,6 @@ Las evidencias `01`–`09` de la raíz de `evidencias/` son de la #384 y corresp
 | `huella_navegador` | No está en el modelo final. Se había definido con `metadatos` jsonb y columnas generadas (#384, 24/10). ¿Sale del modelo v2? | LT |
 | `configuracion_unidad_ejecutora` | No está en el modelo final, aunque el comentario 6448000059 dice que se mantiene | LT |
 | `documento_contrato` | ¿Lleva `metadatos` jsonb, que estaba en los dos diagramas? ¿El nombre final es `documento_contrato` o `documento`? | LT |
-| Ítem 8 | ¿Se agrega UNIQUE a `consecutivo_elaboracion`? Hoy el modelo no lo tiene | LT |
 | Ítem 13 | "Se debe unificar": ¿es la absorción de `solicitante` en `contrato_general`? | LT |
 | Ítem 18 | ¿Se conserva `supervisor_contrato.digito_verificacion`? | LT |
 | Migración | ¿Se confirma que no hay migración de datos (ítem 40)? | LT |
