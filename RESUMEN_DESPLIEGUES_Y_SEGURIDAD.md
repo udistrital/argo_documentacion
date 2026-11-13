@@ -1,9 +1,9 @@
 # ARGO: Estado de Despliegues, CI, PRs y Alertas de Seguridad
-> *Estado generado automáticamente:* `2026-11-09 04:56:29 UTC`
+> *Estado generado automáticamente:* `2026-11-13 09:58:41 UTC`
 
 ---
 ## [gestion_contractual_root_mf](https://github.com/udistrital/gestion_contractual_root_mf)
-- **Alertas de Seguridad (Dependabot):** ⚠️ **12 total** (Crit: 1, High: 4, Med: 4, Low: 3)
+- **Alertas de Seguridad (Dependabot):** ⚠️ **11 total** (Crit: 1, High: 3, Med: 4, Low: 3)
 - **Estado de Pull Requests:** ✅ Sin PRs pendientes
 
 ### Estado CI
@@ -30,7 +30,7 @@
 
 ## [gestion_contractual_mf](https://github.com/udistrital/gestion_contractual_mf)
 - **Alertas de Seguridad (Dependabot):** ✅ Sin alertas abiertas
-- **Estado de Pull Requests:** ⚠️ **5 PR(s) pendiente(s)** (4 en `develop`, 1 en `feature/390-services-crud-beego`)
+- **Estado de Pull Requests:** ⚠️ **3 PR(s) pendiente(s)** (3 en `develop`)
 
 ### Estado CI
 
@@ -42,10 +42,8 @@
 
 | PR | Rama Origen | Rama Destino | Creado (UTC) | Autor |
 |---|---|---|---|---|
-| [#148 - test: e2e de detalle con el campo de solo lectura de la #398 #397](https://github.com/udistrital/gestion_contractual_mf/pull/148) | `feature/397-e2e-detalle-readonly` | `develop` | 2026-11-06 03:36:27 UTC | @andrestorresaioros |
-| [#147 - feat: el tablero de inicio consume GET v1/tableros/contratos del CRUD Beego v2 y solo se muestra a jefe de contratación y abogado. udistrital/argo_documentacion#386](https://github.com/udistrital/gestion_contractual_mf/pull/147) | `feature/386-consulta-metadatos-tablero` | `feature/390-services-crud-beego` | 2026-11-06 02:21:20 UTC | @kdgarzon |
-| [#146 - fix: placeholder sin documentos en el modal de validar contratista #397](https://github.com/udistrital/gestion_contractual_mf/pull/146) | `feature/397-placeholder-documento` | `develop` | 2026-11-06 02:21:10 UTC | @andrestorresaioros |
-| [#137 - feat: integración de registro y edición de contratos con el CRUD Beego v2 #390](https://github.com/udistrital/gestion_contractual_mf/pull/137) | `feature/390-services-crud-beego` | `develop` | 2026-10-29 12:52:53 UTC | @andrestorresaioros |
+| [#152 - fix: ajustes al guardado del valor a tomar por CDP #397](https://github.com/udistrital/gestion_contractual_mf/pull/152) | `feature/397-ajustes-valor-a-tomar` | `develop` | 2026-11-12 18:50:58 UTC | @andrestorresaioros |
+| [#151 - Feature/ajustes vigencia amparos rutas#397](https://github.com/udistrital/gestion_contractual_mf/pull/151) | `feature/ajustes-vigencia-amparos-rutas#397` | `develop` | 2026-11-12 17:33:54 UTC | @MauricioS98 |
 | [#130 - feat: servicio de huella digital del navegador (PoC #376)](https://github.com/udistrital/gestion_contractual_mf/pull/130) | `feature/376-browser-fingerprinting` | `develop` | 2026-10-16 01:19:04 UTC | @andrestorresaioros |
 
 
@@ -53,7 +51,7 @@
 
 | Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
 |---|---|---|---|
-| `develop` | 2026-11-05 20:34:27 UTC | [#145 - fix: fechas de pólizas y amparos se muestran un día antes en Bogotá #397](https://github.com/udistrital/gestion_contractual_mf/pull/145) | @andrestorresaioros |
+| `develop` | 2026-11-12 18:17:48 UTC | [#150 - feat: el tablero consulta los contratos en el MID, resuelve los estados de carga, vacío y error y reemplaza el treemap por el mapa de calor dependencia × estado. udistrital/argo_documentacion#407](https://github.com/udistrital/gestion_contractual_mf/pull/150) | @kdgarzon |
 | `release/1.0.1` | 2026-10-07 18:58:40 UTC | [#122 - fix: guardado en paso obligaciones](https://github.com/udistrital/gestion_contractual_mf/pull/122) | @edwargl7 |
 | `release/2.3.0` | 2026-11-05 20:37:21 UTC | [#142 - Release de fixes](https://github.com/udistrital/gestion_contractual_mf/pull/142) | @jupmorenor |
 
@@ -61,7 +59,7 @@
 
 ## [gestion_contractual_mid](https://github.com/udistrital/gestion_contractual_mid)
 - **Alertas de Seguridad (Dependabot):** ✅ Sin alertas abiertas
-- **Estado de Pull Requests:** ⚠️ **3 PR(s) pendiente(s)** (3 en `develop`)
+- **Estado de Pull Requests:** ⚠️ **2 PR(s) pendiente(s)** (2 en `develop`)
 
 ### Estado CI
 
@@ -73,54 +71,48 @@
 
 | PR | Rama Origen | Rama Destino | Creado (UTC) | Autor |
 |---|---|---|---|---|
-| [#29 - feat: Swagger 2.0 del MID a partir del OpenAPI 3.0 #397](https://github.com/udistrital/gestion_contractual_mid/pull/29) | `feature/397-swagger-openapi-v2` | `develop` | 2026-11-07 18:40:52 UTC | @andrestorresaioros |
-| [#28 - refactor: llamadas de pólizas, amparos y cargue masivo al CRUD Beego v2 #397](https://github.com/udistrital/gestion_contractual_mid/pull/28) | `feature/397-polizas-crud-beego` | `develop` | 2026-11-05 12:52:03 UTC | @andrestorresaioros |
-| [#27 - refactor: llamadas de contratos y estados al CRUD Beego v2 #397](https://github.com/udistrital/gestion_contractual_mid/pull/27) | `feature/397-contratos-crud-beego` | `develop` | 2026-11-05 12:46:17 UTC | @andrestorresaioros |
+| [#31 - Feature/prefijos unidades ejecutoras#397](https://github.com/udistrital/gestion_contractual_mid/pull/31) | `feature/prefijos-unidades-ejecutoras#397` | `develop` | 2026-11-12 17:33:21 UTC | @MauricioS98 |
+| [#30 - feat: endpoint GET tableros/contratos para el tablero de control desde el CRUD. udistrital/argo_documentacion#407](https://github.com/udistrital/gestion_contractual_mid/pull/30) | `feature/407-integrar-tablero-control` | `develop` | 2026-11-12 16:47:39 UTC | @kdgarzon |
 
 
 ### Último Despliegue por Rama
 
 | Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
 |---|---|---|---|
-| `develop` | 2026-11-04 01:35:32 UTC | [#25 - feat: ajuste variables de entorno a lineamientos](https://github.com/udistrital/gestion_contractual_mid/pull/25) | @jupmorenor |
+| `develop` | 2026-11-10 16:34:58 UTC | [#28 - refactor: llamadas de pólizas, amparos y cargue masivo al nuevo CRUD de gestión contractual #397](https://github.com/udistrital/gestion_contractual_mid/pull/28) | @andrestorresaioros |
 | `release/0.0.1` | 2025-02-12 13:19:45 UTC | [#18 - feat: Genearación consecutivo y número de contrato y ajustes integración de cambios crud](https://github.com/udistrital/gestion_contractual_mid/pull/18) | @edwargl7 |
 | `release/1.1.0` | 2026-11-04 01:38:28 UTC | [#26 - feat: ajuste variables de entorno a lineamientos](https://github.com/udistrital/gestion_contractual_mid/pull/26) | @edwargl7 |
 
 ---
 
 ## [gestion_contractual_crud](https://github.com/udistrital/gestion_contractual_crud)
-- **Alertas de Seguridad (Dependabot):** ✅ Sin alertas abiertas
-- **Estado de Pull Requests:** ⚠️ **3 PR(s) pendiente(s)** (3 en `develop`)
+- **Alertas de Seguridad (Dependabot):** ⚠️ **4 total** (Crit: 0, High: 3, Med: 1, Low: 0)
+- **Estado de Pull Requests:** ✅ Sin PRs pendientes
 
 ### Estado CI
 
-| develop | release/1.0.2 | release/1.0.1 | release/1.0.0 | release/0.0.1 |
-| -- | -- | -- | -- | -- |
-| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_crud/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_crud/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_crud/status.svg?ref=refs/heads/release%2F1.0.2)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_crud/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_crud/status.svg?ref=refs/heads/release%2F1.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_crud/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_crud/status.svg?ref=refs/heads/release%2F1.0.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_crud/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_crud/status.svg?ref=refs/heads/release%2F0.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_crud/) |
+| develop | release/1.0.2 |
+| -- | -- |
+| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_crud/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_crud/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_crud/status.svg?ref=refs/heads/release%2F1.0.2)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_crud/) |
 
 ### Pull Requests Pendientes por Resolver (Abiertos)
 
-| PR | Rama Origen | Rama Destino | Creado (UTC) | Autor |
-|---|---|---|---|---|
-| [#51 - Feature/385 crud beego v2](https://github.com/udistrital/gestion_contractual_crud/pull/51) | `feature/385-crud-beego-v2` | `develop` | 2026-10-30 13:17:50 UTC | @Ivan64Lopez58 |
-| [#49 - feat: módulo huellas-navegador para registro de huella digital del navegador](https://github.com/udistrital/gestion_contractual_crud/pull/49) | `feature/376-browser-fingerprinting` | `develop` | 2026-10-16 01:19:02 UTC | @andrestorresaioros |
-| [#43 - Feature/352 actualizacion integracion crud](https://github.com/udistrital/gestion_contractual_crud/pull/43) | `feature/352-actualizacion-integracion-crud` | `develop` | 2026-09-29 23:06:33 UTC | @Ivan64Lopez58 |
+✅ *Sin PRs pendientes por resolver en este repositorio.*
+
 
 
 ### Último Despliegue por Rama
 
 | Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
 |---|---|---|---|
-| `develop` | 2026-10-06 00:56:51 UTC | [#47 - feat: ajustes contratista y especificacion.](https://github.com/udistrital/gestion_contractual_crud/pull/47) | @jupmorenor |
-| `release/0.0.1` | 2025-02-07 12:22:44 UTC | [#32 - feat: generación de consecutivos y ajuste registro](https://github.com/udistrital/gestion_contractual_crud/pull/32) | @edwargl7 |
-| `release/1.0.1` | 2026-09-30 19:48:56 UTC | [#45 - fix: Se corrige nombre columna fecha_evento en Entity](https://github.com/udistrital/gestion_contractual_crud/pull/45) | @edwargl7 |
+| `develop` | 2026-11-12 18:36:26 UTC | [#56 - Feature/valor a tomar cdp](https://github.com/udistrital/gestion_contractual_crud/pull/56) | @Ivan64Lopez58 |
 | `release/1.0.2` | 2026-10-06 00:59:21 UTC | [#48 - feat: ajustes contratista y especificacion](https://github.com/udistrital/gestion_contractual_crud/pull/48) | @edwargl7 |
 
 ---
 
 ## [minuta_contractual_mid](https://github.com/udistrital/minuta_contractual_mid)
 - **Alertas de Seguridad (Dependabot):** ✅ Sin alertas abiertas
-- **Estado de Pull Requests:** ⚠️ **1 PR(s) pendiente(s)** (1 en `develop`)
+- **Estado de Pull Requests:** ⚠️ **2 PR(s) pendiente(s)** (2 en `develop`)
 
 ### Estado CI
 
@@ -132,6 +124,7 @@
 
 | PR | Rama Origen | Rama Destino | Creado (UTC) | Autor |
 |---|---|---|---|---|
+| [#14 - feat: adapta la minuta al CRUD Beego](https://github.com/udistrital/minuta_contractual_mid/pull/14) | `feature/404-minuta-crud` | `develop` | 2026-11-11 15:22:49 UTC | @andrestorresaioros |
 | [#13 - feat: generación del acta de inicio con validación de prerrequisitos, gestor documental y cobertura total de pruebas](https://github.com/udistrital/minuta_contractual_mid/pull/13) | `feature/359-actualizar-integrar-actas-inicio` | `develop` | 2026-10-13 16:18:58 UTC | @kdgarzon |
 
 
@@ -146,7 +139,7 @@
 ---
 
 ## [clausulas_paragrafos_crud](https://github.com/udistrital/clausulas_paragrafos_crud)
-- **Alertas de Seguridad (Dependabot):** ⚠️ **145 total** (Crit: 6, High: 82, Med: 34, Low: 23)
+- **Alertas de Seguridad (Dependabot):** ⚠️ **154 total** (Crit: 8, High: 85, Med: 38, Low: 23)
 - **Estado de Pull Requests:** ⚠️ **1 PR(s) pendiente(s)** (1 en `develop`)
 
 ### Estado CI
@@ -172,7 +165,7 @@
 ---
 
 ## [ordenador_supervisor_mid](https://github.com/udistrital/ordenador_supervisor_mid)
-- **Alertas de Seguridad (Dependabot):** ⚠️ **119 total** (Crit: 2, High: 65, Med: 38, Low: 14)
+- **Alertas de Seguridad (Dependabot):** ⚠️ **118 total** (Crit: 2, High: 64, Med: 38, Low: 14)
 - **Estado de Pull Requests:** ⚠️ **1 PR(s) pendiente(s)** (1 en `develop`)
 
 ### Estado CI
@@ -198,7 +191,7 @@
 ---
 
 ## [presupuesto_contractual_mid](https://github.com/udistrital/presupuesto_contractual_mid)
-- **Alertas de Seguridad (Dependabot):** ⚠️ **103 total** (Crit: 1, High: 56, Med: 35, Low: 11)
+- **Alertas de Seguridad (Dependabot):** ⚠️ **102 total** (Crit: 1, High: 55, Med: 35, Low: 11)
 - **Estado de Pull Requests:** ✅ Sin PRs pendientes
 
 ### Estado CI
@@ -223,7 +216,7 @@
 ---
 
 ## [proveedores_mid](https://github.com/udistrital/proveedores_mid)
-- **Alertas de Seguridad (Dependabot):** ⚠️ **201 total** (Crit: 2, High: 102, Med: 71, Low: 26)
+- **Alertas de Seguridad (Dependabot):** ⚠️ **200 total** (Crit: 2, High: 101, Med: 71, Low: 26)
 - **Estado de Pull Requests:** ⚠️ **1 PR(s) pendiente(s)** (1 en `develop`)
 
 ### Estado CI
@@ -297,6 +290,7 @@
 | Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
 |---|---|---|---|
 | `develop` | 2026-10-29 03:20:24 UTC | [#34 - fix: https://github.com/udistrital/sisifo_documentacion/issues/938  S…](https://github.com/udistrital/plantillas_mid/pull/34) | @Sgarcia8 |
+| `release/1.0.1` | 2026-11-12 15:24:48 UTC | [#35 - feat: eliminación de log en el main](https://github.com/udistrital/plantillas_mid/pull/35) | @CristianCGutierrezG |
 | `master` | 2026-05-29 04:39:16 UTC | [#30 - feat: ajuste fmt](https://github.com/udistrital/plantillas_mid/pull/30) | @edwargl7 |
 
 ---
