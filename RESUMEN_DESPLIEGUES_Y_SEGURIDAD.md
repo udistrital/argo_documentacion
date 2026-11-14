@@ -1,5 +1,5 @@
 # ARGO: Estado de Despliegues, CI, PRs y Alertas de Seguridad
-> *Estado generado automáticamente:* `2026-11-13 09:58:41 UTC`
+> *Estado generado automáticamente:* `2026-11-14 13:13:26 UTC`
 
 ---
 ## [gestion_contractual_root_mf](https://github.com/udistrital/gestion_contractual_root_mf)
@@ -42,7 +42,7 @@
 
 | PR | Rama Origen | Rama Destino | Creado (UTC) | Autor |
 |---|---|---|---|---|
-| [#152 - fix: ajustes al guardado del valor a tomar por CDP #397](https://github.com/udistrital/gestion_contractual_mf/pull/152) | `feature/397-ajustes-valor-a-tomar` | `develop` | 2026-11-12 18:50:58 UTC | @andrestorresaioros |
+| [#153 - Feature/integracion registro edicion consulta#402](https://github.com/udistrital/gestion_contractual_mf/pull/153) | `feature/integracion-registro-edicion-consulta#402` | `develop` | 2026-11-13 17:32:13 UTC | @MauricioS98 |
 | [#151 - Feature/ajustes vigencia amparos rutas#397](https://github.com/udistrital/gestion_contractual_mf/pull/151) | `feature/ajustes-vigencia-amparos-rutas#397` | `develop` | 2026-11-12 17:33:54 UTC | @MauricioS98 |
 | [#130 - feat: servicio de huella digital del navegador (PoC #376)](https://github.com/udistrital/gestion_contractual_mf/pull/130) | `feature/376-browser-fingerprinting` | `develop` | 2026-10-16 01:19:04 UTC | @andrestorresaioros |
 
@@ -51,7 +51,7 @@
 
 | Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
 |---|---|---|---|
-| `develop` | 2026-11-12 18:17:48 UTC | [#150 - feat: el tablero consulta los contratos en el MID, resuelve los estados de carga, vacío y error y reemplaza el treemap por el mapa de calor dependencia × estado. udistrital/argo_documentacion#407](https://github.com/udistrital/gestion_contractual_mf/pull/150) | @kdgarzon |
+| `develop` | 2026-11-13 15:23:05 UTC | [#152 - fix: ajustes al guardado del valor a tomar por CDP #397](https://github.com/udistrital/gestion_contractual_mf/pull/152) | @andrestorresaioros |
 | `release/1.0.1` | 2026-10-07 18:58:40 UTC | [#122 - fix: guardado en paso obligaciones](https://github.com/udistrital/gestion_contractual_mf/pull/122) | @edwargl7 |
 | `release/2.3.0` | 2026-11-05 20:37:21 UTC | [#142 - Release de fixes](https://github.com/udistrital/gestion_contractual_mf/pull/142) | @jupmorenor |
 
