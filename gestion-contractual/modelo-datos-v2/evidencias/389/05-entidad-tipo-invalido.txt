@@ -1,0 +1,20 @@
+# e) entidad_tipo inválido en documento_contrato: la BD lo acepta (sin FK ni CHECK, decisión del LT)
+# Evidencia de que el CRUD de la #385 debe validar entidad_tipo y la existencia de entidad_id.
+
+SET search_path TO contratacion;
+BEGIN;
+INSERT INTO documento_contrato (entidad_tipo, entidad_id, tipo_documento_id) VALUES ('otra_tabla', 999999, 1) RETURNING id, entidad_tipo, entidad_id;
+ id | entidad_tipo | entidad_id 
+----+--------------+------------
+  1 | otra_tabla   |     999999
+(1 row)
+
+SELECT count(*) AS contratos_con_id_999999 FROM contrato_general WHERE id = 999999;
+ contratos_con_id_999999 
+-------------------------
+                       0
+(1 row)
+
+ROLLBACK;
+
+Resultado: la fila se inserta aunque 'otra_tabla' no es un tipo permitido y el registro 999999 no existe.

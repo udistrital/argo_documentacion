@@ -1,0 +1,157 @@
+# Prueba 4a — BD limpia con ddl/creacion-tablas.sql
+# PostgreSQL 16.13 (contenedor postgres:16-alpine), base 'limpia', 2026-10-23 10:57 -05
+
+$ psql -v ON_ERROR_STOP=1 -d limpia -f ddl/creacion-tablas.sql
+(sin errores; código de salida 0)
+
+$ \dn
+         List of schemas
+     Name     |       Owner       
+--------------+-------------------
+ contratacion | postgres
+ public       | pg_database_owner
+(2 rows)
+
+$ \dt contratacion.*
+                        List of relations
+    Schema    |              Name              | Type  |  Owner   
+--------------+--------------------------------+-------+----------
+ contratacion | acta_inicio                    | table | postgres
+ contratacion | amparo_poliza                  | table | postgres
+ contratacion | configuracion_unidad_ejecutora | table | postgres
+ contratacion | contrato_arrendamiento         | table | postgres
+ contratacion | contrato_general               | table | postgres
+ contratacion | convenio                       | table | postgres
+ contratacion | disponibilidad_presupuestal    | table | postgres
+ contratacion | documento_contrato             | table | postgres
+ contratacion | especificacion_tecnica         | table | postgres
+ contratacion | estado_contrato                | table | postgres
+ contratacion | huella_navegador               | table | postgres
+ contratacion | ordenador_contrato             | table | postgres
+ contratacion | parametro_unidad_ejecutora     | table | postgres
+ contratacion | poliza                         | table | postgres
+ contratacion | registro_presupuestal          | table | postgres
+ contratacion | solicitante                    | table | postgres
+ contratacion | supervisor_contrato            | table | postgres
+(17 rows)
+
+$ \d+ contratacion.contrato_general
+                                                                                                                                                              Table "contratacion.contrato_general"
+             Column             |            Type             | Collation | Nullable |                          Default                          | Storage  | Compression | Stats target |                                                                              Description                                                                               
+--------------------------------+-----------------------------+-----------+----------+-----------------------------------------------------------+----------+-------------+--------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ id                             | integer                     |           | not null | nextval('contratacion.contrato_general_id_seq'::regclass) | plain    |             |              | 
+ numero_contrato                | character varying(50)       |           |          |                                                           | extended |             |              | Número oficial del contrato. Se genera con la RN de generación cuando el contrato pasa a SUSCRITO; en ARGO v1 viene migrado. Nulo hasta la suscripción (A14)
+ vigencia                       | character varying(4)        |           |          |                                                           | extended |             |              | Año de vigencia del contrato (2025, 2026, ...)
+ consecutivo_elaboracion        | character varying(50)       |           |          |                                                           | extended |             |              | Consecutivo de elaboración, previo a la suscripción
+ unidad_ejecutora_id            | integer                     |           | not null |                                                           | plain    |             |              | Parámetros CRUD, tipo 146 Unidad Ejecutora (6818 Rectoría, 6819 IDEXUD)
+ tipo_compromiso_id             | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 111 Compromiso
+ tipo_contrato_id               | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 112 Contrato
+ perfil_contratista_id          | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 113 Perfil del Contratista (perfil profesional, no la entidad proveedor)
+ fecha_suscripcion_estudio      | date                        |           |          |                                                           | plain    |             |              | Fecha de suscripción del estudio o documento previo
+ aplica_poliza                  | boolean                     |           |          |                                                           | plain    |             |              | Indica si el contrato exige póliza
+ modalidad_seleccion_id         | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 115 Modalidad de Selección
+ tipo_control_id                | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 119 Tipo de Control
+ tipologia_especifica_id        | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 114 Tipología Específica
+ regimen_contratacion_id        | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 116 Régimen de Contratación. Negocio propuso retirarlo; se mantiene nullable (supuesto S1)
+ procedimiento_id               | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 117 Procedimiento
+ plazo_ejecucion                | integer                     |           |          |                                                           | plain    |             |              | Duración del contrato, expresada en la unidad de unidad_ejecucion_id
+ unidad_ejecucion_id            | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 7 Tiempo (días, meses, años). No confundir con unidad_ejecutora_id
+ tipo_moneda_id                 | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 122 Tipo de Moneda
+ valor_pesos                    | numeric(20,7)               |           |          |                                                           | main     |             |              | Valor del contrato en pesos
+ valor_contrato_me              | numeric(20,7)               |           |          |                                                           | main     |             |              | Valor del contrato en moneda extranjera
+ valor_tasa_cambio              | numeric(20,7)               |           |          |                                                           | main     |             |              | Tasa de cambio aplicada al valor en moneda extranjera
+ tipo_gasto_id                  | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 123 Tipo de Gasto
+ origen_recursos_id             | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 124 Origen Recursos
+ origen_presupuesto_id          | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 125 Origen Presupuesto
+ tema_gasto_inversion_id        | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 126 Tema Gasto Inversión. Negocio propuso retirarlo; se mantiene nullable (supuesto S1)
+ medio_pago_id                  | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 127 Medio de Pago
+ clausula_registro_presupuestal | boolean                     |           |          |                                                           | plain    |             |              | Indica si el contrato requiere la cláusula adicional de registro presupuestal
+ modo_pago                      | character varying(1000)     |           |          |                                                           | extended |             |              | Modo de pago del contrato
+ objeto                         | character varying(2000)     |           |          |                                                           | extended |             |              | Objeto del contrato
+ justificacion                  | character varying(4000)     |           |          |                                                           | extended |             |              | Justificación del contrato
+ actividades                    | character varying(8000)     |           |          |                                                           | extended |             |              | Actividades del contrato, en un solo campo porque la fuente las entrega unificadas
+ condiciones                    | character varying(4000)     |           |          |                                                           | extended |             |              | Condiciones del contrato
+ observaciones                  | character varying(1000)     |           |          |                                                           | extended |             |              | Observaciones del contrato
+ fecha_inicial                  | date                        |           |          |                                                           | plain    |             |              | Fecha de inicio del contrato
+ fecha_final                    | date                        |           |          |                                                           | plain    |             |              | Fecha de finalización del contrato
+ fecha_suscripcion              | date                        |           |          |                                                           | plain    |             |              | Fecha en que se suscribe el contrato (A6). También queda en los estados del contrato; aquí permite filtrar y trazar
+ proveedor_numero_documento     | character varying(20)       |           |          |                                                           | extended |             |              | Número de documento del proveedor. Antes contratista.numero_documento (ítem 16). El proveedor se consulta en Ágora por este número
+ tipo_persona_id                | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 132 Tipo Persona (natural o jurídica) del proveedor. Antes contratista.tipo_persona_id
+ clase_proveedor_id             | integer                     |           |          |                                                           | plain    |             |              | Parámetros CRUD, tipo 120 Clase Contratista (único o sociedad temporal). Antes contratista.clase_contratista_id
+ lugar_ejecucion_pais_id        | integer                     |           |          |                                                           | plain    |             |              | País del lugar de ejecución (referencia externa por confirmar: OIKOS o Parámetros). Antes lugar_ejecucion.pais_id. Pendiente validar depuración de datos (supuesto S7)
+ lugar_ejecucion_ciudad_id      | integer                     |           |          |                                                           | plain    |             |              | Ciudad del lugar de ejecución (referencia externa por confirmar). Antes lugar_ejecucion.ciudad_id (supuesto S7)
+ lugar_ejecucion_municipio_id   | integer                     |           |          |                                                           | plain    |             |              | Municipio del lugar de ejecución (referencia externa por confirmar). Antes lugar_ejecucion.municipio_id (supuesto S7)
+ lugar_ejecucion_dependencia_id | integer                     |           |          |                                                           | plain    |             |              | OIKOS, dependencia del lugar de ejecución. Antes lugar_ejecucion.dependencia_id (supuesto S7)
+ lugar_ejecucion_sede_id        | integer                     |           |          |                                                           | plain    |             |              | OIKOS, sede del lugar de ejecución. Antes lugar_ejecucion.sede_id (supuesto S7)
+ lugar_ejecucion_direccion      | character varying(150)      |           |          |                                                           | extended |             |              | Dirección del lugar de ejecución. Antes lugar_ejecucion.direccion (supuesto S7)
+ usuario_id                     | integer                     |           |          |                                                           | plain    |             |              | Identificador del usuario que registra o modifica el contrato
+ usuario_rol                    | character varying(40)       |           |          |                                                           | extended |             |              | Rol del usuario que registra o modifica el contrato
+ usuario_legado                 | character varying(15)       |           |          |                                                           | extended |             |              | Usuario de ARGO v1, para compatibilidad con la migración
+ activo                         | boolean                     |           | not null | true                                                      | plain    |             |              | 
+ fecha_creacion                 | timestamp without time zone |           | not null | now()                                                     | plain    |             |              | 
+ fecha_modificacion             | timestamp without time zone |           | not null | now()                                                     | plain    |             |              | 
+Indexes:
+    "pk_contrato_general" PRIMARY KEY, btree (id)
+    "idx_contrato_general_tipo_contrato_id" btree (tipo_contrato_id)
+    "idx_contrato_general_unidad_ejecutora_id" btree (unidad_ejecutora_id)
+    "uq_numero_contrato_vigencia_contrato_general" UNIQUE CONSTRAINT, btree (numero_contrato, vigencia)
+Referenced by:
+    TABLE "contratacion.acta_inicio" CONSTRAINT "fk_acta_inicio_contrato_general" FOREIGN KEY (contrato_general_id) REFERENCES contratacion.contrato_general(id)
+    TABLE "contratacion.amparo_poliza" CONSTRAINT "fk_amparo_poliza_contrato_general" FOREIGN KEY (contrato_general_id) REFERENCES contratacion.contrato_general(id)
+    TABLE "contratacion.contrato_arrendamiento" CONSTRAINT "fk_contrato_arrendamiento_contrato_general" FOREIGN KEY (contrato_general_id) REFERENCES contratacion.contrato_general(id)
+    TABLE "contratacion.convenio" CONSTRAINT "fk_convenio_contrato_general" FOREIGN KEY (contrato_general_id) REFERENCES contratacion.contrato_general(id)
+    TABLE "contratacion.disponibilidad_presupuestal" CONSTRAINT "fk_disponibilidad_presupuestal_contrato_general" FOREIGN KEY (contrato_general_id) REFERENCES contratacion.contrato_general(id)
+    TABLE "contratacion.documento_contrato" CONSTRAINT "fk_documento_contrato_contrato_general" FOREIGN KEY (contrato_general_id) REFERENCES contratacion.contrato_general(id)
+    TABLE "contratacion.especificacion_tecnica" CONSTRAINT "fk_especificacion_tecnica_contrato_general" FOREIGN KEY (contrato_general_id) REFERENCES contratacion.contrato_general(id)
+    TABLE "contratacion.estado_contrato" CONSTRAINT "fk_estado_contrato_contrato_general" FOREIGN KEY (contrato_general_id) REFERENCES contratacion.contrato_general(id)
+    TABLE "contratacion.ordenador_contrato" CONSTRAINT "fk_ordenador_contrato_contrato_general" FOREIGN KEY (contrato_general_id) REFERENCES contratacion.contrato_general(id)
+    TABLE "contratacion.poliza" CONSTRAINT "fk_poliza_contrato_general" FOREIGN KEY (contrato_general_id) REFERENCES contratacion.contrato_general(id)
+    TABLE "contratacion.solicitante" CONSTRAINT "fk_solicitante_contrato_general" FOREIGN KEY (contrato_general_id) REFERENCES contratacion.contrato_general(id)
+    TABLE "contratacion.supervisor_contrato" CONSTRAINT "fk_supervisor_contrato_contrato_general" FOREIGN KEY (contrato_general_id) REFERENCES contratacion.contrato_general(id)
+Access method: heap
+
+$ \d+ contratacion.acta_inicio
+                                                                                                                             Table "contratacion.acta_inicio"
+            Column            |            Type             | Collation | Nullable |                       Default                        | Storage  | Compression | Stats target |                                              Description                                              
+------------------------------+-----------------------------+-----------+----------+------------------------------------------------------+----------+-------------+--------------+-------------------------------------------------------------------------------------------------------
+ id                           | integer                     |           | not null | nextval('contratacion.acta_inicio_id_seq'::regclass) | plain    |             |              | 
+ contrato_general_id          | integer                     |           | not null |                                                      | plain    |             |              | 
+ descripcion                  | character varying(2000)     |           |          |                                                      | extended |             |              | Descripción del acta de inicio
+ fecha_inicio                 | date                        |           |          |                                                      | plain    |             |              | Fecha de inicio de ejecución del contrato
+ fecha_fin                    | date                        |           |          |                                                      | plain    |             |              | Fecha prevista de finalización del contrato
+ fecha_suscripcion            | date                        |           |          |                                                      | plain    |             |              | Fecha de suscripción del acta de inicio (no la del contrato). Supuesto S2
+ numero_acta                  | character varying(50)       |           |          |                                                      | extended |             |              | Número del acta de inicio. Supuesto S2
+ valor_disponibilidad         | numeric(20,7)               |           |          |                                                      | main     |             |              | Valor del CDP registrado en el acta. Duplica información de disponibilidad_presupuestal (supuesto S2)
+ numero_registro_presupuestal | character varying(50)       |           |          |                                                      | extended |             |              | Número del RP digitado en el acta. Duplica información de registro_presupuestal (supuesto S2)
+ valor_registro_presupuestal  | numeric(20,7)               |           |          |                                                      | main     |             |              | Valor del RP registrado en el acta. Supuesto S2
+ valor_anticipo               | numeric(20,7)               |           |          |                                                      | main     |             |              | Valor del anticipo del contrato. Supuesto S2
+ nombre_interventor           | character varying(250)      |           |          |                                                      | extended |             |              | Nombre del interventor, cuando aplica. Supuesto S2
+ usuario_id                   | integer                     |           |          |                                                      | plain    |             |              | Identificador del usuario que registra el acta
+ usuario_rol                  | character varying(40)       |           |          |                                                      | extended |             |              | Rol del usuario que registra el acta
+ usuario_legado               | character varying(15)       |           |          |                                                      | extended |             |              | Usuario de ARGO v1, para compatibilidad con la migración
+ activo                       | boolean                     |           | not null | true                                                 | plain    |             |              | 
+ fecha_creacion               | timestamp without time zone |           | not null | now()                                                | plain    |             |              | 
+ fecha_modificacion           | timestamp without time zone |           | not null | now()                                                | plain    |             |              | 
+Indexes:
+    "pk_acta_inicio" PRIMARY KEY, btree (id)
+    "idx_acta_inicio_contrato_general_id" btree (contrato_general_id)
+Foreign-key constraints:
+    "fk_acta_inicio_contrato_general" FOREIGN KEY (contrato_general_id) REFERENCES contratacion.contrato_general(id)
+Access method: heap
+
+$ \d+ contratacion.parametro_unidad_ejecutora
+                                                                                                      Table "contratacion.parametro_unidad_ejecutora"
+       Column        |            Type             | Collation | Nullable |                               Default                               | Storage | Compression | Stats target |                            Description                            
+---------------------+-----------------------------+-----------+----------+---------------------------------------------------------------------+---------+-------------+--------------+-------------------------------------------------------------------
+ id                  | integer                     |           | not null | nextval('contratacion.parametro_unidad_ejecutora_id_seq'::regclass) | plain   |             |              | 
+ parametro_id        | integer                     |           | not null |                                                                     | plain   |             |              | Parámetros CRUD, parametros.parametro.id (otra BD, sin FK física)
+ unidad_ejecutora_id | integer                     |           | not null |                                                                     | plain   |             |              | Parámetros CRUD, tipo 146 Unidad Ejecutora
+ activo              | boolean                     |           | not null | true                                                                | plain   |             |              | 
+ fecha_creacion      | timestamp without time zone |           | not null | now()                                                               | plain   |             |              | 
+ fecha_modificacion  | timestamp without time zone |           | not null | now()                                                               | plain   |             |              | 
+Indexes:
+    "pk_parametro_unidad_ejecutora" PRIMARY KEY, btree (id)
+    "idx_parametro_unidad_ejecutora_unidad_ejecutora_id" btree (unidad_ejecutora_id)
+    "uq_parametro_id_unidad_ejecutora_id_parametro_unidad_ejecutora" UNIQUE CONSTRAINT, btree (parametro_id, unidad_ejecutora_id)
+Access method: heap
+
