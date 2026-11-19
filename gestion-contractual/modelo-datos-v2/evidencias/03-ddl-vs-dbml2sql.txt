@@ -1,0 +1,9 @@
+# Comparación del DDL escrito a mano con el SQL que genera @dbml/cli (dbml2sql 3.14.1) desde modelo-argo-v2.dbml
+# Ambos se cargaron en PostgreSQL y se compararon columnas (tipo, nulo, defecto), FK, UNIQUE, índices y comentarios.
+# Diferencias esperadas que se normalizan: dbml2sql no permite nombrar la PK y expresa UNIQUE como índice único.
+
+Líneas comparadas: 529 (columnas 229, FK 14, únicos 21, índices 19, comentarios de tabla 17, comentarios de columna 229)
+Diferencias: 0
+
+Hallazgo corregido durante la prueba: en una relación 1 a 1 (Ref con '-') dbml2sql pone la FK en la primera tabla nombrada.
+La Ref de contrato_arrendamiento se escribió como contrato_general.id - contrato_arrendamiento.contrato_general_id para que la FK quede en contrato_arrendamiento.

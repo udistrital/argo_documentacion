@@ -1,0 +1,50 @@
+# Prueba 4b — Migración up/down sobre el DDL de develop (gestion_contractual_crud 9e20927)
+# PostgreSQL 16.13, base 'migracion'. Datos: scripts/datos-prueba-migracion.sql (sql/datos-mock.sql no carga contra el DDL).
+
+## 1. Datos de contratista y lugar_ejecucion antes de migrar (join con contrato_general)
+ id | numero_documento | tipo_persona_id | clase_contratista_id | pais_id | ciudad_id | municipio_id | dependencia_id | sede_id |     direccion      
+----+------------------+-----------------+----------------------+---------+-----------+--------------+----------------+---------+--------------------
+  1 | 1012345678       |            6711 |                 6615 |     170 |     11001 |        11001 |             45 |       3 | Carrera 7 # 40B-53
+  2 | 900123456        |            6712 |                 6616 |     170 |     11001 |              |                |      12 | Calle 13 # 31-75
+  3 |                  |                 |                      |         |           |              |                |         | 
+(3 rows)
+
+## 2. migracion-desde-v2.up.sql
+Código de salida: 0. contratista y lugar_ejecucion ya no existen; solicitante.fecha_modificacion nula: 0; disponibilidad_presupuestal.activo nulo pasó a true; valor_tasa_cambio 4000.1234567 sin pérdida.
+
+## 3. Mismos datos en contrato_general después del up
+ id | proveedor_numero_documento | tipo_persona_id | clase_proveedor_id | pais_id | ciudad_id | municipio_id | dependencia_id | sede_id |     direccion      
+----+----------------------------+-----------------+--------------------+---------+-----------+--------------+----------------+---------+--------------------
+  1 | 1012345678                 |            6711 |               6615 |     170 |     11001 |        11001 |             45 |       3 | Carrera 7 # 40B-53
+  2 | 900123456                  |            6712 |               6616 |     170 |     11001 |              |                |      12 | Calle 13 # 31-75
+  3 |                            |                 |                    |         |           |              |                |         | 
+(3 rows)
+
+## 4. Esquema migrado frente a la BD limpia (ddl/creacion-tablas.sql)
+Comparación por catálogo de columnas (tipo, nulo, defecto), restricciones con nombre, índices y comentarios, sin importar el esquema ni el orden de columnas.
+Diferencias: 0 de 529 líneas.
+Nota: el orden físico de las columnas sí difiere (ALTER TABLE ADD COLUMN las agrega al final).
+
+## 5. migracion-desde-v2.down.sql y comparación con el esquema original
+$ pg_dump --schema-only migracion > esquema_antes.sql   (antes del up)
+$ pg_dump --schema-only migracion > esquema_despues_down.sql
+$ diff esquema_antes.sql esquema_despues_down.sql
+5c5
+< \restrict hFaplbHhbJXh1UfTFfIV8qWA9m27slkyQczvraTOSJj0VFOS26x9edEfrNlhCQQ
+---
+> \restrict obEYNlkE7UaJoEJwaxCAjBrzhVxbXjhvOLJEWGOJHfNuUGzkkFnCVe77ZGe2Wab
+2025c2025
+< \unrestrict hFaplbHhbJXh1UfTFfIV8qWA9m27slkyQczvraTOSJj0VFOS26x9edEfrNlhCQQ
+---
+> \unrestrict obEYNlkE7UaJoEJwaxCAjBrzhVxbXjhvOLJEWGOJHfNuUGzkkFnCVe77ZGe2Wab
+Única diferencia: el token aleatorio de estrict que pg_dump 16 genera en cada ejecución.
+
+## 6. Datos de contratista y lugar_ejecucion después del down
+ id | numero_documento | tipo_persona_id | clase_contratista_id | pais_id | ciudad_id | municipio_id | dependencia_id | sede_id |     direccion      
+----+------------------+-----------------+----------------------+---------+-----------+--------------+----------------+---------+--------------------
+  1 | 1012345678       |            6711 |                 6615 |     170 |     11001 |        11001 |             45 |       3 | Carrera 7 # 40B-53
+  2 | 900123456        |            6712 |                 6616 |     170 |     11001 |              |                |      12 | Calle 13 # 31-75
+  3 |                  |                 |                      |         |           |              |                |         | 
+(3 rows)
+
+diff con el punto 1: sin diferencias.

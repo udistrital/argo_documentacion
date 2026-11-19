@@ -1,0 +1,77 @@
+# Prueba 4d — Humo para la #385: bee generate appcode contra la BD limpia
+# Go go1.27.3, bee v2 (v2.3.0), beego/v2 v2.1.0.
+# Carpeta temporal fuera de los repositorios (~/argo_insumos_384/bee_smoke); el código generado no se versiona.
+
+$ bee api crudprueba
+$ bee generate appcode -driver=postgres -conn="postgres://postgres:***@localhost:55432/limpia?sslmode=disable&search_path=contratacion" -level=3
+(se respondió Yes a sobrescribir los archivos del esqueleto)
+
+## Modelos generados (17)
+- acta_inicio.go
+- amparo_poliza.go
+- configuracion_unidad_ejecutora.go
+- contrato_arrendamiento.go
+- contrato_general.go
+- convenio.go
+- disponibilidad_presupuestal.go
+- documento_contrato.go
+- especificacion_tecnica.go
+- estado_contrato.go
+- huella_navegador.go
+- ordenador_contrato.go
+- parametro_unidad_ejecutora.go
+- poliza.go
+- registro_presupuestal.go
+- solicitante.go
+- supervisor_contrato.go
+
+## Controladores generados (17)
+- acta_inicio.go
+- amparo_poliza.go
+- configuracion_unidad_ejecutora.go
+- contrato_arrendamiento.go
+- contrato_general.go
+- convenio.go
+- disponibilidad_presupuestal.go
+- documento_contrato.go
+- especificacion_tecnica.go
+- estado_contrato.go
+- huella_navegador.go
+- ordenador_contrato.go
+- parametro_unidad_ejecutora.go
+- poliza.go
+- registro_presupuestal.go
+- solicitante.go
+- supervisor_contrato.go
+
+## Rutas: 17 namespaces en routers/router.go
+
+$ go mod tidy && go build ./...
+código de salida: 0 (compila)
+
+## Muestra: models/amparo_poliza.go (struct)
+type AmparoPoliza struct {
+	Id                int              `orm:"column(id);pk"`
+	ContratoGeneralId *ContratoGeneral `orm:"column(contrato_general_id);rel(fk)"`
+	PolizaId          *Poliza          `orm:"column(poliza_id);rel(fk)"`
+	AmparoId          int              `orm:"column(amparo_id)"`
+	TipoValorAmparoId int              `orm:"column(tipo_valor_amparo_id);null"`
+	Suficiencia       float64          `orm:"column(suficiencia);null"`
+	Valor             float64          `orm:"column(valor);null"`
+	Descripcion       string           `orm:"column(descripcion);null"`
+	FechaInicio       time.Time        `orm:"column(fecha_inicio);type(date);null"`
+	FechaFin          time.Time        `orm:"column(fecha_fin);type(date);null"`
+	UsuarioId         int              `orm:"column(usuario_id);null"`
+	UsuarioRol        string           `orm:"column(usuario_rol);null"`
+	Activo            bool             `orm:"column(activo)"`
+	FechaCreacion     time.Time        `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time        `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+}
+
+## Observaciones para la #385 (sobre lo generado, sin modificarlo)
+- La PK sale como orm:"column(id);pk" sin auto: hay que agregar ;auto para que use la secuencia.
+- Las columnas nullable integer y numeric se generan como int y float64 sin puntero: un NULL se lee como 0.
+- numeric(20,7) se mapea a float64, que no garantiza la precisión de los montos.
+- huella_navegador.componentes (jsonb) se mapea a string.
+- La relación 1 a 1 de contrato_arrendamiento sale como rel(fk), no rel(one).
+- Las 14 FK del modelo se generan como rel(fk) hacia los structs de las tablas referenciadas.
