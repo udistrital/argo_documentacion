@@ -1,9 +1,9 @@
 # ARGO: Estado de Despliegues, CI, PRs y Alertas de Seguridad
-> *Estado generado automáticamente:* `2026-11-14 13:13:26 UTC`
+> *Estado generado automáticamente:* `2026-11-19 04:01:13 UTC`
 
 ---
 ## [gestion_contractual_root_mf](https://github.com/udistrital/gestion_contractual_root_mf)
-- **Alertas de Seguridad (Dependabot):** ⚠️ **11 total** (Crit: 1, High: 3, Med: 4, Low: 3)
+- **Alertas de Seguridad (Dependabot):** ⚠️ **10 total** (Crit: 1, High: 3, Med: 4, Low: 2)
 - **Estado de Pull Requests:** ✅ Sin PRs pendientes
 
 ### Estado CI
@@ -30,7 +30,7 @@
 
 ## [gestion_contractual_mf](https://github.com/udistrital/gestion_contractual_mf)
 - **Alertas de Seguridad (Dependabot):** ✅ Sin alertas abiertas
-- **Estado de Pull Requests:** ⚠️ **3 PR(s) pendiente(s)** (3 en `develop`)
+- **Estado de Pull Requests:** ⚠️ **4 PR(s) pendiente(s)** (4 en `develop`)
 
 ### Estado CI
 
@@ -42,8 +42,9 @@
 
 | PR | Rama Origen | Rama Destino | Creado (UTC) | Autor |
 |---|---|---|---|---|
+| [#155 - feat: subir el acta de inicio al gestor documental y registrarla en documentos-contratos. udistrital/argo_documentacion#359](https://github.com/udistrital/gestion_contractual_mf/pull/155) | `feature/359-acta-inicio-gestor-documental` | `develop` | 2026-11-17 21:08:31 UTC | @kdgarzon |
+| [#154 - feat: integración de la minuta con el nuevo CRUD en el MF (#405)](https://github.com/udistrital/gestion_contractual_mf/pull/154) | `feature/405-minuta-mf` | `develop` | 2026-11-15 16:09:19 UTC | @andrestorresaioros |
 | [#153 - Feature/integracion registro edicion consulta#402](https://github.com/udistrital/gestion_contractual_mf/pull/153) | `feature/integracion-registro-edicion-consulta#402` | `develop` | 2026-11-13 17:32:13 UTC | @MauricioS98 |
-| [#151 - Feature/ajustes vigencia amparos rutas#397](https://github.com/udistrital/gestion_contractual_mf/pull/151) | `feature/ajustes-vigencia-amparos-rutas#397` | `develop` | 2026-11-12 17:33:54 UTC | @MauricioS98 |
 | [#130 - feat: servicio de huella digital del navegador (PoC #376)](https://github.com/udistrital/gestion_contractual_mf/pull/130) | `feature/376-browser-fingerprinting` | `develop` | 2026-10-16 01:19:04 UTC | @andrestorresaioros |
 
 
@@ -51,7 +52,7 @@
 
 | Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
 |---|---|---|---|
-| `develop` | 2026-11-13 15:23:05 UTC | [#152 - fix: ajustes al guardado del valor a tomar por CDP #397](https://github.com/udistrital/gestion_contractual_mf/pull/152) | @andrestorresaioros |
+| `develop` | 2026-11-17 15:15:05 UTC | [#151 - Feature/ajustes vigencia amparos rutas#397](https://github.com/udistrital/gestion_contractual_mf/pull/151) | @MauricioS98 |
 | `release/1.0.1` | 2026-10-07 18:58:40 UTC | [#122 - fix: guardado en paso obligaciones](https://github.com/udistrital/gestion_contractual_mf/pull/122) | @edwargl7 |
 | `release/2.3.0` | 2026-11-05 20:37:21 UTC | [#142 - Release de fixes](https://github.com/udistrital/gestion_contractual_mf/pull/142) | @jupmorenor |
 
@@ -59,7 +60,7 @@
 
 ## [gestion_contractual_mid](https://github.com/udistrital/gestion_contractual_mid)
 - **Alertas de Seguridad (Dependabot):** ✅ Sin alertas abiertas
-- **Estado de Pull Requests:** ⚠️ **2 PR(s) pendiente(s)** (2 en `develop`)
+- **Estado de Pull Requests:** ⚠️ **1 PR(s) pendiente(s)** (1 en `develop`)
 
 ### Estado CI
 
@@ -71,7 +72,6 @@
 
 | PR | Rama Origen | Rama Destino | Creado (UTC) | Autor |
 |---|---|---|---|---|
-| [#31 - Feature/prefijos unidades ejecutoras#397](https://github.com/udistrital/gestion_contractual_mid/pull/31) | `feature/prefijos-unidades-ejecutoras#397` | `develop` | 2026-11-12 17:33:21 UTC | @MauricioS98 |
 | [#30 - feat: endpoint GET tableros/contratos para el tablero de control desde el CRUD. udistrital/argo_documentacion#407](https://github.com/udistrital/gestion_contractual_mid/pull/30) | `feature/407-integrar-tablero-control` | `develop` | 2026-11-12 16:47:39 UTC | @kdgarzon |
 
 
@@ -79,7 +79,7 @@
 
 | Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
 |---|---|---|---|
-| `develop` | 2026-11-10 16:34:58 UTC | [#28 - refactor: llamadas de pólizas, amparos y cargue masivo al nuevo CRUD de gestión contractual #397](https://github.com/udistrital/gestion_contractual_mid/pull/28) | @andrestorresaioros |
+| `develop` | 2026-11-15 14:44:17 UTC | [#31 - Feature/prefijos unidades ejecutoras#397](https://github.com/udistrital/gestion_contractual_mid/pull/31) | @MauricioS98 |
 | `release/0.0.1` | 2025-02-12 13:19:45 UTC | [#18 - feat: Genearación consecutivo y número de contrato y ajustes integración de cambios crud](https://github.com/udistrital/gestion_contractual_mid/pull/18) | @edwargl7 |
 | `release/1.1.0` | 2026-11-04 01:38:28 UTC | [#26 - feat: ajuste variables de entorno a lineamientos](https://github.com/udistrital/gestion_contractual_mid/pull/26) | @edwargl7 |
 
@@ -105,7 +105,7 @@
 
 | Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
 |---|---|---|---|
-| `develop` | 2026-11-12 18:36:26 UTC | [#56 - Feature/valor a tomar cdp](https://github.com/udistrital/gestion_contractual_crud/pull/56) | @Ivan64Lopez58 |
+| `develop` | 2026-11-19 00:14:44 UTC | [#57 - Fix: PK nombrada pk_<tabla> en las 14 tablas del DDL y del DBML, en vez del _pkey implícito de Postgres.](https://github.com/udistrital/gestion_contractual_crud/pull/57) | @Ivan64Lopez58 |
 | `release/1.0.2` | 2026-10-06 00:59:21 UTC | [#48 - feat: ajustes contratista y especificacion](https://github.com/udistrital/gestion_contractual_crud/pull/48) | @edwargl7 |
 
 ---
