@@ -1,5 +1,5 @@
 # ARGO: Estado de Despliegues, CI, PRs y Alertas de Seguridad
-> *Estado generado automáticamente:* `2026-11-19 21:50:29 UTC`
+> *Estado generado automáticamente:* `2026-11-20 04:28:08 UTC`
 
 ---
 ## [gestion_contractual_root_mf](https://github.com/udistrital/gestion_contractual_root_mf)
@@ -34,9 +34,9 @@
 
 ### Estado CI
 
-| develop | release/2.3.0 | release/2.2.0 | release/2.1.0 | release/2.0.0 | release/1.0.1 |
-| -- | -- | -- | -- | -- | -- |
-| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mf/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mf/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mf/status.svg?ref=refs/heads/release%2F2.3.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mf/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mf/status.svg?ref=refs/heads/release%2F2.2.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mf/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mf/status.svg?ref=refs/heads/release%2F2.1.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mf/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mf/status.svg?ref=refs/heads/release%2F2.0.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mf/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mf/status.svg?ref=refs/heads/release%2F1.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mf/) |
+| develop | release/2.4.0 | release/2.3.0 | release/2.2.0 |
+| -- | -- | -- | -- |
+| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mf/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mf/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mf/status.svg?ref=refs/heads/release%2F2.4.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mf/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mf/status.svg?ref=refs/heads/release%2F2.3.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mf/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/gestion_contractual_mf/status.svg?ref=refs/heads/release%2F2.2.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/gestion_contractual_mf/) |
 
 ### Pull Requests Pendientes por Resolver (Abiertos)
 
@@ -51,7 +51,6 @@
 | Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
 |---|---|---|---|
 | `develop` | 2026-11-19 21:47:24 UTC | [#157 - test: e2e con el esquema gestion_contractual del CRUD #397](https://github.com/udistrital/gestion_contractual_mf/pull/157) | @andrestorresaioros |
-| `release/1.0.1` | 2026-10-07 18:58:40 UTC | [#122 - fix: guardado en paso obligaciones](https://github.com/udistrital/gestion_contractual_mf/pull/122) | @edwargl7 |
 | `release/2.3.0` | 2026-11-05 20:37:21 UTC | [#142 - Release de fixes](https://github.com/udistrital/gestion_contractual_mf/pull/142) | @jupmorenor |
 
 ---
