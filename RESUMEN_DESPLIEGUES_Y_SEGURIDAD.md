@@ -1,5 +1,5 @@
 # ARGO: Estado de Despliegues, CI, PRs y Alertas de Seguridad
-> *Estado generado automáticamente:* `2026-11-20 04:28:08 UTC`
+> *Estado generado automáticamente:* `2026-11-20 12:07:09 UTC`
 
 ---
 ## [gestion_contractual_root_mf](https://github.com/udistrital/gestion_contractual_root_mf)
@@ -207,28 +207,26 @@
 ---
 
 ## [proveedores_mid](https://github.com/udistrital/proveedores_mid)
-- **Alertas de Seguridad (Dependabot):** ⚠️ **198 total** (Crit: 2, High: 101, Med: 71, Low: 24)
-- **Estado de Pull Requests:** ⚠️ **1 PR(s) pendiente(s)** (1 en `develop`)
+- **Alertas de Seguridad (Dependabot):** ⚠️ **12 total** (Crit: 2, High: 3, Med: 5, Low: 2)
+- **Estado de Pull Requests:** ✅ Sin PRs pendientes
 
 ### Estado CI
 
-| develop | release/1.0.1 | release/1.0.0 | release/0.0.1 |
-| -- | -- | -- | -- |
-| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/proveedores_mid/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/proveedores_mid/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/proveedores_mid/status.svg?ref=refs/heads/release%2F1.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/proveedores_mid/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/proveedores_mid/status.svg?ref=refs/heads/release%2F1.0.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/proveedores_mid/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/proveedores_mid/status.svg?ref=refs/heads/release%2F0.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/proveedores_mid/) |
+| develop | release/1.0.2 | release/1.0.1 |
+| -- | -- | -- |
+| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/proveedores_mid/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/proveedores_mid/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/proveedores_mid/status.svg?ref=refs/heads/release%2F1.0.2)](https://hubci.portaloas.udistrital.edu.co/udistrital/proveedores_mid/) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/proveedores_mid/status.svg?ref=refs/heads/release%2F1.0.1)](https://hubci.portaloas.udistrital.edu.co/udistrital/proveedores_mid/) |
 
 ### Pull Requests Pendientes por Resolver (Abiertos)
 
-| PR | Rama Origen | Rama Destino | Creado (UTC) | Autor |
-|---|---|---|---|---|
-| [#17 - fix: actualizacion de dependencias, resolucion de alertas de seguridad y refactorizacion tecnica](https://github.com/udistrital/proveedores_mid/pull/17) | `feature/363-actualizacion-dependencias-proveedores` | `develop` | 2026-10-05 04:55:42 UTC | @kdgarzon |
+✅ *Sin PRs pendientes por resolver en este repositorio.*
+
 
 
 ### Último Despliegue por Rama
 
 | Rama Destino | Fecha Merge (UTC) | Último PR Resuelto | Autor |
 |---|---|---|---|
-| `develop` | 2025-01-07 05:37:44 UTC | [#16 - feat: Se agrega campo Tipo_persona_id al proveedor udistrital/argo_documentacion#292](https://github.com/udistrital/proveedores_mid/pull/16) | @Lau2ri |
-| `release/0.0.1` | 2024-08-21 16:07:25 UTC | [#14 - feat: cambio puerto por defecto](https://github.com/udistrital/proveedores_mid/pull/14) | @edwargl7 |
+| `develop` | 2026-11-20 11:57:59 UTC | [#18 - devops: Update .drone.yml](https://github.com/udistrital/proveedores_mid/pull/18) | @edwargl7 |
 
 ---
 
